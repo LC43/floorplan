@@ -44,6 +44,7 @@
 #include <QApplication>
 #include <QHBoxLayout>
 #include "dragwidget.h"
+#include "dragwidgetgrid.h"
 
 int main(int argc, char *argv[])
 {
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
     QWidget mainWidget;
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
     horizontalLayout->addWidget(new DragWidget);
-    horizontalLayout->addWidget(new DragWidget);
+    horizontalLayout->addWidget(new DragWidgetGrid);
 
     mainWidget.setLayout(horizontalLayout);
     mainWidget.setWindowTitle(QObject::tr("Draggable Icons"));

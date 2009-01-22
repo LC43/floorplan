@@ -42,8 +42,10 @@
 ****************************************************************************/
 
 #include <QtGui>
-#include <QSvgRenderer>
-//#include <QtSvg>
+
+#include <QtSvg>
+#include <qpainter.h>
+#include <qpicture.h>
 
 #include "dragwidget.h"
 
@@ -55,15 +57,18 @@ DragWidget::DragWidget(QWidget *parent)
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 
-    //svg1 = new QSvgRenderer(file, this);
+
+	QPainter *paint;
+	QImage *pic;
 	paint = new QPainter();
-	pic = new QPicture();
-	pic->load("base_dormir2", "svg");
+	pic = new QImage();
+	pic->load(":/images/base_dormir2","svg");
 	paint->begin(this);
-	paint->setWindow(pic->boundingRect());
-	paint->drawPicture(0, 0, *pic);
+	paint->setWindow(pic->rect());
+	paint->drawImage(QPoint(0,0), *pic);
 	paint->end();
 
+	
     QLabel *boatIcon = new QLabel(this);
     boatIcon->setPixmap(QPixmap(":/images/boat.png"));
     boatIcon->move(20, 20);

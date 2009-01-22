@@ -52,16 +52,22 @@ class QDropEvent;
 QT_END_NAMESPACE
 
 //! [0]
-class DragWidget : public QFrame
+class DragWidgetGrid : public QFrame
 {
 public:
-    DragWidget(QWidget *parent=0);
+    DragWidgetGrid(QWidget *parent=0);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
+private:
+	QPainter *paint;
+	QPicture *pic;
+
+
+	
 };
 //! [0]
 

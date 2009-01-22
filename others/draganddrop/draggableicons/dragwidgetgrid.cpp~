@@ -47,49 +47,26 @@
 #include <qpainter.h>
 #include <qpicture.h>
 
-#include "dragwidget.h"
+#include "dragwidgetgrid.h"
 
 //! [0]
-DragWidget::DragWidget(QWidget *parent)
+DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     : QFrame(parent)
 {
-    setMinimumSize(200, 200);
+    setMinimumSize(400, 200);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 
-/*
-	QPainter *paint;
-	QImage *pic;
-	paint = new QPainter();
-	pic = new QImage();
-	pic->load(":/images/base_dormir2","svg");
-	paint->begin(this);
-	paint->setWindow(pic->rect());
-	paint->drawImage(QPoint(0,0), *pic);
-	paint->end();
-*/
-	
-    QLabel *boatIcon = new QLabel(this);
-    boatIcon->setPixmap(QPixmap(":/images/boat.png"));
-    boatIcon->move(20, 20);
-    boatIcon->show();
-    boatIcon->setAttribute(Qt::WA_DeleteOnClose);
+	QLabel *carIcon = new QLabel(this);
+	carIcon->setPixmap(QPixmap(":/images/car.png"));
+	carIcon->move(120, 20);
+	carIcon->show();
+	carIcon->setAttribute(Qt::WA_DeleteOnClose);
 
-    QLabel *carIcon = new QLabel(this);
-    carIcon->setPixmap(QPixmap(":/images/car.png"));
-    carIcon->move(120, 20);
-    carIcon->show();
-    carIcon->setAttribute(Qt::WA_DeleteOnClose);
-
-    QLabel *houseIcon = new QLabel(this);
-    houseIcon->setPixmap(QPixmap(":/images/house.png"));
-    houseIcon->move(20, 120);
-    houseIcon->show();
-    houseIcon->setAttribute(Qt::WA_DeleteOnClose);
 }
 //! [0]
 
-void DragWidget::dragEnterEvent(QDragEnterEvent *event)
+void DragWidgetGrid::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
@@ -103,7 +80,7 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
     }
 }
 
-void DragWidget::dragMoveEvent(QDragMoveEvent *event)
+void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
@@ -117,7 +94,7 @@ void DragWidget::dragMoveEvent(QDragMoveEvent *event)
     }
 }
 
-void DragWidget::dropEvent(QDropEvent *event)
+void DragWidgetGrid::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         QByteArray itemData = event->mimeData()->data("application/x-dnditemdata");
@@ -145,7 +122,7 @@ void DragWidget::dropEvent(QDropEvent *event)
 }
 
 //! [1]
-void DragWidget::mousePressEvent(QMouseEvent *event)
+void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)

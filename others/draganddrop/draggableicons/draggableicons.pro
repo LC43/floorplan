@@ -1,6 +1,10 @@
-HEADERS     = dragwidget.h
+QT += svg xml
+
+HEADERS     = dragwidget.h \
+			  dragwidgetgrid.h
 RESOURCES   = draggableicons.qrc
 SOURCES     = dragwidget.cpp \
+			  dragwidgetgrid.cpp \
               main.cpp
 
 # install
