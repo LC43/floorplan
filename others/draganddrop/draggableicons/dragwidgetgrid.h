@@ -41,8 +41,8 @@
 **
 ****************************************************************************/
 
-#ifndef DRAGWIDGET_H
-#define DRAGWIDGET_H
+#ifndef DRAGWIDGETGRID_H
+#define DRAGWIDGETGRID_H
 
 #include <QFrame>
 
