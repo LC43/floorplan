@@ -14,33 +14,33 @@ class MyMainWindow:public QWidget
 	
 	private:
 		QPainter *paint;
-		QPicture *pic;
+		QImage *pic;
 };
 
 MyMainWindow::MyMainWindow(const char *fname)
 {
 	resize(200,200);
 	paint = new QPainter();
-	pic = new QPicture();
-	pic->load(fname, "svg");
+	pic = new QImage();
+	pic->load(fname,"svg");
 }
 
 void MyMainWindow::paintEvent(QPaintEvent *)
 {
 	paint->begin(this);
-	paint->setWindow(pic->boundingRect());
-	paint->drawPicture(0, 0, *pic);
+	paint->setWindow(pic->rect());
+	paint->drawImage(QPoint(0,0), *pic);
 	paint->end();
 }
 
 int main(int argc, char **argv)
 {
-	QApplication a(argc,argv);
-
 	if (argc <= 1)
 	{
 		return 0;
 	}
+	
+	QApplication a(argc,argv);
 	
 	MyMainWindow w(argv[1]);
 
