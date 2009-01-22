@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.1"
+   baseProfile="tiny"
+   id="svg-root"
+   width="100%"
+   height="100%"
+   viewBox="0 0 480 360"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   sodipodi:version="0.34"
+   sodipodi:docname="test1.svg">
+  <title
+     id="test-title">shapes-circle-01-t</title>
+  <desc
+     id="test-desc">Test ability to handle the 'circle' basic shapes element.</desc>
+  <g
+     id="test-body-content">
+    <circle
+       cx="100"
+       cy="100"
+       r="50"
+       fill="none"
+       stroke="black"
+       id="circle607" />
+    <circle
+       cx="220"
+       cy="100"
+       r="35"
+       fill="red"
+       stroke="black"
+       id="circle608" />
+    <circle
+       cx="340"
+       cy="100"
+       r="20"
+       fill="black"
+       stroke="lime"
+       stroke-width="4"
+       id="circle609" />
+    <circle
+       cx="100"
+       cy="260"
+       r="20"
+       stroke="lime"
+       fill="yellow"
+       stroke-width="4"
+       id="circle610" />
+    <circle
+       cx="220"
+       cy="260"
+       r="35"
+       stroke="none"
+       fill="blue"
+       id="circle611" />
+    <circle
+       cx="340"
+       cy="260"
+       r="50"
+       stroke="red"
+       fill="none"
+       stroke-width="10"
+       id="circle612" />
+  </g>
+  <text
+     id="revision"
+     x="10"
+     y="340"
+     font-size="40"
+     stroke="none"
+     fill="black">$Revision: 379921 $</text>
+  <rect
+     id="test-frame"
+     x="1"
+     y="1"
+     width="478"
+     height="358"
+     fill="none"
+     stroke="#000000" />
+  <rect
+     style="font-size:12;fill:#0dfa3c;fill-rule:evenodd;stroke-width:1;fill-opacity:1;"
+     id="rect618"
+     width="82.9471741"
+     height="39.2907715"
+     x="294.680756"
+     y="15.1970549" />
+</svg>
