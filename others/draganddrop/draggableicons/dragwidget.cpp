@@ -85,7 +85,7 @@ DragWidget::DragWidget(QWidget *parent)
 	//convert to pixmap
 	QPixmap svgPixmap;
 	
-	svgPixmap.fromImage(*picSvg);
+	svgPixmap = QPixmap::fromImage(*picSvg);
 	if( result = svgPixmap.isNull())
 		std::cout << "svgPixmap is null:" <<result << std::endl;
 
