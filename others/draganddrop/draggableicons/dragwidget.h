@@ -45,6 +45,10 @@
 #define DRAGWIDGET_H
 
 #include <QFrame>
+#include <qwidget.h>
+#include <qpainter.h>
+#include <qpicture.h>
+#include <QtSvg>
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
@@ -62,10 +66,12 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
+	void paintEvent(QPaintEvent *);
+	
 private:
 	QPainter *paint;
 	QPicture *pic;
-
+	QImage *picSvg;
 
 	
 };

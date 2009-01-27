@@ -68,13 +68,31 @@ DragWidget::DragWidget(QWidget *parent)
 	paint->drawImage(QPoint(0,0), *pic);
 	paint->end();
 */
+
+	// load svg into QImage
+	//resize(100,100);
+	paint = new QPainter();
+	picSvg = new QImage();
+	picSvg->load(":/images/base_dormir2.svg","svg");
+
+	//convert to pixmap
+	QPixmap svgPixmap;
+	svgPixmap.fromImage(*picSvg);
+
+	//shoould be showing it :/
+	QLabel *svgIcon = new QLabel(this);
+	svgIcon->setPixmap(svgPixmap);
+	svgIcon->move(20,20);
+	svgIcon->show();
+	svgIcon->setAttribute(Qt::WA_DeleteOnClose);
 	
+	/*
     QLabel *boatIcon = new QLabel(this);
     boatIcon->setPixmap(QPixmap(":/images/boat.png"));
     boatIcon->move(20, 20);
     boatIcon->show();
     boatIcon->setAttribute(Qt::WA_DeleteOnClose);
-
+*/
     QLabel *carIcon = new QLabel(this);
     carIcon->setPixmap(QPixmap(":/images/car.png"));
     carIcon->move(120, 20);
@@ -88,6 +106,14 @@ DragWidget::DragWidget(QWidget *parent)
     houseIcon->setAttribute(Qt::WA_DeleteOnClose);
 }
 //! [0]
+void DragWidget::paintEvent(QPaintEvent *)
+{
+	/*paint->begin(this);
+	paint->setWindow(pic_svg->rect());
+	paint->drawImage(QPoint(0,0), *pic_svg);
+	paint->end();
+*/
+}
 
 void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
