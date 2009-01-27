@@ -49,6 +49,7 @@
 
 #include "dragwidget.h"
 
+#include <iostream>
 //! [0]
 DragWidget::DragWidget(QWidget *parent)
     : QFrame(parent)
@@ -71,15 +72,24 @@ DragWidget::DragWidget(QWidget *parent)
 
 	// load svg into QImage
 	//resize(100,100);
+
+	bool result;
 	paint = new QPainter();
 	picSvg = new QImage();
-	picSvg->load(":/images/base_dormir2.svg","svg");
+	result = picSvg->load(":/images/base_dormir2.svg","svg");
+	if( result )
+		std::cout << "picSvg has loaded: " << result << std::endl;
 
+	std::cout << "picSvg is null:" << picSvg->isNull() << std::endl;
+	
 	//convert to pixmap
 	QPixmap svgPixmap;
+	
 	svgPixmap.fromImage(*picSvg);
+	if( result = svgPixmap.isNull())
+		std::cout << "svgPixmap is null:" <<result << std::endl;
 
-	//shoould be showing it :/
+	//should be showing it :/
 	QLabel *svgIcon = new QLabel(this);
 	svgIcon->setPixmap(svgPixmap);
 	svgIcon->move(20,20);
