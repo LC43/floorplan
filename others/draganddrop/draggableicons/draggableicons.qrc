@@ -4,5 +4,7 @@
    <file>images/car.png</file>
    <file>images/house.png</file>
    <file>images/base_dormir2.svg</file>
+   <file>images/base_bloco_cor_sala_estar_laranja.svg</file>
+   <file>images/base_bloco_cor_hall_azul.svg</file>
 </qresource>
 </RCC>

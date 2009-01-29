@@ -66,7 +66,10 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
+	void showSvg(QPixmap *svgPixmap, int num_blocks, int c_block );
+	void showSvgs();
 
+			
 private:
 	QPainter *paint;
 	QPicture *pic;
