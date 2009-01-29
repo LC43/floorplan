@@ -78,7 +78,7 @@ void DragWidget::showSvgs(){
 	resources.setNameFilters(filters);
 	QStringList svgs_filename = resources.entryList();
 
-	int num_blocks = 13; // 12 + 1 para dar margem
+	//int num_blocks = 13; // 12 + 1 para dar margem
 	picSvg = new QImage();
 	//for each in dir
 	for (int i = 0; i < svgs_filename.size(); ++i) {
@@ -109,9 +109,20 @@ void DragWidget::showSvg(QPixmap *svgPixmap, int num_blocks, int c_block ){
 	
 	QSize block_size;
 	block_size = this->size();
-	block_size.scale(block_size.height()*(1.0/num_blocks), (this->size()).width()*(1.0/num_blocks), Qt::KeepAspectRatio);
+	int block_scale_height = block_size.height()*(1.0/num_blocks);
+	/*if( block_scale_height > svgIcon->height() )
+		block_scale_height = svgIcon->height();*/
+	int block_scale_width = this->size().width()*(1.0/num_blocks);
+	/*if( block_scale_width > svgIcon->width() )
+		block_scale_width = svgIcon->width();*/
+	// block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width;
+	qDebug() << "DragWidget: " << "scale: " << block_scale_width << "original:" << svgIcon->width();
+	qDebug() << "DragWidget: " << "scale: " << block_scale_height << "original:" << svgIcon->height();
+	block_size.scale( block_scale_height > svgIcon->height() ? svgIcon->height() : block_scale_height ,
+					  block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width,
+					  Qt::KeepAspectRatio);
 	svgIcon->resize(block_size);
-
+	qDebug() << "DragWidget: " << "resized:" << svgIcon->width();
 	//FIXME: this.size()
 	svgIcon->move( 20, 20+100*c_block );
 	svgIcon->show();
