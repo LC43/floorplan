@@ -173,3 +173,16 @@ void DragWidgetGrid::paintEvent(QPaintEvent *){
           p.drawLine(0, y, w, y);
  }
 	
+void DragWidgetGrid::copyToClipboard()
+{
+    QClipboard *cb = QApplication::clipboard();
+  //  cb->setPixmap(m_buffer);
+}
+
+void DragWidgetGrid::saveToFile()
+{
+    QString name = QFileDialog::getSaveFileName(this, QLatin1String("Save as image"), QString(), QLatin1String("*.png"));
+    if (!name.endsWith(QLatin1String(".png")))
+        name.append(QLatin1String(".png"));
+    //m_buffer.save(name, "PNG");
+}

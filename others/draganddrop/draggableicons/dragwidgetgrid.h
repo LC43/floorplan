@@ -65,11 +65,14 @@ protected:
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *);
+	void DragWidgetGrid::copyToClipboard();
+	void DragWidgetGrid::saveToFile();
 private:
 	QPainter *paint;
 	QPicture *pic;
 	int m_gridSize;
 	int m_zoom;
+	QPixmap m_buffer;
 };
 //! [0]
 
