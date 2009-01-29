@@ -54,7 +54,7 @@ class QDropEvent;
 QT_END_NAMESPACE
 
 //! [0]
-class DragWidgetGrid : public QPixelTool
+class DragWidgetGrid : public QFrame
 {
 public:
     DragWidgetGrid(QWidget *parent=0);
@@ -64,12 +64,12 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
+	void paintEvent(QPaintEvent *);
 private:
 	QPainter *paint;
 	QPicture *pic;
-
-
-	
+	int m_gridSize;
+	int m_zoom;
 };
 //! [0]
 

@@ -51,13 +51,13 @@
 
 //! [0]
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
-    : QPixelTool(parent)
+: QFrame (parent)
 {
     setMinimumSize(400, 200);
-    //QFrame::setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+    setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
-
-
+	m_gridSize = 10;
+	m_zoom = 1;
 }
 //! [0]
 
@@ -157,3 +157,19 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
         child->setPixmap(pixmap);
     }
 }
+
+void DragWidgetGrid::paintEvent(QPaintEvent *){
+
+	QPainter p(this);
+
+    int w = width();
+    int h = height();
+    // Draw the grid on top.
+    p.setPen(Qt::black);
+    int incr = m_gridSize * m_zoom;
+    for (int x=0; x<w; x+=incr)
+          p.drawLine(x, 0, x, h);
+    for (int y=0; y<h; y+=incr)
+          p.drawLine(0, y, w, y);
+ }
+	
