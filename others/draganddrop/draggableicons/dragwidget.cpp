@@ -62,51 +62,6 @@ DragWidget::DragWidget(QWidget *parent)
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 	
-	// load svg into QImage
-	//resize(100,100);
-
-	bool result;
-	paint = new QPainter();
-	picSvg = new QImage();
-	result = picSvg->load(":/images/base_dormir2.svg","svg");
-
-	//convert to pixmap
-	QPixmap svgPixmap;
-	svgPixmap = QPixmap::fromImage(*picSvg);
-
-	//should be showing it :/
-	QLabel *svgIcon_sleep = new QLabel(this);
-	svgIcon_sleep->setPixmap(svgPixmap);
-	svgIcon_sleep->setScaledContents ( true );
-	
-	int num_blocks = 13; // 12 + 1 para dar margem
-	QSize block_size;
-	block_size = this->size();
-	block_size.scale(block_size.height()*(1.0/num_blocks), (this->size()).width()*(1.0/num_blocks), Qt::KeepAspectRatio);
-	svgIcon_sleep->resize(block_size);
-	
-	//svgIcon_sleep->resize(20,20);
-	svgIcon_sleep->move(20,20);
-	svgIcon_sleep->show();
-	svgIcon_sleep->setAttribute(Qt::WA_DeleteOnClose);
-	
-	// svg 2
-	picSvg->load(":/images/base_bloco_cor_sala_estar_laranja.svg","svg");
-	svgPixmap = QPixmap::fromImage(*picSvg);
-
-	QLabel *svgIcon_social = new QLabel(this);
-	svgIcon_social->setPixmap(svgPixmap);
-	svgIcon_social->setScaledContents ( true );
-	//svgIcon_social->resize(10,20);
-	svgIcon_social->move(20,120);
-	svgIcon_social->show();
-	svgIcon_social->setAttribute(Qt::WA_DeleteOnClose);
-
-	// for each in dir { showSvg() }
-	// svg 3
-	picSvg->load(":/images/base_bloco_cor_hall_azul.svg","svg");
-	svgPixmap = QPixmap::fromImage(*picSvg);
-	showSvg( &svgPixmap, num_blocks, 3 );
 
 	showSvgs();
 }
@@ -118,23 +73,6 @@ void DragWidget::showSvgs(){
 	if (!resources.exists())
 		qWarning("ummm.. no resources?");
 	
-	//count files
-	uint c_resources = resources.count();
-	qDebug() << "DragWidget: " << c_resources << " resources found";
-	
-	//uint QDir::count () const
-
-	//QStringList QDir::entryList ( Filters filters = NoFilter, SortFlags sort = NoSort ) const
-	/*QStringList QDir::entryList ( const QStringList & nameFilters, Filters filters = NoFilter, SortFlags sort = NoSort ) const
-
-	Returns a list of the names of all the files and directories in the directory,
-	ordered according to the name and attribute filters previously set with setNameFilters() and setFilter(),
-	and sorted according to the flags set with setSorting().
-
-	The name filter, file attribute filter, and sorting specification can be overridden using the nameFilters, filters, and sort arguments.
-
-	Returns an empty list if the directory is unreadable, does not exist, or if nothing matches the specification.
-	*/
 	QStringList filters;
 	filters << "*.svg";
 	resources.setNameFilters(filters);
@@ -146,8 +84,7 @@ void DragWidget::showSvgs(){
 	for (int i = 0; i < svgs_filename.size(); ++i) {
 		QString name = svgs_filename.at(i);
 		qDebug() << "DragWidget: " << name << " : " << i;
-// 		QString filename = resources_dir + name;
-// 		qDebug() << "DragWidget: " << filename;
+
 		// load svg
 		picSvg->load( resources_dir + name,"svg");
 
