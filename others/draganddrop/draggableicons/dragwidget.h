@@ -66,8 +66,7 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
-	void paintEvent(QPaintEvent *);
-	
+
 private:
 	QPainter *paint;
 	QPicture *pic;

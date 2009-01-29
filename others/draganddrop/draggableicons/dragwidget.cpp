@@ -58,18 +58,6 @@ DragWidget::DragWidget(QWidget *parent)
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 
-/*
-	QPainter *paint;
-	QImage *pic;
-	paint = new QPainter();
-	pic = new QImage();
-	pic->load(":/images/base_dormir2","svg");
-	paint->begin(this);
-	paint->setWindow(pic->rect());
-	paint->drawImage(QPoint(0,0), *pic);
-	paint->end();
-*/
-
 	// load svg into QImage
 	//resize(100,100);
 
@@ -77,17 +65,10 @@ DragWidget::DragWidget(QWidget *parent)
 	paint = new QPainter();
 	picSvg = new QImage();
 	result = picSvg->load(":/images/base_dormir2.svg","svg");
-	if( result )
-		std::cout << "picSvg has loaded: " << result << std::endl;
 
-	std::cout << "picSvg is null:" << picSvg->isNull() << std::endl;
-	
 	//convert to pixmap
 	QPixmap svgPixmap;
-	
 	svgPixmap = QPixmap::fromImage(*picSvg);
-	if( result = svgPixmap.isNull())
-		std::cout << "svgPixmap is null:" <<result << std::endl;
 
 	//should be showing it :/
 	QLabel *svgIcon = new QLabel(this);
@@ -116,15 +97,8 @@ DragWidget::DragWidget(QWidget *parent)
     houseIcon->setAttribute(Qt::WA_DeleteOnClose);
 }
 //! [0]
-void DragWidget::paintEvent(QPaintEvent *)
-{
-	/*paint->begin(this);
-	paint->setWindow(pic_svg->rect());
-	paint->drawImage(QPoint(0,0), *pic_svg);
-	paint->end();
-*/
-}
-
+// This event handler is called when a drag is in progress and the mouse enters this widget. The event is passed in the event parameter.
+// If the event is ignored, the widget won't receive any drag move events.
 void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
@@ -138,45 +112,38 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
         event->ignore();
     }
 }
-
+// This event handler is called if a drag is in progress, and when any of the following conditions occur:
+// * the cursor enters this widget,
+// * the cursor moves within this widget,
+// * or a modifier key is pressed on the keyboard while this widget has the focus.
+// The event is passed in the event parameter.
 void DragWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
-            event->accept();
-        } else {
-            event->acceptProposedAction();
+            //event->setDropAction(Qt::MoveAction);
+            event->ignore();
+        /*} else {
+            //event->acceptProposedAction();
+			*/
         }
     } else {
         event->ignore();
     }
 }
-
+// This event handler is called when the drag is dropped on this widget. The event is passed in the event parameter.
 void DragWidget::dropEvent(QDropEvent *event)
 {
+	
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
-        QByteArray itemData = event->mimeData()->data("application/x-dnditemdata");
-        QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-        
-        QPixmap pixmap;
-        QPoint offset;
-        dataStream >> pixmap >> offset;
 
-        QLabel *newIcon = new QLabel(this);
-        newIcon->setPixmap(pixmap);
-        newIcon->move(event->pos() - offset);
-        newIcon->show();
-        newIcon->setAttribute(Qt::WA_DeleteOnClose);
-
-        if (event->source() == this) {
+		if (event->source() == this) {
 			//event->setDropAction(Qt::MoveAction);
-            event->ignore();
-		} else if (event->source() != this ){
-			event->setDropAction(Qt::MoveAction);
-			event->accept();
+			event->ignore();
 		} else {
-            event->acceptProposedAction();
+			event->setDropAction(Qt::MoveAction);
+			//event->acceptProposedAction();
+			event->accept();
         }
     } else {
         event->ignore();
