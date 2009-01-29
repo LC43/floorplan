@@ -170,9 +170,12 @@ void DragWidget::dropEvent(QDropEvent *event)
         newIcon->setAttribute(Qt::WA_DeleteOnClose);
 
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
-            event->accept();
-        } else {
+			//event->setDropAction(Qt::MoveAction);
+            event->ignore();
+		} else if (event->source() != this ){
+			event->setDropAction(Qt::MoveAction);
+			event->accept();
+		} else {
             event->acceptProposedAction();
         }
     } else {
