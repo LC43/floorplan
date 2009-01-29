@@ -45,6 +45,7 @@
 #include <QHBoxLayout>
 #include "dragwidget.h"
 #include "dragwidgetgrid.h"
+#include "qpixeltool.h"
 
 int main(int argc, char *argv[])
 {

@@ -55,7 +55,7 @@ DragWidget::DragWidget(QWidget *parent)
     : QFrame(parent)
 {
     setMinimumSize(200, 200);
-    setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+    //setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 
 /*

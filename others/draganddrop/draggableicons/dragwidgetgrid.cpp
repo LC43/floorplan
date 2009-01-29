@@ -50,11 +50,11 @@
 #include "dragwidgetgrid.h"
 
 //! [0]
-DragWidgetGrid::DragWidgetGrid(QPixelTool *parent)
+DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     : QPixelTool(parent)
 {
     setMinimumSize(400, 200);
-    setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+    //QFrame::setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 
 
