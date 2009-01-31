@@ -44,16 +44,31 @@
 #include <QtGui>
 
 #include <QtSvg>
+#include <QPrinter>
 #include <qpainter.h>
 #include <qpicture.h>
 
 #include "dragwidgetgrid.h"
 
+static int max_zoom = 10; //percentage
+
+static void increaseZoom(){
+	if(val != max_zoom){
+		m_zoom++;	
+	}	
+}
+
+static void decreaseZoom(){
+	if(m_zoom){
+		m_zoom--;	
+	}	
+}
+
 //! [0]
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 : QFrame (parent)
 {
-    setMinimumSize(400, 200);
+    setMinimumSize(800, 800);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 	m_gridSize = 10;
@@ -113,6 +128,46 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         }
     } else {
         event->ignore();
+    }
+}
+
+
+void DragWidgetGrid::keyPressEvent(QKeyEvent *e)
+{
+    switch (e->key()) {
+    case Qt::Key_Plus:
+        increaseZoom();
+        break;
+    case Qt::Key_Minus:
+        decreaseZoom();
+        break;
+    case Qt::Key_G:
+        toggleGrid();
+        break;
+    case Qt::Key_C:
+        if (e->modifiers() & Qt::ControlModifier)
+            copyToClipboard();
+        break;
+    case Qt::Key_S:
+        if (e->modifiers() & Qt::ControlModifier) {
+            releaseKeyboard();
+            saveToFile();
+        }
+        break;
+    case Qt::Key_Control:
+        grabKeyboard();
+        break;
+    }
+}
+
+void DragWidgetGrid::keyReleaseEvent(QKeyEvent *e)
+{
+    switch(e->key()) {
+    case Qt::Key_Control:
+        releaseKeyboard();
+        break;
+    default:
+        break;
     }
 }
 
@@ -176,7 +231,7 @@ void DragWidgetGrid::paintEvent(QPaintEvent *){
 void DragWidgetGrid::copyToClipboard()
 {
     QClipboard *cb = QApplication::clipboard();
-  //  cb->setPixmap(m_buffer);
+    cb->setPixmap(QPixmap::grabWidget(this,NULL));
 }
 
 void DragWidgetGrid::saveToFile()
@@ -184,5 +239,19 @@ void DragWidgetGrid::saveToFile()
     QString name = QFileDialog::getSaveFileName(this, QLatin1String("Save as image"), QString(), QLatin1String("*.png"));
     if (!name.endsWith(QLatin1String(".png")))
         name.append(QLatin1String(".png"));
-    //m_buffer.save(name, "PNG");
+   QPixmap::grabWidget(this,NULL).save(name, "PNG");
+}
+
+void DragWidgetGrid::sendToPrinter(){
+	
+	QPrinter printer;
+
+     QPrintDialog *dialog = new QPrintDialog(&printer, this);
+     dialog->setWindowTitle(tr("Print Document"));
+     if (dialog->exec() != QDialog::Accepted)
+         return;
+	QPainter painter;
+	painter.begin(&printer);
+	painter.drawPixmap(0,0,QPixmap::grabWidget(this,NULL));
+	painter.end();
 }
