@@ -61,14 +61,14 @@ public:
 	void copyToClipboard();
 	void saveToFile();
 	void sendToPrinter();
-protected:
-    void dragEnterEvent(QDragEnterEvent *event);
+	void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *);
 	void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+protected:
 	void increaseZoom();
 	void decreaseZoom();
 private:
