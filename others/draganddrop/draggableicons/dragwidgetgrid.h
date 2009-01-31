@@ -67,10 +67,10 @@ protected:
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *);
-	void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 	void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+	void increaseZoom();
+	void decreaseZoom();
 private:
 	QPainter *paint;
 	QPicture *pic;
