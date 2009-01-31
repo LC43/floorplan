@@ -73,6 +73,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     setAcceptDrops(true);
 	m_gridSize = 10;
 	m_zoom = 1;
+	isKeyboardGrabbed=false;
 }
 //! [0]
 
@@ -179,7 +180,12 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	 * If the user clicks on this widget we grab the keyboard
 	 * 
 	 */ 
-	grabKeyboard();
+	if(isKeyboardGrabbed) {
+		releaseKeyboard();	
+	}
+	else grabKeyboard();
+	
+	isKeyboardGrabbed = !isKeyboardGrabbed;
  
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
