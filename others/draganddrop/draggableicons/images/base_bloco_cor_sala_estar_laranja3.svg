@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    version="1.0"
-   sodipodi:docname="base_bloco_cor_sala_estar_laranja.svg"
+   sodipodi:docname="base_bloco_cor_sala_estar_laranja3.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
@@ -121,24 +121,6 @@
        x2="0"
        y2="100.21552"
        gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5528"
-       id="linearGradient5534"
-       x1="99.568962"
-       y1="0.86206895"
-       x2="0.43103448"
-       y2="100"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5542"
-       id="linearGradient5540"
-       gradientUnits="userSpaceOnUse"
-       x1="99.568962"
-       y1="0.86206895"
-       x2="0.43103448"
-       y2="100" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -157,7 +139,7 @@
      inkscape:window-width="1670"
      inkscape:window-height="950"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="22"
      showguides="true"
      inkscape:guide-bbox="true">
     <inkscape:grid
@@ -188,14 +170,19 @@
        y="0.21551724" />
     <a
        id="a5505"
-       style="fill:url(#linearGradient5534);fill-opacity:1">
+       style="fill:#ff9718;fill-opacity:1"
+       transform="translate(0,-0.2155172)">
       <rect
-         style="opacity:1;fill:url(#linearGradient5540);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:1;fill:#ff9718;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect5473"
          width="100"
          height="100"
          x="0"
          y="0.21551724" />
     </a>
+    <path
+       style="opacity:1;fill:#ff9718;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 0.071701241,50.000004 L 0.071701241,3.621e-06 L 50.071701,3.621e-06 L 100.0717,3.621e-06 L 100.0717,50.000004 L 100.0717,100 L 50.071701,100 L 0.071701241,100 L 0.071701241,50.000004 z"
+       id="path2903" />
   </g>
 </svg>
