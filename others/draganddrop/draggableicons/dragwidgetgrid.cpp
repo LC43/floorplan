@@ -52,13 +52,13 @@
 
 static int max_zoom = 10; //percentage
 
-static void increaseZoom(){
-	if(val != max_zoom){
+void DragWidgetGrid::increaseZoom(){
+	if(m_zoom != max_zoom){
 		m_zoom++;	
 	}	
 }
 
-static void decreaseZoom(){
+void DragWidgetGrid::decreaseZoom(){
 	if(m_zoom){
 		m_zoom--;	
 	}	
@@ -140,9 +140,6 @@ void DragWidgetGrid::keyPressEvent(QKeyEvent *e)
         break;
     case Qt::Key_Minus:
         decreaseZoom();
-        break;
-    case Qt::Key_G:
-        toggleGrid();
         break;
     case Qt::Key_C:
         if (e->modifiers() & Qt::ControlModifier)
