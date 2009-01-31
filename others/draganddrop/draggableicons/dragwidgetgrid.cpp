@@ -145,12 +145,16 @@ void DragWidgetGrid::keyPressEvent(QKeyEvent *e)
         if (e->modifiers() & Qt::ControlModifier)
             copyToClipboard();
         break;
+	case Qt::Key_P:
+        if (e->modifiers() & Qt::ControlModifier)
+            sendToPrinter();
+    break;
     case Qt::Key_S:
         if (e->modifiers() & Qt::ControlModifier) {
             releaseKeyboard();
             saveToFile();
         }
-        break;
+    break;
     case Qt::Key_Control:
         grabKeyboard();
         break;
@@ -171,6 +175,12 @@ void DragWidgetGrid::keyReleaseEvent(QKeyEvent *e)
 //! [1]
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
+	/*
+	 * If the user clicks on this widget we grab the keyboard
+	 * 
+	 */ 
+	grabKeyboard();
+ 
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
         return;
