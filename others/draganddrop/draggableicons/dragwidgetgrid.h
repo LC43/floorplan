@@ -76,6 +76,7 @@ private:
 	QPicture *pic;
 	int m_gridSize;
 	int m_zoom;
+	bool isKeyboardGrabbed;
 };
 //! [0]
 
