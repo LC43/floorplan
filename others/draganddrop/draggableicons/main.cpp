@@ -43,7 +43,7 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
-#include "dragwidget.h"
+#include "svglistwidget.h"
 #include "dragwidgetgrid.h"
 #include "qpixeltool.h"
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
     QWidget mainWidget;
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
-    horizontalLayout->addWidget(new DragWidget);
+    horizontalLayout->addWidget(new SvgListWidget);
     horizontalLayout->addWidget(new DragWidgetGrid);
 
     mainWidget.setLayout(horizontalLayout);

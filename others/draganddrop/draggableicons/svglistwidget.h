@@ -41,14 +41,23 @@
 **
 ****************************************************************************/
 
-#ifndef DRAGWIDGET_H
-#define DRAGWIDGET_H
+#ifndef SVGLISTWIDGET_H
+#define SVGLISTWIDGET_H
 
 #include <QFrame>
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qpicture.h>
+
+
+#include <QPixmap>
+#include <QtGui>
+
 #include <QtSvg>
+
+#include <QtDebug> // qDegub
+#include <QList>
+
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
@@ -56,10 +65,10 @@ class QDropEvent;
 QT_END_NAMESPACE
 
 //! [0]
-class DragWidget : public QFrame
+class SvgListWidget : public QFrame
 {
 public:
-    DragWidget(QWidget *parent=0);
+    SvgListWidget(QWidget *parent=0);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -67,14 +76,15 @@ protected:
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 	void showSvg(QPixmap *svgPixmap, int num_blocks, int c_block );
-	void showSvgs();
-
+	QList<QPixmap> createSvgList();
+	void showSvgs(QList<QPixmap> svg_pixmap_list);
+	void paintEvent(QPaintEvent *);
 			
 private:
 	QPainter *paint;
 	QPicture *pic;
 	QImage *picSvg;
-
+	QList<QPixmap> qpixmap_list;
 	
 };
 //! [0]

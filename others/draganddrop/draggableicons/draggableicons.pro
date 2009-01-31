@@ -1,10 +1,10 @@
 QT += svg xml
 
-HEADERS     = dragwidget.h \
+HEADERS     = svglistwidget.h \
 			  qpixeltool.h \
 			  dragwidgetgrid.h
 RESOURCES   = draggableicons.qrc
-SOURCES     = dragwidget.cpp \
+SOURCES     = svglistwidget.cpp \
 			  dragwidgetgrid.cpp \
 			  qpixeltool.cpp \
               main.cpp
