@@ -64,7 +64,7 @@ class QDragEnterEvent;
 class QDropEvent;
 QT_END_NAMESPACE
 
-//! [0]
+
 class SvgListWidget : public QFrame
 {
 public:
@@ -87,6 +87,6 @@ private:
 	QList<QPixmap> qpixmap_list;
 	
 };
-//! [0]
+
 
 #endif

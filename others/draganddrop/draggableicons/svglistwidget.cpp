@@ -69,7 +69,7 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 	resources.setNameFilters(filters);
 	QStringList svgs_filenames = resources.entryList();
 
-	//int num_blocks = 13; // 12 + 1 para dar margem
+
 	picSvg = new QImage();
 	//for each in dir
 	
@@ -92,17 +92,12 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 
 }
 void SvgListWidget::showSvgs(QList<QPixmap> svg_pixmap_list){
-	//QListIterator<float> i(svg_pixmap_list);
+
 	int num_blocks = svg_pixmap_list.size()+1;
 	for (int i = 0; i < num_blocks; ++i) {
 		showSvg( *svg_pixmap_list.at(i), num_blocks, i);
 		qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
 	}
-	/*while (i.hasNext()){
-		qDebug() << i.peeknext();
-		showSvg(i.next, num_blocks,  );
-	}
-	*/
 
 }
 
@@ -122,20 +117,12 @@ void SvgListWidget::showSvg(QPixmap *svgPixmap, int num_blocks, int c_block ){
 	QSize block_size;
 	block_size = this->size();
 	int block_scale_height = block_size.height()*(1.0/num_blocks);
-	/*if( block_scale_height > svgIcon->height() )
-		block_scale_height = svgIcon->height();*/
 	int block_scale_width = this->size().width()*(1.0/num_blocks);
-	/*if( block_scale_width > svgIcon->width() )
-		block_scale_width = svgIcon->width();*/
-	// block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width;
 	qDebug() << "SvgListWidget: " << "scale: " << block_scale_width << "original:" << svgIcon->width();
 	qDebug() << "SvgListWidget: " << "scale: " << block_scale_height << "original:" << svgIcon->height();
 	block_size.scale( block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width,
 					  block_scale_height > svgIcon->height() ? svgIcon->height() : block_scale_height,
 					  Qt::KeepAspectRatio);
-	/*block_size.scale( block_scale_height ,
-					  block_scale_width,
-							  Qt::KeepAspectRatio);*/
 	svgIcon->resize(block_size);
 	qDebug() << "SvgListWidget: " << "resized:" << svgIcon->width();
 	//FIXME: this.size()
@@ -145,7 +132,7 @@ void SvgListWidget::showSvg(QPixmap *svgPixmap, int num_blocks, int c_block ){
 
 }
 
-//! [0]
+
 // This event handler is called when a drag is in progress and the mouse enters this widget. The event is passed in the event parameter.
 // If the event is ignored, the widget won't receive any drag move events.
 void SvgListWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -199,7 +186,7 @@ void SvgListWidget::dropEvent(QDropEvent *event)
     }
 }
 
-//! [1]
+
 void SvgListWidget::mousePressEvent(QMouseEvent *event)
 {
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
@@ -211,19 +198,16 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream << pixmap << QPoint(event->pos() - child->pos());
-//! [1]
 
-//! [2]
+
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);
-//! [2]
-        
-//! [3]
+
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
     drag->setHotSpot(event->pos() - child->pos());
-//! [3]
+
 
     QPixmap tempPixmap = pixmap;
     QPainter painter;
