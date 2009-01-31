@@ -87,11 +87,11 @@ void DragWidget::showSvgs(){
 
 		// load svg
 		picSvg->load( resources_dir + name,"svg");
-
+		qDebug() << "DragWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 		//convert to pixmap
 		QPixmap svgPixmap;
 		svgPixmap = QPixmap::fromImage(*picSvg);
-
+		qDebug() << "DragWidget: " << "pixmap height" << svgPixmap.height() << "width" << svgPixmap.width();
 		showSvg( &svgPixmap, svgs_filename.size()+1, i );
 	}
 
@@ -104,8 +104,10 @@ void DragWidget::showSvg(QPixmap *svgPixmap, int num_blocks, int c_block ){
 	//do alot of stuff :D
 	QLabel *svgIcon = new QLabel(this);
 	svgIcon->setPixmap(*svgPixmap);
+	qDebug() << "DragWidget: " << "svgIcon height" << svgIcon->height() << "width" << svgIcon->width();
 	svgIcon->setScaledContents ( true );
-
+	svgIcon->setMinimumSize(20,20);
+	svgIcon->setMaximumSize(30,30);
 	
 	QSize block_size;
 	block_size = this->size();
@@ -118,9 +120,12 @@ void DragWidget::showSvg(QPixmap *svgPixmap, int num_blocks, int c_block ){
 	// block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width;
 	qDebug() << "DragWidget: " << "scale: " << block_scale_width << "original:" << svgIcon->width();
 	qDebug() << "DragWidget: " << "scale: " << block_scale_height << "original:" << svgIcon->height();
-	block_size.scale( block_scale_height > svgIcon->height() ? svgIcon->height() : block_scale_height ,
+	/*block_size.scale( block_scale_height > svgIcon->height() ? svgIcon->height() : block_scale_height ,
 					  block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width,
-					  Qt::KeepAspectRatio);
+					  Qt::KeepAspectRatio);*/
+	block_size.scale( block_scale_height ,
+					  block_scale_width,
+							  Qt::KeepAspectRatio);
 	svgIcon->resize(block_size);
 	qDebug() << "DragWidget: " << "resized:" << svgIcon->width();
 	//FIXME: this.size()
