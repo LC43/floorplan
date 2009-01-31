@@ -91,24 +91,24 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 
 
 }
-void SvgListWidget::showSvgs(QList<QPixmap> svg_pixmap_list){
+void SvgListWidget::showSvgs(){
 
-	int num_blocks = svg_pixmap_list.size()+1;
+	int num_blocks = qpixmap_list.size();
 	for (int i = 0; i < num_blocks; ++i) {
-		showSvg( svg_pixmap_list.at(i), num_blocks, i);
+		showSvg( qpixmap_list.at(i), num_blocks, i);
 		qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
 	}
 
 }
 
 
-void SvgListWidget::showSvg(QPixmap &svgPixmap, int num_blocks, int c_block ){
+void SvgListWidget::showSvg(QPixmap svgPixmap, int num_blocks, int c_block ){
 
 	//do alot of stuff :D
 	QLabel *svgIcon = new QLabel(this);
-	svgIcon->resize(svgPixmap->width(),svgPixmap->height());
+	svgIcon->resize(svgPixmap.width(),svgPixmap.height());
 	qDebug() << "SvgListWidget: " << "svgIconnew height" << svgIcon->height() << "width" << svgIcon->width();
-	svgIcon->setPixmap(*svgPixmap);
+	svgIcon->setPixmap(svgPixmap);
 	qDebug() << "SvgListWidget: " << "svgIcon height" << svgIcon->height() << "width" << svgIcon->width();
 	svgIcon->setScaledContents ( true );
 	svgIcon->setMinimumSize(20,20);
@@ -229,7 +229,7 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 	//do i need a painter :/
 	//QPainter painter(this);
 
-	showSvgs(qpixmap_list);
+	showSvgs();
 	
 
 }
