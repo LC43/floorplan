@@ -58,21 +58,24 @@ class DragWidgetGrid : public QFrame
 {
 public:
     DragWidgetGrid(QWidget *parent=0);
-
+	void copyToClipboard();
+	void saveToFile();
+	void sendToPrinter();
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *);
-	void copyToClipboard();
-	void saveToFile();
+	void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+	void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 private:
 	QPainter *paint;
 	QPicture *pic;
 	int m_gridSize;
 	int m_zoom;
-	QPixmap m_buffer;
 };
 //! [0]
 
