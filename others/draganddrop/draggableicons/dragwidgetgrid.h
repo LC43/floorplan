@@ -45,7 +45,7 @@
 #define DRAGWIDGETGRID_H
 
 #include <QFrame>
-#include "qpixeltool.h"
+
 
 
 QT_BEGIN_NAMESPACE

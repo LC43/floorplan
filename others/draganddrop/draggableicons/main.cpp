@@ -45,7 +45,7 @@
 #include <QHBoxLayout>
 #include "svglistwidget.h"
 #include "dragwidgetgrid.h"
-#include "qpixeltool.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     horizontalLayout->addWidget(new DragWidgetGrid);
 
     mainWidget.setLayout(horizontalLayout);
-    mainWidget.setWindowTitle(QObject::tr("Draggable Icons"));
+    mainWidget.setWindowTitle(QObject::tr("Floor Plan"));
     mainWidget.show();
 
     return app.exec();

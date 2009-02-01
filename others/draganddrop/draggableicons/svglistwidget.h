@@ -57,11 +57,15 @@
 
 #include <QtDebug> // qDegub
 #include <QList>
-
+#include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
+class QAction;
+class QListWidget;
+class QMenu;
+class QTextEdit;
 QT_END_NAMESPACE
 
 
@@ -79,13 +83,19 @@ protected:
 	QList<QPixmap> createSvgList();
 	void showSvgs();
 	void paintEvent(QPaintEvent *);
-			
+	void resizeEvent(QResizeEvent *event);
+	void createDockWindows();
+
+
+	
 private:
 	QPainter *paint;
 	QPicture *pic;
 	QImage *picSvg;
 	QList<QPixmap> qpixmap_list;
-	
+	QTextEdit *textEdit;
+	QListWidget *customerList;
+	QListWidget *paragraphsList;
 };
 
 

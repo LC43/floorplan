@@ -47,15 +47,34 @@
 
 //! [0]
 SvgListWidget::SvgListWidget(QWidget *parent)
-    : QFrame(parent)
+	: QFrame(parent)
 {
     setMinimumSize(200, 800);
-    setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+	//setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
-	
-
+	//setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable|QDockWidget::NoDockWidgetFeatures);
+	createDockWindows();
 	createSvgList();
 }
+void SvgListWidget::createDockWindows()
+{
+	QDockWidget *dock = new QDockWidget(tr("Customers"), this);
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	customerList = new QListWidget(dock);
+	customerList->addItems(QStringList()
+			<< "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
+			<< "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
+			<< "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
+			<< "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
+			<< "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
+			<< "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
+	dock->setWidget(customerList);
+	//QMainWindow::addDockWidget(Qt::RightDockWidgetArea, dock);
+	//viewMenu->addAction(dock->toggleViewAction());
+}
+
+
+
 QList<QPixmap> SvgListWidget::createSvgList(){
 	// get resource dir
 	//FIXME: read it from a .rc file ?
@@ -113,7 +132,7 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int num_blocks, int c_block ){
 	svgIcon->setScaledContents ( true );
 	svgIcon->setMinimumSize(20,20);
 	//svgIcon->setMaximumSize(30,30);
-	
+	/*
 	QSize block_size;
 	block_size = this->size();
 	int block_scale_height = block_size.height()*(1.0/num_blocks);
@@ -125,6 +144,7 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int num_blocks, int c_block ){
 					  Qt::KeepAspectRatio);
 	svgIcon->resize(block_size);
 	qDebug() << "SvgListWidget: " << "resized:" << svgIcon->width();
+	*/
 	//FIXME: this.size()
 	svgIcon->move( 20, 20+100*c_block );
 	svgIcon->show();
@@ -229,7 +249,11 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 	//do i need a painter :/
 	//QPainter painter(this);
 
-	showSvgs();
-	
-
 }
+ void SvgListWidget::resizeEvent(QResizeEvent *event)
+{
+	showSvgs();
+	QWidget::resizeEvent(event);
+}
+
+
