@@ -58,9 +58,6 @@ class DragWidgetGrid : public QFrame
 {
 public:
     DragWidgetGrid(QWidget *parent=0);
-	void copyToClipboard();
-	void saveToFile();
-	void sendToPrinter();
 	void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
@@ -68,6 +65,10 @@ public:
 	void paintEvent(QPaintEvent *);
 	void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+public slots:
+	void copyToClipboard();
+	void saveToFile();
+	void sendToPrinter();
 protected:
 	void increaseZoom();
 	void decreaseZoom();
