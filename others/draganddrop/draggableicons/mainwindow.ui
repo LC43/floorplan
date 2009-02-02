@@ -31,7 +31,7 @@
        <property name="frameShadow" >
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QFrame" name="GridArea" >
+       <widget class="QScrollArea" name="GridArea" >
         <property name="geometry" >
          <rect>
           <x>190</x>
