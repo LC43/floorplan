@@ -10,11 +10,11 @@ MainWindow::MainWindow(QWidget *parent)
 	SvgArea->setWidget(svg);
 	GridArea->setWidget(drag);
     actionImprimir->setShortcut(tr("Ctrl+I"));
-	connect(actionImprimir, SIGNAL(triggered()), this, SLOT(drag->sendToPrinter()));
+	connect(actionImprimir, SIGNAL(triggered()), drag, SLOT(sendToPrinter()));
     actionGuardar_como_imagem->setShortcut(tr("Ctrl+S"));
-	connect(actionGuardar_como_imagem, SIGNAL(triggered()), this, SLOT(drag->saveToFile()));
+	connect(actionGuardar_como_imagem, SIGNAL(triggered()),drag, SLOT(saveToFile()));
     actionCopiar->setShortcut(tr("Ctrl+C"));
-	connect(actionCopiar, SIGNAL(triggered()), this, SLOT(drag->copyToClipboard()));
+	connect(actionCopiar, SIGNAL(triggered()),drag, SLOT(copyToClipboard()));
 
 	//connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 }

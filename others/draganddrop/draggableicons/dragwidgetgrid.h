@@ -56,6 +56,7 @@ QT_END_NAMESPACE
 //! [0]
 class DragWidgetGrid : public QFrame
 {
+	 Q_OBJECT
 public:
     DragWidgetGrid(QWidget *parent=0);
 	void dragEnterEvent(QDragEnterEvent *event);
