@@ -43,27 +43,19 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
-//#include "svglistwidget.h"
-//#include "dragwidgetgrid.h"
+
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(draggableicons);
+    Q_INIT_RESOURCE(floorplan);
 
     QApplication app(argc, argv);
 
-    //QWidget mainWidget;
-    //QHBoxLayout *horizontalLayout = new QHBoxLayout;
-    //horizontalLayout->addWidget(new SvgListWidget);
-    //horizontalLayout->addWidget(new DragWidgetGrid);
+
 	MainWindow window;
 	window.show();
 	
-
-    //main_window.setLayout(horizontalLayout);
-    //main_window.setWindowTitle(QObject::tr("Floor Plan"));
-    //main_window.show();
 
     return app.exec();
 }

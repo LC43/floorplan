@@ -53,7 +53,7 @@ class QDragEnterEvent;
 class QDropEvent;
 QT_END_NAMESPACE
 
-//! [0]
+
 class DragWidgetGrid : public QFrame
 {
 	 Q_OBJECT
@@ -64,8 +64,7 @@ public:
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *);
-	void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+
 public slots:
 	void copyToClipboard();
 	void saveToFile();
@@ -80,6 +79,6 @@ private:
 	int m_zoom;
 	bool isKeyboardGrabbed;
 };
-//! [0]
+
 
 #endif

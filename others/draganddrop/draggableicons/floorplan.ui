@@ -1,16 +1,16 @@
 <ui version="4.0" >
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
+ <class>FloorPlan</class>
+ <widget class="QMainWindow" name="FloorPlan" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>871</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>Floor Plan</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
    <widget class="QWidget" name="horizontalLayoutWidget" >
@@ -67,8 +67,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>185</width>
-           <height>545</height>
+           <width>187</width>
+           <height>547</height>
           </rect>
          </property>
         </widget>
@@ -83,8 +83,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>23</height>
+     <width>871</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFicheiro" >
@@ -108,14 +108,27 @@
     <addaction name="actionImprimir" />
     <addaction name="actionCopiar" />
     <addaction name="actionGuardar_como_imagem" />
+    <addaction name="actionMemoria_Descritiva" />
    </widget>
    <widget class="QMenu" name="menuAcerca" >
     <property name="title" >
-     <string>&amp;Acerca</string>
+     <string>&amp;Ajuda</string>
+    </property>
+    <addaction name="actionAjuda" />
+    <addaction name="separator" />
+    <addaction name="actionDocumenta_o" />
+    <addaction name="separator" />
+    <addaction name="actionAcerca_de_FloorPlan" />
+    <addaction name="actionAcerca_do_Qt" />
+   </widget>
+   <widget class="QMenu" name="menuPre_ferencias" >
+    <property name="title" >
+     <string>Pre&amp;ferencias</string>
     </property>
    </widget>
    <addaction name="menuFicheiro" />
    <addaction name="menuOpera_es" />
+   <addaction name="menuPre_ferencias" />
    <addaction name="menuAcerca" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
@@ -142,6 +155,31 @@
   <action name="actionCopiar" >
    <property name="text" >
     <string>Copiar</string>
+   </property>
+  </action>
+  <action name="actionDocumenta_o" >
+   <property name="text" >
+    <string>Documentação</string>
+   </property>
+  </action>
+  <action name="actionAcerca_de_FloorPlan" >
+   <property name="text" >
+    <string>Acerca de FloorPlan</string>
+   </property>
+  </action>
+  <action name="actionAcerca_do_Qt" >
+   <property name="text" >
+    <string>Acerca do Qt</string>
+   </property>
+  </action>
+  <action name="actionAjuda" >
+   <property name="text" >
+    <string>Ajuda</string>
+   </property>
+  </action>
+  <action name="actionMemoria_Descritiva" >
+   <property name="text" >
+    <string>Memoria Descritiva</string>
    </property>
   </action>
  </widget>

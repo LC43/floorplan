@@ -64,7 +64,6 @@ void DragWidgetGrid::decreaseZoom(){
 	}	
 }
 
-//! [0]
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 : QFrame (parent)
 {
@@ -75,7 +74,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 	m_zoom = 1;
 	isKeyboardGrabbed=false;
 }
-//! [0]
+
 
 void DragWidgetGrid::dragEnterEvent(QDragEnterEvent *event)
 {
@@ -110,7 +109,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         QByteArray itemData = event->mimeData()->data("application/x-dnditemdata");
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-        
+ 
         QPixmap pixmap;
         QPoint offset;
         dataStream >> pixmap >> offset;
@@ -132,60 +131,9 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
     }
 }
 
-
-void DragWidgetGrid::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key()) {
-    case Qt::Key_Plus:
-        increaseZoom();
-        break;
-    case Qt::Key_Minus:
-        decreaseZoom();
-        break;
-    case Qt::Key_C:
-        if (e->modifiers() & Qt::ControlModifier)
-            copyToClipboard();
-        break;
-	case Qt::Key_P:
-        if (e->modifiers() & Qt::ControlModifier)
-            sendToPrinter();
-    break;
-    case Qt::Key_S:
-        if (e->modifiers() & Qt::ControlModifier) {
-            releaseKeyboard();
-            saveToFile();
-        }
-    break;
-    case Qt::Key_Control:
-        grabKeyboard();
-        break;
-    }
-}
-
-void DragWidgetGrid::keyReleaseEvent(QKeyEvent *e)
-{
-    switch(e->key()) {
-    case Qt::Key_Control:
-        releaseKeyboard();
-        break;
-    default:
-        break;
-    }
-}
-
-//! [1]
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
-	/*
-	 * If the user clicks on this widget we grab the keyboard
-	 * 
-	 */ 
-	if(isKeyboardGrabbed) {
-		releaseKeyboard();	
-	}
-	else grabKeyboard();
-	
-	isKeyboardGrabbed = !isKeyboardGrabbed;
+
  
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
@@ -196,19 +144,15 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream << pixmap << QPoint(event->pos() - child->pos());
-//! [1]
 
-//! [2]
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);
-//! [2]
-        
-//! [3]
+
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
     drag->setHotSpot(event->pos() - child->pos());
-//! [3]
+
 
     QPixmap tempPixmap = pixmap;
     QPainter painter;
