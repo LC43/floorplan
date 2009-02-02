@@ -1,0 +1,150 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <widget class="QWidget" name="horizontalLayoutWidget" >
+    <property name="geometry" >
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>781</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QFrame" name="BackFrame" >
+       <property name="frameShape" >
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QFrame" name="GridArea" >
+        <property name="geometry" >
+         <rect>
+          <x>190</x>
+          <y>0</y>
+          <width>581</width>
+          <height>531</height>
+         </rect>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+       </widget>
+       <widget class="QScrollArea" name="SvgArea" >
+        <property name="geometry" >
+         <rect>
+          <x>-1</x>
+          <y>-1</y>
+          <width>191</width>
+          <height>551</height>
+         </rect>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Raised</enum>
+        </property>
+        <property name="widgetResizable" >
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents" >
+         <property name="geometry" >
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>185</width>
+           <height>545</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFicheiro" >
+    <property name="title" >
+     <string>&amp;Projecto</string>
+    </property>
+    <widget class="QMenu" name="menu_Novo" >
+     <property name="title" >
+      <string>&amp;Novo</string>
+     </property>
+    </widget>
+    <addaction name="menu_Novo" />
+    <addaction name="actionAbrir" />
+    <addaction name="separator" />
+    <addaction name="actionSair" />
+   </widget>
+   <widget class="QMenu" name="menuOpera_es" >
+    <property name="title" >
+     <string>&amp;Operações</string>
+    </property>
+    <addaction name="actionImprimir" />
+    <addaction name="actionCopiar" />
+    <addaction name="actionGuardar_como_imagem" />
+   </widget>
+   <widget class="QMenu" name="menuAcerca" >
+    <property name="title" >
+     <string>&amp;Acerca</string>
+    </property>
+   </widget>
+   <addaction name="menuFicheiro" />
+   <addaction name="menuOpera_es" />
+   <addaction name="menuAcerca" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="actionAbrir" >
+   <property name="text" >
+    <string>&amp;Abrir</string>
+   </property>
+  </action>
+  <action name="actionSair" >
+   <property name="text" >
+    <string>&amp;Sair</string>
+   </property>
+  </action>
+  <action name="actionImprimir" >
+   <property name="text" >
+    <string>Imprimir</string>
+   </property>
+  </action>
+  <action name="actionGuardar_como_imagem" >
+   <property name="text" >
+    <string>Guardar como imagem</string>
+   </property>
+  </action>
+  <action name="actionCopiar" >
+   <property name="text" >
+    <string>Copiar</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
