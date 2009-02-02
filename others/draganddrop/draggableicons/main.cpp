@@ -43,9 +43,9 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
-#include "svglistwidget.h"
-#include "dragwidgetgrid.h"
-
+//#include "svglistwidget.h"
+//#include "dragwidgetgrid.h"
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -53,14 +53,17 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    QWidget mainWidget;
-    QHBoxLayout *horizontalLayout = new QHBoxLayout;
-    horizontalLayout->addWidget(new SvgListWidget);
-    horizontalLayout->addWidget(new DragWidgetGrid);
+    //QWidget mainWidget;
+    //QHBoxLayout *horizontalLayout = new QHBoxLayout;
+    //horizontalLayout->addWidget(new SvgListWidget);
+    //horizontalLayout->addWidget(new DragWidgetGrid);
+	MainWindow window;
+	window.show();
+	
 
-    mainWidget.setLayout(horizontalLayout);
-    mainWidget.setWindowTitle(QObject::tr("Floor Plan"));
-    mainWidget.show();
+    //main_window.setLayout(horizontalLayout);
+    //main_window.setWindowTitle(QObject::tr("Floor Plan"));
+    //main_window.show();
 
     return app.exec();
 }
