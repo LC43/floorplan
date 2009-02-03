@@ -41,47 +41,61 @@
 **
 ****************************************************************************/
 
-#ifndef DRAGWIDGETGRID_H
-#define DRAGWIDGETGRID_H
+#ifndef SVGLISTWIDGET_H
+#define SVGLISTWIDGET_H
 
-
-#include <QGraphicsView>
-#include <QGraphicsScene>
 #include <QFrame>
-#include <QPixmap>
-#include <QtSvg>
-#include <QPrinter>
+#include <qwidget.h>
 #include <qpainter.h>
 #include <qpicture.h>
+
+
+#include <QPixmap>
+#include <QtGui>
+
+#include <QtSvg>
+
+#include <QtDebug> // qDegub
+#include <QList>
+#include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
+class QAction;
+class QListWidget;
+class QMenu;
+class QTextEdit;
 QT_END_NAMESPACE
 
 
-class DragWidgetGrid : public QGraphicsView
+class SvgListWidget : public QFrame
 {
-	 Q_OBJECT
 public:
-    DragWidgetGrid(QWidget *parent=0);
-	void dragEnterEvent(QDragEnterEvent *event);
+    SvgListWidget(QWidget *parent=0);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
-	void wheelEvent(QWheelEvent* event);
-public slots:
-	void copyToClipboard();
-	void saveToFile();
-	void sendToPrinter();
-protected:
-	void increaseZoom();
-	void decreaseZoom();
+	void showSvg(QPixmap svgPixmap, int num_blocks, int c_block );
+	QList<QPixmap> createSvgList();
+	void showSvgs();
+	void paintEvent(QPaintEvent *);
+	void resizeEvent(QResizeEvent *event);
+	void createDockWindows();
+
+
+	
 private:
 	QPainter *paint;
 	QPicture *pic;
-	QGraphicsScene scene;
-	QBrush brush;
+	QImage *picSvg;
+	QList<QPixmap> qpixmap_list;
+	QTextEdit *textEdit;
+	QListWidget *customerList;
+	QListWidget *paragraphsList;
 };
 
 

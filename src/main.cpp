@@ -41,48 +41,21 @@
 **
 ****************************************************************************/
 
-#ifndef DRAGWIDGETGRID_H
-#define DRAGWIDGETGRID_H
+#include <QApplication>
+#include <QHBoxLayout>
 
+#include "mainwindow.h"
 
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QFrame>
-#include <QPixmap>
-#include <QtSvg>
-#include <QPrinter>
-#include <qpainter.h>
-#include <qpicture.h>
-
-QT_BEGIN_NAMESPACE
-class QDragEnterEvent;
-class QDropEvent;
-QT_END_NAMESPACE
-
-
-class DragWidgetGrid : public QGraphicsView
+int main(int argc, char *argv[])
 {
-	 Q_OBJECT
-public:
-    DragWidgetGrid(QWidget *parent=0);
-	void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-	void wheelEvent(QWheelEvent* event);
-public slots:
-	void copyToClipboard();
-	void saveToFile();
-	void sendToPrinter();
-protected:
-	void increaseZoom();
-	void decreaseZoom();
-private:
-	QPainter *paint;
-	QPicture *pic;
-	QGraphicsScene scene;
-	QBrush brush;
-};
+    Q_INIT_RESOURCE(floorplan);
+
+    QApplication app(argc, argv);
 
 
-#endif
+	MainWindow window;
+	window.show();
+	
+
+    return app.exec();
+}
