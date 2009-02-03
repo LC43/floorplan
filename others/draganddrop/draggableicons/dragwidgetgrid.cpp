@@ -53,26 +53,20 @@
 static int max_zoom = 10; //percentage
 
 void DragWidgetGrid::increaseZoom(){
-	if(m_zoom != max_zoom){
-		m_zoom++;	
-	}	
 }
 
 void DragWidgetGrid::decreaseZoom(){
-	if(m_zoom){
-		m_zoom--;	
-	}	
 }
 
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
-: QFrame (parent)
+: QGraphicsView (parent)
 {
     setMinimumSize(800, 800);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
-	m_gridSize = 10;
-	m_zoom = 1;
-	isKeyboardGrabbed=false;
+	setScene(&scene);
+	brush = QBrush ( Qt::CrossPattern);
+	setBackgroundBrush(brush);
 }
 
 
@@ -103,6 +97,14 @@ void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
         event->ignore();
     }
 }
+void DragWidgetGrid::wheelEvent(QWheelEvent* event){
+  qreal factor = 1.2;
+  if (event->delta() < 0)
+    factor = 1.0 / factor;
+  scale(factor, factor);
+
+}
+
 
 void DragWidgetGrid::dropEvent(QDropEvent *event)
 {
@@ -133,8 +135,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
-
- 
+/*
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
         return;
@@ -168,22 +169,8 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
         child->show();
         child->setPixmap(pixmap);
     }
+	*/
 }
-
-void DragWidgetGrid::paintEvent(QPaintEvent *){
-
-	QPainter p(this);
-
-    int w = width();
-    int h = height();
-    // Draw the grid on top.
-    p.setPen(Qt::black);
-    int incr = m_gridSize * m_zoom;
-    for (int x=0; x<w; x+=incr)
-          p.drawLine(x, 0, x, h);
-    for (int y=0; y<h; y+=incr)
-          p.drawLine(0, y, w, y);
- }
 	
 void DragWidgetGrid::copyToClipboard()
 {

@@ -44,7 +44,9 @@
 #ifndef DRAGWIDGETGRID_H
 #define DRAGWIDGETGRID_H
 
-#include <QFrame>
+
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 
 
@@ -54,7 +56,7 @@ class QDropEvent;
 QT_END_NAMESPACE
 
 
-class DragWidgetGrid : public QFrame
+class DragWidgetGrid : public QGraphicsView
 {
 	 Q_OBJECT
 public:
@@ -63,8 +65,7 @@ public:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
-	void paintEvent(QPaintEvent *);
-
+	void wheelEvent(QWheelEvent* event);
 public slots:
 	void copyToClipboard();
 	void saveToFile();
@@ -75,9 +76,8 @@ protected:
 private:
 	QPainter *paint;
 	QPicture *pic;
-	int m_gridSize;
-	int m_zoom;
-	bool isKeyboardGrabbed;
+	QGraphicsScene scene;
+	QBrush brush;
 };
 
 

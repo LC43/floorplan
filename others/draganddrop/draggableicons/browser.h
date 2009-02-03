@@ -12,7 +12,7 @@ public:
 public slots:
 	static void call(QString link) {QDesktopServices::openUrl(url.set(link))};
 private:
-	QUrl * url;
+	static QUrl * url;
 };
 
 #endif
