@@ -146,7 +146,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
     /*
     dataStream << pixmap << QPoint(event->pos() - child->pos());
 */
-
+/*
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);
 
