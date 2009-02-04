@@ -70,8 +70,8 @@ bool MemoriaDescritiva::saveAs()
 }
 void MemoriaDescritiva::about()
 {
-	QMessageBox::about(this, tr("Sobre Floorplan"),
-					   tr("O <b>Floorplan</b> é um programa de desenho de plantas arquitectónicas para habitações, "
+	QMessageBox::about(this, tr("Sobre Floor Plan"),
+					   trUtf8("O <b>Floorplan</b> é um programa de desenho de plantas arquitectónicas para habitações, "
 							   "dando relevância à aprendizagem, ao uso intuitivo das ferramentas disponibilizadas."
 							   "Serve também como plataforma de introdução a modelos de desenho assistido por computador "
 							   "mais complexos."));
@@ -181,7 +181,7 @@ void MemoriaDescritiva::createStatusBar() {
 
 void MemoriaDescritiva::readSettings()
 {
-	QSettings settings("CodePoets", "Floorplan Memoria Descritiva");
+	QSettings settings("CodePoets", "Floor Plan Memoria Descritiva");
 	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	QSize size = settings.value("size", QSize(400, 400)).toSize();
 	resize(size);
@@ -190,7 +190,7 @@ void MemoriaDescritiva::readSettings()
 
 void MemoriaDescritiva::writeSettings()
 {
-	QSettings settings("CodePoets", "Floorplan Memoria Descritiva");
+	QSettings settings("CodePoets", "Floor Plan Memoria Descritiva");
 	settings.setValue("pos", pos());
 	settings.setValue("size", size());
 }
@@ -199,7 +199,7 @@ void MemoriaDescritiva::writeSettings()
 bool MemoriaDescritiva::maybeSave() {
 	if (textEdit->document()->isModified()) {
 		QMessageBox::StandardButton ret;
-		ret = QMessageBox::warning(this, tr("Floorplan Memória Descritiva"),
+		ret = QMessageBox::warning(this, tr("Floor Plan - Memória Descritiva"),
 								   tr("O documento foi alterado.\n"
 									   "Quer guardar o documento?"),
 			 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -214,7 +214,7 @@ bool MemoriaDescritiva::maybeSave() {
 bool MemoriaDescritiva::saveFile(const QString &fileName) {
 	QFile file(fileName);
 	if (!file.open(QFile::WriteOnly | QFile::Text)) {
-		QMessageBox::warning(this, tr("Application"),
+		QMessageBox::warning(this, tr("Floor Plan - Memória Descritiva"),
 							 tr("Cannot write file %1:\n%2.")
 									 .arg(fileName)
 									 .arg(file.errorString()));
@@ -234,7 +234,7 @@ bool MemoriaDescritiva::saveFile(const QString &fileName) {
 void MemoriaDescritiva::loadFile(const QString &fileName) {
 	QFile file(fileName);
 	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		QMessageBox::warning(this, tr("Application"),
+		QMessageBox::warning(this, tr("Floor Plan - Memória Descritiva"),
 							 tr("Cannot read file %1:\n%2.")
 									 .arg(fileName)
 									 .arg(file.errorString()));
@@ -263,7 +263,7 @@ void MemoriaDescritiva::setCurrentFile(const QString &fileName){
 	else
 		shownName = strippedName(curFile);
 
-	setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Application")));
+	setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Floor Plan - Memória Descritiva")));
 }
 
 QString MemoriaDescritiva::strippedName(const QString &fullFileName) {
