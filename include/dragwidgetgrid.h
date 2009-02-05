@@ -51,6 +51,7 @@
 #include <QPixmap>
 #include <QtSvg>
 #include <QPrinter>
+#include <QMatrix>
 #include <qpainter.h>
 #include <qpicture.h>
 
@@ -65,23 +66,28 @@ class DragWidgetGrid : public QGraphicsView
 	 Q_OBJECT
 public:
     DragWidgetGrid(QWidget *parent=0);
-	void dragEnterEvent(QDragEnterEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
-	void wheelEvent(QWheelEvent* event);
+    void wheelEvent(QWheelEvent* event);
 public slots:
 	void copyToClipboard();
 	void saveToFile();
 	void sendToPrinter();
-protected:
 	void increaseZoom();
 	void decreaseZoom();
+	void resetZoom();
+	//protected:
+
 private:
 	QPainter *paint;
 	QPicture *pic;
 	QGraphicsScene scene;
 	QBrush brush;
+	QMatrix original;
+	//QMatrix trans;
+	
 };
 
 

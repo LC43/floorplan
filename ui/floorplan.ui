@@ -132,6 +132,9 @@
     <addaction name="actionCopiar" />
     <addaction name="actionGuardar_como_imagem" />
     <addaction name="actionMemoria_Descritiva" />
+    <addaction name="separator" />
+    <addaction name="actionAumentar_Zoom" />
+    <addaction name="actionDiminuir_Zoom" />
    </widget>
    <widget class="QMenu" name="menuAcerca" >
     <property name="title" >
@@ -203,6 +206,16 @@
   <action name="actionMemoria_Descritiva" >
    <property name="text" >
     <string>Memoria Descritiva</string>
+   </property>
+  </action>
+  <action name="actionAumentar_Zoom" >
+   <property name="text" >
+    <string>Aumentar Zoom </string>
+   </property>
+  </action>
+  <action name="actionDiminuir_Zoom" >
+   <property name="text" >
+    <string>Diminuir Zoom</string>
    </property>
   </action>
  </widget>

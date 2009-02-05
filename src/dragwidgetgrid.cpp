@@ -50,9 +50,17 @@
 static int max_zoom = 10; //percentage
 
 void DragWidgetGrid::increaseZoom(){
+  qreal factor = 1.2;
+  scale(factor, factor);
 }
 
 void DragWidgetGrid::decreaseZoom(){
+    qreal factor = 0.8;
+    scale(factor, factor);
+}
+void DragWidgetGrid::resetZoom(){
+    
+
 }
 
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
@@ -61,9 +69,10 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     setMinimumSize(800, 800);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
-	setScene(&scene);
-	brush = QBrush ( Qt::CrossPattern);
-	setBackgroundBrush(brush);
+    setScene(&scene);
+    brush = QBrush ( QColor(255, 255, 255, 127), Qt::CrossPattern);
+    setBackgroundBrush(brush);
+    //original 
 }
 
 
@@ -79,10 +88,13 @@ void DragWidgetGrid::dragEnterEvent(QDragEnterEvent *event)
     } else {
         event->ignore();
     }
+
 }
+
 
 void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
 {
+  
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
@@ -93,7 +105,9 @@ void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
     } else {
         event->ignore();
     }
+  
 }
+
 void DragWidgetGrid::wheelEvent(QWheelEvent* event){
   qreal factor = 1.2;
   if (event->delta() < 0)
@@ -130,6 +144,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
     }
 }
 
+
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
 	// get mouse position
@@ -141,10 +156,10 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		return;
 	}
 	qDebug() << " not vazio!";
+
 	// cast :O
 	/*QGraphicsPixmapItem *pixmap_item;
 	pixmap_item = static_cast<QGraphicsPixmapItem*>(block_list.first());
-	
 	*/
 /*
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
@@ -188,8 +203,9 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
         //child->setPixmap(pixmap);
     }
 	*/
+
 }
-	
+
 void DragWidgetGrid::copyToClipboard()
 {
     QClipboard *cb = QApplication::clipboard();
