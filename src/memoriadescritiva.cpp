@@ -234,10 +234,17 @@ bool MemoriaDescritiva::saveFile(const QString &fileName) {
 void MemoriaDescritiva::loadFile(const QString &fileName) {
 	QFile file(fileName);
 	if (!file.open(QFile::ReadOnly | QFile::Text)) {
+<<<<<<< HEAD:src/memoriadescritiva.cpp
 		QMessageBox::warning(this, trUtf8("Floor Plan - Memória Descritiva"),
 				     tr("Cannot read file %1:\n%2.")
 				     .arg(fileName)
 				     .arg(file.errorString()));
+=======
+		QMessageBox::warning(this, tr("Floor Plan - Memória Descritiva"),
+							 tr("Cannot read file %1:\n%2.")
+									 .arg(fileName)
+									 .arg(file.errorString()));
+>>>>>>> ae4d1641c010df777a20e6e4a16ff024d5242192:src/memoriadescritiva.cpp
 		return;
 	}
 
@@ -263,7 +270,11 @@ void MemoriaDescritiva::setCurrentFile(const QString &fileName){
 	else
 		shownName = strippedName(curFile);
 
+<<<<<<< HEAD:src/memoriadescritiva.cpp
 	setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(trUtf8("Floor Plan - Memória Descritiva")));
+=======
+	setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Floor Plan - Memória Descritiva")));
+>>>>>>> ae4d1641c010df777a20e6e4a16ff024d5242192:src/memoriadescritiva.cpp
 }
 
 QString MemoriaDescritiva::strippedName(const QString &fullFileName) {

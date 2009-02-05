@@ -156,10 +156,17 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		return;
 	}
 	qDebug() << " not vazio!";
+<<<<<<< HEAD:src/dragwidgetgrid.cpp
 
 	// cast :O
 	/*QGraphicsPixmapItem *pixmap_item;
 	pixmap_item = static_cast<QGraphicsPixmapItem*>(block_list.first());
+=======
+	// cast :O
+	/*QGraphicsPixmapItem *pixmap_item;
+	pixmap_item = static_cast<QGraphicsPixmapItem*>(block_list.first());
+	
+>>>>>>> ae4d1641c010df777a20e6e4a16ff024d5242192:src/dragwidgetgrid.cpp
 	*/
 /*
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
