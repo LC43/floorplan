@@ -46,19 +46,14 @@
 
 
 #include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QFrame>
 #include <QPixmap>
 #include <QtSvg>
 #include <QPrinter>
 #include <QMatrix>
 #include <qpainter.h>
 #include <qpicture.h>
+//#include <floorscene.h>
 
-QT_BEGIN_NAMESPACE
-class QDragEnterEvent;
-class QDropEvent;
-QT_END_NAMESPACE
 
 
 class DragWidgetGrid : public QGraphicsView

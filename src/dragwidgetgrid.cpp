@@ -70,7 +70,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
     setScene(&scene);
-    brush = QBrush ( QColor(255, 255, 255, 127), Qt::CrossPattern);
+    brush = QBrush (Qt::CrossPattern);
     setBackgroundBrush(brush);
     //original 
     //
@@ -128,11 +128,12 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         QPoint offset;
         dataStream >> pixmap >> offset;
 
-        QLabel *newIcon = new QLabel(this);
+    /*    QLabel *newIcon = new QLabel(this);
         newIcon->setPixmap(pixmap);
         newIcon->move(event->pos() - offset);
         newIcon->show();
         newIcon->setAttribute(Qt::WA_DeleteOnClose);
+	*/
 
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
@@ -140,6 +141,10 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         } else {
             event->acceptProposedAction();
         }
+		
+		QGraphicsPixmapItem * item = scene.addPixmap(pixmap);
+		item->setOffset(event->pos() - offset);
+		
     } else {
         event->ignore();
     }

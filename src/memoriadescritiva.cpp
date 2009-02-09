@@ -264,7 +264,6 @@ void MemoriaDescritiva::setCurrentFile(const QString &fileName){
 	else
 		shownName = strippedName(curFile);
 
-<<<<<<< HEAD:src/memoriadescritiva.cpp
 	setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(trUtf8("Floor Plan - Memória Descritiva")));
 }
 
