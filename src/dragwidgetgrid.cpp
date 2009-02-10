@@ -72,6 +72,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     setScene(&scene);
     brush = QBrush (Qt::CrossPattern);
     setBackgroundBrush(brush);
+	setDragMode(QGraphicsView::RubberBandDrag);
     //original 
     //
 }
@@ -128,13 +129,6 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         QPoint offset;
         dataStream >> pixmap >> offset;
 
-    /*    QLabel *newIcon = new QLabel(this);
-        newIcon->setPixmap(pixmap);
-        newIcon->move(event->pos() - offset);
-        newIcon->show();
-        newIcon->setAttribute(Qt::WA_DeleteOnClose);
-	*/
-
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
             event->accept();
@@ -142,8 +136,12 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
             event->acceptProposedAction();
         }
 		
+
 		QGraphicsPixmapItem * item = scene.addPixmap(pixmap);
-		item->setOffset(event->pos() - offset);
+		
+		item->setOffset(mapToScene(event->pos() - offset));
+		
+		item->setCursor(Qt::ClosedHandCursor);
 		
     } else {
         event->ignore();
@@ -153,66 +151,33 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
-	// get mouse position
-	QPointF mouse_pos = event->pos();
-	QList<QGraphicsItem *> block_list;
-	block_list = scene.items( mouse_pos );
-	if( block_list.empty() ){
-		qDebug() << "vazio!";
-		return;
-	}
-	qDebug() << " not vazio!";
+	QGraphicsItem *item;
+	QPoint original;
+	if ((item = itemAt(event->pos())) == NULL) {
+         qDebug() << "You didn't click on an item.";
+		 return ;
+     } else {
+		qDebug() << "You clicked on an item.";
+		original = event->pos();
+     }
 
+	QGraphicsPixmapItem * pixmap_item = static_cast<QGraphicsPixmapItem*>(item);
 
-	// cast :O
-	/*QGraphicsPixmapItem *pixmap_item;
-	pixmap_item = static_cast<QGraphicsPixmapItem*>(block_list.first());
-
-
-	*/
-/*
-    QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
-    
-    if (!child)
-        return;
-	*/
-	/*
-    QPixmap pixmap = pixmap_item->pixmap();
-    
-
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    
-    dataStream << pixmap << QPoint(event->pos());
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-dnditemdata", itemData);
-	
     QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    drag->setPixmap(pixmap);
-    drag->setHotSpot(event->pos());
-	qDebug() << "is drag empty: " << (drag->pixmap()).isNull();
-	qDebug() << "mouse pos:" << event->pos();
+   
+    QMimeData *mime = new QMimeData;
+   
+    drag->setMimeData(mime);
+	
+	drag->setPixmap(pixmap_item->pixmap());
+	drag->setHotSpot(event->pos() - original);
 
-    QPixmap tempPixmap = pixmap;
-    QPainter painter;
-    painter.begin(&tempPixmap);
-    painter.fillRect(pixmap.rect(), QColor(127, 127, 127, 127));
-    painter.end();
-
-	// n percebo
-    //child->setPixmap(tempPixmap);
-
-    if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction){
-        //child->close();
+	 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction){
+		pixmap_item->setOffset(mapToScene(event->pos()));
+  	}
+	else {
+		pixmap_item->setOffset(mapToScene(event->pos()));
 	}
-    else {
-        //child->show();
-        //child->setPixmap(pixmap);
-    }
-	*/
-
 }
 
 void DragWidgetGrid::copyToClipboard()
