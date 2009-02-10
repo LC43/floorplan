@@ -42,7 +42,7 @@
 ****************************************************************************/
 
 #include <QtGui>
-
+#include <QMessageBox>
 
 
 #include "dragwidgetgrid.h"
@@ -160,23 +160,39 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		qDebug() << "You clicked on an item.";
 		original = event->pos();
      }
+	 
+	 if(event->button() == Qt::LeftButton) {
+		QGraphicsPixmapItem * pixmap_item = static_cast<QGraphicsPixmapItem*>(item);
 
-	QGraphicsPixmapItem * pixmap_item = static_cast<QGraphicsPixmapItem*>(item);
+		QDrag *drag = new QDrag(this);
+	   
+		QMimeData *mime = new QMimeData;
+	   
+		drag->setMimeData(mime);
+		
+		drag->setPixmap(pixmap_item->pixmap());
+		drag->setHotSpot(event->pos() - original);
 
-    QDrag *drag = new QDrag(this);
-   
-    QMimeData *mime = new QMimeData;
-   
-    drag->setMimeData(mime);
-	
-	drag->setPixmap(pixmap_item->pixmap());
-	drag->setHotSpot(event->pos() - original);
-
-	 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction){
-		pixmap_item->setOffset(mapToScene(event->pos()));
-  	}
-	else {
-		pixmap_item->setOffset(mapToScene(event->pos()));
+		 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction){
+			pixmap_item->setOffset(mapToScene(event->pos()));
+		}
+		else {
+			pixmap_item->setOffset(mapToScene(event->pos()));
+		}
+	}
+	else{
+		QMessageBox diag;
+		diag.setInformativeText("Tem a certeza que deseja apagar o item em questao?");
+ 		diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+		diag.setDefaultButton(QMessageBox::Cancel);
+		int ret = diag.exec();
+		switch(ret){
+			case QMessageBox::Ok:
+				scene.removeItem(item);	
+			break;
+			default:
+			break;
+		}
 	}
 }
 
