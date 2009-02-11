@@ -163,7 +163,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	 
 	 if(event->button() == Qt::LeftButton) {
 		if(!m_drawline) {
-			selectedItem = static_cast<QGraphicsPixmapItem*>(item);	
+			selectedItem = item;	
 		}
 		drag_start_pos = event->pos();
 	}
@@ -195,7 +195,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-		selectedItem->setOffset(mapToScene(event->pos()));
+		selectedItem->setPos(mapToScene(event->pos()));
 		selectedItem = NULL;
 	}
 	drag_start_pos = QPoint(0,0);
