@@ -64,6 +64,7 @@ public:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
 public slots:
@@ -81,6 +82,8 @@ private:
 	QGraphicsScene scene;
 	QBrush brush;
 	QMatrix original;
+	QGraphicsPixmapItem * selectedItem;
+	QPoint drag_start_pos;
 	//QMatrix trans;
 	
 };

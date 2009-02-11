@@ -73,6 +73,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     brush = QBrush (Qt::CrossPattern);
     setBackgroundBrush(brush);
 	setDragMode(QGraphicsView::RubberBandDrag);
+	selectedItem  = NULL;
     //original 
     //
 }
@@ -152,33 +153,16 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
 	QGraphicsItem *item;
-	QPoint original;
 	if ((item = itemAt(event->pos())) == NULL) {
          qDebug() << "You didn't click on an item.";
 		 return ;
      } else {
 		qDebug() << "You clicked on an item.";
-		original = event->pos();
      }
 	 
 	 if(event->button() == Qt::LeftButton) {
-		QGraphicsPixmapItem * pixmap_item = static_cast<QGraphicsPixmapItem*>(item);
-
-		QDrag *drag = new QDrag(this);
-	   
-		QMimeData *mime = new QMimeData;
-	   
-		drag->setMimeData(mime);
-		
-		drag->setPixmap(pixmap_item->pixmap());
-		drag->setHotSpot(event->pos() - original);
-
-		 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction){
-			pixmap_item->setOffset(mapToScene(event->pos()));
-		}
-		else {
-			pixmap_item->setOffset(mapToScene(event->pos()));
-		}
+		selectedItem = static_cast<QGraphicsPixmapItem*>(item);	
+		drag_start_pos = event->pos();
 	}
 	else{
 		QMessageBox diag;
@@ -195,6 +179,20 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		}
 	}
 }
+
+void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
+	
+	if ((event->pos() - drag_start_pos).manhattanLength()
+          < QApplication::startDragDistance())
+     return;
+
+	if(selectedItem){
+		selectedItem->setOffset(mapToScene(event->pos()));
+		selectedItem = NULL;
+		drag_start_pos = QPoint(0,0);
+	}
+}
+
 
 void DragWidgetGrid::copyToClipboard()
 {
