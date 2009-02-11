@@ -74,6 +74,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
     setBackgroundBrush(brush);
 	setDragMode(QGraphicsView::RubberBandDrag);
 	selectedItem  = NULL;
+	m_drawline=false;
     //original 
     //
 }
@@ -155,13 +156,15 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	QGraphicsItem *item;
 	if ((item = itemAt(event->pos())) == NULL) {
          qDebug() << "You didn't click on an item.";
-		 return ;
+		m_drawline = true;
      } else {
 		qDebug() << "You clicked on an item.";
      }
 	 
 	 if(event->button() == Qt::LeftButton) {
-		selectedItem = static_cast<QGraphicsPixmapItem*>(item);	
+		if(!m_drawline) {
+			selectedItem = static_cast<QGraphicsPixmapItem*>(item);	
+		}
 		drag_start_pos = event->pos();
 	}
 	else{
@@ -186,11 +189,16 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
           < QApplication::startDragDistance())
      return;
 
-	if(selectedItem){
+	if(m_drawline)
+	{
+		scene.addLine(QLineF(mapToScene(event->pos()),mapToScene(drag_start_pos)),QPen(Qt::SolidLine));
+		m_drawline = false;	
+	}
+	else if(selectedItem){
 		selectedItem->setOffset(mapToScene(event->pos()));
 		selectedItem = NULL;
-		drag_start_pos = QPoint(0,0);
 	}
+	drag_start_pos = QPoint(0,0);
 }
 
 

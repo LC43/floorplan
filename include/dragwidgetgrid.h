@@ -84,6 +84,8 @@ private:
 	QMatrix original;
 	QGraphicsPixmapItem * selectedItem;
 	QPoint drag_start_pos;
+	bool m_drawline;
+	QGraphicsLineItem * line;
 	//QMatrix trans;
 	
 };
