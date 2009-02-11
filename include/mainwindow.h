@@ -3,7 +3,7 @@
 
 
 
-#include "ui_floorplan.h"
+#include "ui_floorplan2.h"
 #include "svglistwidget.h"
 #include "dragwidgetgrid.h"
 #include "memoriadescritiva.h"

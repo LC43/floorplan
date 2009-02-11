@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
 	setupUi(this);
 	SvgListWidget * svg = new SvgListWidget();
 	DragWidgetGrid * drag = new DragWidgetGrid();
-	SvgArea->setWidget(svg);
-	GridArea->setWidget(drag);
+	SvgList->setWidget(svg);
+	setCentralWidget(drag);
 	actionImprimir->setShortcut(tr("Ctrl+I"));
 	connect(actionImprimir, SIGNAL(triggered()), drag, SLOT(sendToPrinter()));
 	actionGuardar_como_imagem->setShortcut(tr("Ctrl+S"));

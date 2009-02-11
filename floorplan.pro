@@ -26,7 +26,7 @@ OBJECTS_DIR  = $$BUILD
 RCC_DIR      = $$BUILD
 
 
-INTERFACES = $$UI/floorplan.ui
+INTERFACES = $$UI/floorplan2.ui
 
 HEADERS =    $$INCLUDEPATH/svglistwidget.h \
              $$INCLUDEPATH/dragwidgetgrid.h \
