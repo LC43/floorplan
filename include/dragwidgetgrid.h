@@ -82,7 +82,7 @@ private:
 	QGraphicsScene scene;
 	QBrush brush;
 	QMatrix original;
-	QGraphicsPixmapItem * selectedItem;
+	QGraphicsItem * selectedItem;
 	QPoint drag_start_pos;
 	bool m_drawline;
 	QGraphicsLineItem * line;
