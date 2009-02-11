@@ -154,20 +154,23 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
 	QGraphicsItem *item;
+	bool selected = false;
 	if ((item = itemAt(event->pos())) == NULL) {
          qDebug() << "You didn't click on an item.";
-		m_drawline = true;
      } else {
 		qDebug() << "You clicked on an item.";
+		selected=true;
      }
 	 
 	 if(event->button() == Qt::LeftButton) {
-		if(!m_drawline) {
+		if(!selected)
+			m_drawline = true;
+		else
 			selectedItem = item;	
-		}
+
 		drag_start_pos = event->pos();
 	}
-	else{
+	else if(selected){
 		QMessageBox diag;
 		diag.setInformativeText("Tem a certeza que deseja apagar o item em questao?");
  		diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
