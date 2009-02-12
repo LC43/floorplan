@@ -67,6 +67,7 @@ public:
 	void mouseReleaseEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
+	void keyPressEvent ( QKeyEvent * event );
 public slots:
 	void copyToClipboard();
 	void saveToFile();

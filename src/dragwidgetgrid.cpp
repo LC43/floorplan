@@ -204,6 +204,24 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 	drag_start_pos = QPoint(0,0);
 }
 
+void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
+	if(selectedItem) {
+		 switch(event->key()){
+			 case Qt::Key_Right:
+				 selectedItem->rotate(45);
+			 break;		 
+			 case Qt::Key_Left:
+				 selectedItem->rotate(-45);
+			 break;
+			 case Qt::Key_Up:
+			 	//shear default value
+			 break;
+			 case Qt::Key_Down:
+			 	//shear "back" default value
+			 break;
+		 }
+  	}
+}
 
 void DragWidgetGrid::copyToClipboard()
 {
