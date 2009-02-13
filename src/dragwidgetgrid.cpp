@@ -141,7 +141,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 
 		QGraphicsPixmapItem * item = scene.addPixmap(pixmap);
 		
-		item->setOffset(mapToScene(event->pos() - offset));
+		item->setPos(item->pos() + mapToScene(event->pos() - offset));
 		
 		item->setCursor(Qt::ClosedHandCursor);
 		
@@ -208,10 +208,15 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
 		 switch(event->key()){
 			 case Qt::Key_Right:
-				 selectedItem->rotate(45);
+			 	qDebug() << "Item scene pos " << selectedItem->mapFromParent(0,0);
+			 	selectedItem->moveBy(-selectedItem->boundingRect().width()/2,-selectedItem->boundingRect().height()/2);
+				selectedItem->rotate(45);
+				selectedItem->moveBy(selectedItem->boundingRect().width()/2,selectedItem->boundingRect().height()/2);
 			 break;		 
 			 case Qt::Key_Left:
-				 selectedItem->rotate(-45);
+			 	selectedItem->moveBy(-selectedItem->boundingRect().width()/2,-selectedItem->boundingRect().height()/2);
+				selectedItem->rotate(-45);
+				selectedItem->moveBy(selectedItem->boundingRect().width()/2,selectedItem->boundingRect().height()/2);
 			 break;
 			 case Qt::Key_Up:
 			 	//shear default value
