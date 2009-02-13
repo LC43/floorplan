@@ -26,7 +26,7 @@ class MemoriaDescritiva : public QMainWindow {
 		void open();
 		bool save();
 		bool saveAs();
-		void about();
+		void sobreMemoria();
 		void documentWasModified();
 		
 		

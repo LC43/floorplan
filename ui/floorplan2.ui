@@ -37,8 +37,14 @@
       <string>&amp;Novo</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menuRecentes" >
+     <property name="title" >
+      <string>&amp;Recentes</string>
+     </property>
+    </widget>
     <addaction name="menu_Novo" />
     <addaction name="actionAbrir" />
+    <addaction name="menuRecentes" />
     <addaction name="separator" />
     <addaction name="actionSair" />
    </widget>
@@ -53,6 +59,7 @@
     <addaction name="separator" />
     <addaction name="actionAumentar_Zoom" />
     <addaction name="actionDiminuir_Zoom" />
+    <addaction name="separator" />
    </widget>
    <widget class="QMenu" name="menuAcerca" >
     <property name="title" >
@@ -77,8 +84,17 @@
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QDockWidget" name="SvgList" >
+   <property name="minimumSize" >
+    <size>
+     <width>100</width>
+     <height>39</height>
+    </size>
+   </property>
    <property name="features" >
     <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable</set>
+   </property>
+   <property name="windowTitle" >
+    <string>Lista</string>
    </property>
    <attribute name="dockWidgetArea" >
     <number>1</number>

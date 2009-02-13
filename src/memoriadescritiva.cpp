@@ -68,13 +68,11 @@ bool MemoriaDescritiva::saveAs()
 
 	return saveFile(fileName);
 }
-void MemoriaDescritiva::about()
+void MemoriaDescritiva::sobreMemoria()
 {
 	QMessageBox::about(this, tr("Sobre Floor Plan"),
-					   trUtf8("O <b>Floorplan</b> é um programa de desenho de plantas arquitectónicas para habitações, "
-						  "dando relevância à aprendizagem, ao uso intuitivo das ferramentas disponibilizadas."
-						  "Serve também como plataforma de introdução a modelos de desenho assistido por computador "
-						  "mais complexos."));
+					   trUtf8("A <b>Memória Descritiva</b> deverá ser escrita descrevendo os varios materiais, "
+							   " etc etc"));
 }
 
 
@@ -129,7 +127,7 @@ void MemoriaDescritiva::createActions()
 
 	aboutAct = new QAction(tr("&About"), this);
 	aboutAct->setStatusTip(tr("Show the application's About box"));
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+	connect(aboutAct, SIGNAL(triggered()), this, SLOT(sobreMemoria()));
 
 	aboutQtAct = new QAction(tr("About &Qt"), this);
 	aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
