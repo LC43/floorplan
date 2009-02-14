@@ -206,17 +206,18 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
+		QPointF rec = selectedItem->sceneBoundingRect().center();
 		 switch(event->key()){
 			 case Qt::Key_Right:
-			 	qDebug() << "Item scene pos " << selectedItem->mapFromParent(0,0);
-			 	selectedItem->moveBy(-selectedItem->boundingRect().width()/2,-selectedItem->boundingRect().height()/2);
+			 	qDebug() << "Item scene pos " << selectedItem->mapFromParent(0,0);				
+			 	selectedItem->moveBy(-rec.x(),-rec.y());
 				selectedItem->rotate(45);
-				selectedItem->moveBy(selectedItem->boundingRect().width()/2,selectedItem->boundingRect().height()/2);
+				selectedItem->moveBy(rec.x(),rec.y());
 			 break;		 
 			 case Qt::Key_Left:
-			 	selectedItem->moveBy(-selectedItem->boundingRect().width()/2,-selectedItem->boundingRect().height()/2);
+				selectedItem->moveBy(-rec.x(),-rec.y());
 				selectedItem->rotate(-45);
-				selectedItem->moveBy(selectedItem->boundingRect().width()/2,selectedItem->boundingRect().height()/2);
+				selectedItem->moveBy(rec.x(),rec.y());
 			 break;
 			 case Qt::Key_Up:
 			 	//shear default value
