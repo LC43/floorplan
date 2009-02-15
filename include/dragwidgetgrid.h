@@ -52,6 +52,7 @@
 #include <QMatrix>
 #include <qpainter.h>
 #include <qpicture.h>
+#include <QTransform>
 //#include <floorscene.h>
 
 
