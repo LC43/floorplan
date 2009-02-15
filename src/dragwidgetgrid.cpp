@@ -206,18 +206,29 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
-		QPointF rec = selectedItem->sceneBoundingRect().center();
-		 switch(event->key()){
+		//qreal block_rec_width = selectedItem->sceneBoundingRect().width()/2;
+		//qreal block_rec_height = selectedItem->sceneBoundingRect().height()/2;
+		//QPointF block_rec_halfsize(block_rec_width, block_rec_height);
+		//qDebug() << "halfsize" << block_rec_halfsize;
+		QRectF rec = selectedItem->sceneBoundingRect();
+		QPointF rec_center = rec.center();
+		
+		//rec_center -= block_rec_halfsize;
+		switch(event->key()){
 			 case Qt::Key_Right:
-			 	qDebug() << "Item scene pos " << selectedItem->mapFromParent(0,0);				
-			 	selectedItem->moveBy(-rec.x(),-rec.y());
-				selectedItem->rotate(45);
-				selectedItem->moveBy(rec.x(),rec.y());
+			 	qDebug() << "Item scene pos " << selectedItem->mapFromParent(0,0);
+				qDebug() << "Item c:" << rec_center << " x: " << rec_center.x() << " w/2: " << rec.width()/2;
+				qDebug() << "Item c:" << rec_center << " y: "  << rec_center.y() << " w/2: " << rec.height()/2;
+				qDebug() << "old move:" << -rec_center.x() << "move by x:" << -(rec_center.x() - rec.width()/2);
+				qDebug() << "old move"  << -rec_center.y() << "move by y:" << -(rec_center.y() - rec.height()/2);
+			 	selectedItem->moveBy(-(rec_center.x() - rec.width()/2),-(rec_center.y() - rec.height()/2));
+				selectedItem->rotate(1);
+				selectedItem->moveBy( rec_center.x() - rec.width()/2, rec_center.y() - rec.height()/2);
 			 break;		 
 			 case Qt::Key_Left:
-				selectedItem->moveBy(-rec.x(),-rec.y());
-				selectedItem->rotate(-45);
-				selectedItem->moveBy(rec.x(),rec.y());
+				selectedItem->moveBy(-rec_center.x(),-rec_center.y());
+				selectedItem->rotate(-1);
+				selectedItem->moveBy( rec_center.x(), rec_center.y());
 			 break;
 			 case Qt::Key_Up:
 			 	//shear default value
