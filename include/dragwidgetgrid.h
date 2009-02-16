@@ -53,8 +53,13 @@
 #include <qpainter.h>
 #include <qpicture.h>
 #include <QTransform>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 //#include <floorscene.h>
 
+
+#define ObjectName 0
+#define ObjectID 1
 
 
 class DragWidgetGrid : public QGraphicsView
@@ -76,6 +81,8 @@ public slots:
 	void increaseZoom();
 	void decreaseZoom();
 	void resetZoom();
+	void loadProject(QXmlStreamReader* stream );
+	void SaveProject(QXmlStreamWriter* stream);
 	//protected:
 
 private:
