@@ -88,6 +88,7 @@ private:
 	QPoint drag_start_pos;
 	bool m_drawline;
 	QGraphicsLineItem * line;
+	bool m_ctrl_flag;
 	//QMatrix trans;
 	
 };

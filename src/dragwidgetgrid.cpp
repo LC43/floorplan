@@ -47,7 +47,7 @@
 
 #include "dragwidgetgrid.h"
 
-static int max_zoom = 10; //percentage
+//static int max_zoom = 10; //percentage
 
 void DragWidgetGrid::increaseZoom(){
   qreal factor = 1.2;
@@ -206,46 +206,30 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
-		qreal block_rec_width = selectedItem->sceneBoundingRect().width()/2;
-		qreal block_rec_height = selectedItem->sceneBoundingRect().height()/2;
-		QPointF block_rec_halfsize(block_rec_width, block_rec_height);
-		//qDebug() << "halfsize" << block_rec_halfsize;
+
 		QRectF rec = selectedItem->sceneBoundingRect();
 		QPointF rec_center = rec.center();
-		
-		//rec_center -= block_rec_halfsize;
+		int mod = QApplication::keyboardModifiers();
+		int key_count = event->count();
 		switch(event->key()){
-			 case Qt::Key_Right: {
-			 	qDebug() << "Item scene pos " << selectedItem->mapFromParent(0,0);
-				qDebug() << "Item c:" << rec_center << " x: " << rec_center.x() << " w/2: " << rec.width()/2;
-				qDebug() << "Item c:" << rec_center << " y: "  << rec_center.y() << " w/2: " << rec.height()/2;
-				qDebug() << "old move:" << -rec_center.x() << "move by x:" << -(rec_center.x() - rec.width()/2);
-				qDebug() << "old move"  << -rec_center.y() << "move by y:" << -(rec_center.y() - rec.height()/2);
-			 	//selectedItem->moveBy(-(rec_center.x() - rec.width()/2),-(rec_center.y() - rec.height()/2));
-				//rec.moveCenter(block_rec_halfsize);
-				//selectedItem->rotate(1);
-				QTransform transform;
-				transform.translate(-(rec_center.x() - rec.width()/2),-(rec_center.y() - rec.height()/2) );
-				transform.rotate(1);
-				transform.translate( rec_center.x() - rec.width()/2, rec_center.y() - rec.height()/2 );
-				//selecteditem->setTransform(QTransform().translate(, y).rotate(1).translate(-x, -y));
-				selectedItem->setTransform( transform, true );
-				//rec.moveCenter(block_rec_halfsize);
-
-				//selectedItem->moveBy( rec_center.x() - rec.width()/2, rec_center.y() - rec.height()/2);
-			 }
-			 break;		 
-			 case Qt::Key_Left:
-				selectedItem->moveBy(-rec_center.x(),-rec_center.y());
+			case Qt::Key_Control:
+				m_ctrl_flag = true;
+				qDebug() << "ctrl1:" << m_ctrl_flag << "c:" << key_count << "m:" << mod;
+			break;
+			case Qt::Key_Right:
+				qDebug() << "ctrl2:" << m_ctrl_flag << "c:" << key_count << "m:" << mod;
+				mod == Qt::ControlModifier ? selectedItem->rotate(1): selectedItem->rotate(-1);
+				m_ctrl_flag = false;
+			break;
+			case Qt::Key_Left:
 				selectedItem->rotate(-1);
-				selectedItem->moveBy( rec_center.x(), rec_center.y());
-			 break;
-			 case Qt::Key_Up:
-			 	//shear default value
-			 break;
-			 case Qt::Key_Down:
-			 	//shear "back" default value
-			 break;
+			break;
+			case Qt::Key_Up:
+				//shear default value
+			break;
+			case Qt::Key_Down:
+				//shear "back" default value
+			break;
 		 }
   	}
 }
