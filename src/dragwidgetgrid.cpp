@@ -275,8 +275,8 @@ void  DragWidgetGrid::saveProject( QXmlStreamWriter* stream )
     if ( line )
     {
       stream->writeEmptyElement( "line" );
-      stream->writeAttribute( "x", QString("%1").arg(line->x()) );
-      stream->writeAttribute( "y", QString("%1").arg(line->y()) );
+      stream->writeAttribute( "x", QString("%1").arg(line->x()));
+      stream->writeAttribute( "y", QString("%1").arg(line->y()));
     }
 	
 	 QGraphicsPixmapItem *  pixmap = dynamic_cast<QGraphicsPixmapItem*>( item );
@@ -284,13 +284,13 @@ void  DragWidgetGrid::saveProject( QXmlStreamWriter* stream )
     {
 	  QMatrix m = pixmap->sceneMatrix ();
       stream->writeEmptyElement( "pixmap" );
-      stream->writeAttribute( "id", QString("%1").pixmap.data(ObjectID));
-	  stream->writeAttribute( "m11", QString("%1").m.m11 ()  );
-	  stream->writeAttribute( "m12", QString("%1").m.m12 () );
-	  stream->writeAttribute( "m21", QString("%1").m.m21 () );
-	  stream->writeAttribute( "m22", QString("%1").m.m22 () );  
-	  stream->writeAttribute( "dx", QString("%1").m.dx ()  );
-	  stream->writeAttribute( "dy", QString("%1").m.dy ());
+      stream->writeAttribute( "id", QString("%1").arg(pixmap.data(ObjectID)));
+	  stream->writeAttribute( "m11", QString("%1").arg(m.m11 ()  ));
+	  stream->writeAttribute( "m12", QString("%1").arg(m.m12 () ));
+	  stream->writeAttribute( "m21", QString("%1").arg(m.m21 () ));
+	  stream->writeAttribute( "m22", QString("%1").arg(m.m22 () ));  
+	  stream->writeAttribute( "dx", QString("%1").arg(m.dx ()  ));
+	  stream->writeAttribute( "dy", QString("%1").arg(m.dy ()));
     }
 	
   }
