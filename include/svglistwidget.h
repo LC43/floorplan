@@ -59,6 +59,8 @@
 #include <QList>
 #include <QMainWindow>
 
+
+
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
@@ -69,7 +71,7 @@ class QTextEdit;
 QT_END_NAMESPACE
 
 
-class SvgListWidget : public QAbstractScrollArea
+class SvgListWidget : public QFrame
 {
 public:
     SvgListWidget(QWidget *parent=0);
@@ -79,12 +81,12 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
     void mousePressEvent(QMouseEvent *event);
-    void showSvg(QPixmap svgPixmap, int num_blocks, int c_block );
+    void showSvg(QPixmap svgPixmap, int c_block );
     QList<QPixmap> createSvgList();
     void showSvgs();
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *event);
-    void createDockWindows();
+    //void createDockWindows();
 	
 private:
 	QPainter *paint;

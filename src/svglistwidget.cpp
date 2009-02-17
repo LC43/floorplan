@@ -45,82 +45,76 @@
 #include "svglistwidget.h"
 
 
-//! [0]
+
 SvgListWidget::SvgListWidget(QWidget *parent)
-	: QAbstractScrollArea(parent)
+	: QFrame(parent)
 {
 
-	//setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
-	//setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable|QDockWidget::NoDockWidgetFeatures);
-    //createDockWindows();
     createSvgList();
     int num_blocks0 = qpixmap_list.size()+3;
     setMinimumSize(200, 100*num_blocks0);
-}
-void SvgListWidget::createDockWindows()
-{
-    //QMainWindow::addDockWidget(Qt::RightDockWidgetArea, dock);
-    //viewMenu->addAction(dock->toggleViewAction());
-}
 
-
+}
 
 QList<QPixmap> SvgListWidget::createSvgList(){
-	// get resource dir
-	//FIXME: read it from a .rc file ?
-	QString resources_dir(":/images/");
-	QDir resources(resources_dir);
-	if (!resources.exists())
-		qWarning("ummm.. no resources?");
+    // get resource dir
+    //FIXME: read it from a .rc file ?
+    QString resources_dir(":/images/");
+    QDir resources(resources_dir);
+    if (!resources.exists())
+	qWarning("ummm.. no resources?");
+    
+    QStringList filters;
+    filters << "*.svg";
+    resources.setNameFilters(filters);
+    svgs_filenames = resources.entryList();
+    
+    //for each in dir
+    
+    for (int i = 0; i < svgs_filenames.size(); ++i) {
+	QString name = svgs_filenames.at(i);
+	qDebug() << "SvgListWidget: " << name << " : " << i;
 	
-	QStringList filters;
-	filters << "*.svg";
-	resources.setNameFilters(filters);
-	svgs_filenames = resources.entryList();
-
-	//for each in dir
-	
-	for (int i = 0; i < svgs_filenames.size(); ++i) {
-		QString name = svgs_filenames.at(i);
-		qDebug() << "SvgListWidget: " << name << " : " << i;
-
-		// load svg
-		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
-		//convert to pixmap
-		QPixmap * svgPixmap = new QPixmap(resources_dir + name);
-		qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
-		qpixmap_list.push_back(*svgPixmap);
-		//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
-	}
-	return qpixmap_list;
-
-
+	// load svg
+	//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
+	//convert to pixmap
+	QPixmap * svgPixmap = new QPixmap(resources_dir + name);
+	qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
+	qpixmap_list.push_back(*svgPixmap);
+	//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
+    }
+    return qpixmap_list;
+  
 }
+
+
 void SvgListWidget::showSvgs(){
 
-	int num_blocks = qpixmap_list.size();
-	for (int i = 0; i < num_blocks; ++i) {
-		showSvg( qpixmap_list.at(i), num_blocks, i);
-		qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
-	}
-
+    int num_blocks = qpixmap_list.size();
+    for (int i = 0; i < num_blocks; ++i) {
+	showSvg( qpixmap_list.at(i), i);
+	qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
+    }
+    
 }
 
 
-void SvgListWidget::showSvg(QPixmap svgPixmap, int num_blocks, int c_block ){
+void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
 
-	//do alot of stuff :D
-	QLabel *svgIcon = new QLabel(this);
-	svgIcon->resize(svgPixmap.width(),svgPixmap.height());
-	qDebug() << "SvgListWidget: " << "svgIconnew height" << svgIcon->height() << "width" << svgIcon->width();
-	svgIcon->setPixmap(svgPixmap);
-	qDebug() << "SvgListWidget: " << "svgIcon height" << svgIcon->height() << "width" << svgIcon->width();
-	svgIcon->setScaledContents ( true );
-	svgIcon->setMinimumSize(20,20);
-	//svgIcon->setMaximumSize(30,30);
-	/*
-	QSize block_size;
+    //do alot of stuff :D
+    QLabel *svgIcon = new QLabel(this);
+    svgIcon->resize(svgPixmap.width(),svgPixmap.height());
+    qDebug() << "SvgListWidget: " << "svgIconnew height" << svgIcon->height() << "width" << svgIcon->width();
+    svgIcon->setPixmap(svgPixmap);
+    qDebug() << "SvgListWidget: " << "svgIcon height" << svgIcon->height() << "width" << svgIcon->width();
+    svgIcon->setScaledContents ( true );
+    svgIcon->setMinimumSize(20,20);
+    svgIcon->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //svgIcon->setText("test");
+    //svgIcon->setMaximumSize(30,30);
+    /*
+      QSize block_size;
 	block_size = this->size();
 	int block_scale_height = block_size.height()*(1.0/num_blocks);
 	int block_scale_width = this->size().width()*(1.0/num_blocks);
@@ -132,12 +126,12 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int num_blocks, int c_block ){
 	svgIcon->resize(block_size);
 	qDebug() << "SvgListWidget: " << "resized:" << svgIcon->width();
 	*/
-	//FIXME: this.size()
-	svgIcon->move( 20, 20+100*c_block );
-	svgIcon->setToolTip(svgs_filenames.at(c_block));
-	svgIcon->show();
-	svgIcon->setAttribute(Qt::WA_DeleteOnClose);
-
+    //FIXME: this.size()
+    svgIcon->move( 20, 20+100*c_block );
+    svgIcon->setToolTip(svgs_filenames.at(c_block));
+    svgIcon->show();
+    svgIcon->setAttribute(Qt::WA_DeleteOnClose);
+    
 }
 
 
@@ -165,11 +159,7 @@ void SvgListWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
-            //event->setDropAction(Qt::MoveAction);
             event->ignore();
-        /*} else {
-            //event->acceptProposedAction();
-			*/
         }
     } else {
         event->ignore();
@@ -182,11 +172,9 @@ void SvgListWidget::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
 
 		if (event->source() == this) {
-			//event->setDropAction(Qt::MoveAction);
 			event->ignore();
 		} else {
 			event->setDropAction(Qt::MoveAction);
-			//event->acceptProposedAction();
 			event->accept();
         }
     } else {
