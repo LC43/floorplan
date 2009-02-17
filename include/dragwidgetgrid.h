@@ -81,7 +81,7 @@ public slots:
 	void increaseZoom();
 	void decreaseZoom();
 	void resetZoom();
-	void loadProject(QXmlStreamReader* stream );
+	void LoadProject(QXmlStreamReader* stream);
 	void SaveProject(QXmlStreamWriter* stream);
 	//protected:
 

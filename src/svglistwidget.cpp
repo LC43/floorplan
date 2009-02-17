@@ -77,8 +77,6 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 	resources.setNameFilters(filters);
 	QStringList svgs_filenames = resources.entryList();
 
-
-	picSvg = new QImage();
 	//for each in dir
 	
 	for (int i = 0; i < svgs_filenames.size(); ++i) {
@@ -86,13 +84,11 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 		qDebug() << "SvgListWidget: " << name << " : " << i;
 
 		// load svg
-		picSvg->load( resources_dir + name,"svg");
-		qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
+		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 		//convert to pixmap
-		QPixmap svgPixmap;
-		svgPixmap = QPixmap::fromImage(*picSvg);
-		qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap.height() << "width" << svgPixmap.width();
-		qpixmap_list.push_back(svgPixmap);
+		QPixmap * svgPixmap = new QPixmap(resources_dir + name);
+		qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
+		qpixmap_list.push_back(*svgPixmap);
 		//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
 	}
 	return qpixmap_list;

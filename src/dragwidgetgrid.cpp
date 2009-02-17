@@ -266,17 +266,20 @@ void DragWidgetGrid::sendToPrinter(){
 
 /************************************ writeStream ************************************/
 
-void  DragWidgetGrid::saveProject( QXmlStreamWriter* stream )
+void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 {
   // write station data to xml stream
   foreach( QGraphicsItem*  item, items() )
   {
-    QGraphicsLineItem *  line = dynamic_cast<QGraphicsLineItem*>( item );
+    QGraphicsLineItem *  item_line = dynamic_cast<QGraphicsLineItem*>( item );
     if ( line )
     {
       stream->writeEmptyElement( "line" );
-      stream->writeAttribute( "x", QString("%1").arg(line->x()));
-      stream->writeAttribute( "y", QString("%1").arg(line->y()));
+	  QLineF line = item_line->line();
+      stream->writeAttribute( "x1", QString("%1").arg(line.x1()));
+      stream->writeAttribute( "y1", QString("%1").arg(line.y1()));
+	  stream->writeAttribute( "x2", QString("%1").arg(line.x2()));
+      stream->writeAttribute( "y2", QString("%1").arg(line.y2()));
     }
 	
 	 QGraphicsPixmapItem *  pixmap = dynamic_cast<QGraphicsPixmapItem*>( item );
@@ -284,7 +287,7 @@ void  DragWidgetGrid::saveProject( QXmlStreamWriter* stream )
     {
 	  QMatrix m = pixmap->sceneMatrix ();
       stream->writeEmptyElement( "pixmap" );
-      stream->writeAttribute( "id", QString("%1").arg(pixmap.data(ObjectID)));
+      stream->writeAttribute( "id", QString("%1").arg(pixmap->data(ObjectID).toString()));
 	  stream->writeAttribute( "m11", QString("%1").arg(m.m11 ()  ));
 	  stream->writeAttribute( "m12", QString("%1").arg(m.m12 () ));
 	  stream->writeAttribute( "m21", QString("%1").arg(m.m21 () ));
@@ -296,7 +299,7 @@ void  DragWidgetGrid::saveProject( QXmlStreamWriter* stream )
   }
 }
 
-void  DragWidgetGrid::openProject( QXmlStreamReader* stream )
+void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 {
   // read station data from xml stream
   while ( !stream->atEnd() )
@@ -304,13 +307,15 @@ void  DragWidgetGrid::openProject( QXmlStreamReader* stream )
     stream->readNext();
     if ( stream->isStartElement() && stream->name() == "line" )
     {
-      qreal x = 0.0, y = 0.0;
+      qreal x1 = 0.0, y1 = 0.0,x2 = 0.0,y2=0.0;
       foreach( QXmlStreamAttribute attribute, stream->attributes() )
       {
-        if ( attribute.name() == "x" ) x = attribute.value().toString().toDouble();
-        if ( attribute.name() == "y" ) y = attribute.value().toString().toDouble();
+        if ( attribute.name() == "x1" ) x1 = attribute.value().toString().toDouble();
+        if ( attribute.name() == "y1" ) y1 = attribute.value().toString().toDouble();
+		if ( attribute.name() == "x1" ) x2 = attribute.value().toString().toDouble();
+        if ( attribute.name() == "y1" ) y2 = attribute.value().toString().toDouble();
       }
-      scene.addLine( new QLineF(x,y,QPen(Qt::SolidLine)));
+      scene.addLine(QLineF(x1,y1,x2,y2),QPen(Qt::SolidLine));
     }
 	
 	if ( stream->isStartElement() && stream->name() == "pixmap" )
@@ -332,7 +337,7 @@ void  DragWidgetGrid::openProject( QXmlStreamReader* stream )
 		if ( attribute.name() == "dx" ) dx = attribute.value().toString().toDouble();
         if ( attribute.name() == "dy" ) dy = attribute.value().toString().toDouble();
       }
-	  QMatrix m = new QMatrix(m11,m12,m21,m22,dx,dy);
+	  QMatrix m = QMatrix(m11,m12,m21,m22,dx,dy);
 	  QGraphicsPixmapItem * pixmap;
 	  // we need to add the pixmap here
      // scene.addPixmap( new Station( x, y ) );
@@ -341,3 +346,4 @@ void  DragWidgetGrid::openProject( QXmlStreamReader* stream )
 	
 	
   }
+}
