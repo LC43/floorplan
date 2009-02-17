@@ -55,7 +55,7 @@
 #include <QTransform>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
-//#include <floorscene.h>
+#include <svglistwidget.h>
 
 
 #define ObjectName 0
@@ -74,6 +74,7 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
 	void keyPressEvent ( QKeyEvent * event );
+	void setSvgList(SvgListWidget * list) {svg_list = list;};
 public slots:
 	void copyToClipboard();
 	void saveToFile();
@@ -96,6 +97,7 @@ private:
 	bool m_drawline;
 	QGraphicsLineItem * line;
 	bool m_ctrl_flag;
+	SvgListWidget * svg_list;
 	//QMatrix trans;
 	
 };
