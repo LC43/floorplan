@@ -75,7 +75,7 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 	QStringList filters;
 	filters << "*.svg";
 	resources.setNameFilters(filters);
-	QStringList svgs_filenames = resources.entryList();
+	svgs_filenames = resources.entryList();
 
 	//for each in dir
 	
@@ -241,4 +241,15 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 	QWidget::resizeEvent(event);
 }
 
+
+QPixmap SvgListWidget::getPixmapByName(QString name) {
+	
+	int i =0;
+	for ( QStringList::Iterator it = svgs_filenames.begin(); it != svgs_filenames.end(); ++it,i++) {
+        if(*it == name)
+			break;
+    }
+	return qpixmap_list.at(i);
+
+}
 
