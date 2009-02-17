@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 	//scrollArea->ensureWidgetVisible();
 	scrollArea->setWidgetResizable(true);
 	setCentralWidget(drag);
-
+	assistant = new Assistant;
 	createMenus();
 
 }
@@ -88,7 +88,13 @@ void MainWindow::createMenus() {
 	menuPre_ferencias->addAction( SvgList->toggleViewAction() );
 
 
+
 	// menu Ajuda
+	// + Ajuda
+
+	// + Documentacao
+	actionDocumenta_o->setShortcut(tr("F1"));
+	connect(actionDocumenta_o,SIGNAL(triggered()), this, SLOT(showDocumentation()));
 	// + sobre o floor plan
 	connect(actionAcerca_de_FloorPlan, SIGNAL(triggered()), this, SLOT(sobreFloorplan()));
 	// + sobre o Qt (em ingles)
@@ -97,6 +103,13 @@ void MainWindow::createMenus() {
 	
 
 }
+void MainWindow::showDocumentation() {
+     assistant->showDocumentation("indice.html");
+}
+void MainWindow::closeEvent(QCloseEvent *){
+     delete assistant;
+}
+
 void MainWindow::open()
 {
 	QString fileName = QFileDialog::getOpenFileName(this);

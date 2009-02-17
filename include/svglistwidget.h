@@ -69,7 +69,7 @@ class QTextEdit;
 QT_END_NAMESPACE
 
 
-class SvgListWidget : public QFrame
+class SvgListWidget : public QAbstractScrollArea
 {
 public:
     SvgListWidget(QWidget *parent=0);

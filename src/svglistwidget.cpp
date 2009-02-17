@@ -47,7 +47,7 @@
 
 //! [0]
 SvgListWidget::SvgListWidget(QWidget *parent)
-	: QFrame(parent)
+	: QAbstractScrollArea(parent)
 {
 
 	//setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
@@ -55,7 +55,7 @@ SvgListWidget::SvgListWidget(QWidget *parent)
 	//setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable|QDockWidget::NoDockWidgetFeatures);
     //createDockWindows();
     createSvgList();
-    int num_blocks0 = qpixmap_list.size();
+    int num_blocks0 = qpixmap_list.size()+3;
     setMinimumSize(200, 100*num_blocks0);
 }
 void SvgListWidget::createDockWindows()

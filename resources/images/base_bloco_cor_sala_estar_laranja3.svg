@@ -139,7 +139,7 @@
      inkscape:window-width="1670"
      inkscape:window-height="950"
      inkscape:window-x="0"
-     inkscape:window-y="23"
+     inkscape:window-y="22"
      showguides="true"
      inkscape:guide-bbox="true">
     <inkscape:grid
@@ -181,7 +181,7 @@
          y="0.21551724" />
     </a>
     <path
-       style="opacity:1;fill:#bc8f8f;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#ff9718;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="M 0.071701241,50.000004 L 0.071701241,3.621e-06 L 50.071701,3.621e-06 L 100.0717,3.621e-06 L 100.0717,50.000004 L 100.0717,100 L 50.071701,100 L 0.071701241,100 L 0.071701241,50.000004 z"
        id="path2903" />
   </g>

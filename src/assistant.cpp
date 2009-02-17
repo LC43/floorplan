@@ -87,18 +87,16 @@ bool Assistant::startAssistant()
 
         QStringList args;
         args << QLatin1String("-collectionFile")
-            << QLibraryInfo::location(QLibraryInfo::ExamplesPath)
-            + QLatin1String("/help/simpletextviewer/documentation/simpletextviewer.qhc")
-            << QLatin1String("-enableRemoteControl");
+	     << QLatin1String("docs/floorplan.qhc")
+	     << QLatin1String("-enableRemoteControl");
 
         proc->start(app, args);
 
         if (!proc->waitForStarted()) {
             QMessageBox::critical(0, QObject::tr("Simple Text Viewer"),
-                QObject::tr("Unable to launch Qt Assistant (%1)").arg(app));
+                QObject::trUtf8("Não foi possível lançar o Assistant (%1)").arg(app));
             return false;
         }    
     }
     return true;
 }
-//! [2]
