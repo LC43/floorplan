@@ -132,6 +132,7 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int num_blocks, int c_block ){
 	*/
 	//FIXME: this.size()
 	svgIcon->move( 20, 20+100*c_block );
+	svgIcon->setToolTip(svgs_filenames.at(c_block));
 	svgIcon->show();
 	svgIcon->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -207,6 +208,7 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
 
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/x-dnditemdata", itemData);
+	mimeData->setText(child->toolTip());
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
