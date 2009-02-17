@@ -1,13 +1,23 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="">
-   <file>images/copy.png</file>
-   <file>images/cut.png</file>
-   <file>images/new.png</file>
-   <file>images/open.png</file>
-   <file>images/paste.png</file>
-   <file>images/save.png</file>
-   <file>images/base_dormir2.svg</file>
-   <file>images/base_bloco_cor_sala_estar_laranja3.svg</file>
-   <file>images/base_bloco_cor_hall_azul3.svg</file>
+  <file>images/floorplan_icon_4848.png</file>
+  <file>images/copy.png</file>
+  <file>images/cut.png</file>
+  <file>images/new.png</file>
+  <file>images/open.png</file>
+  <file>images/paste.png</file>
+  <file>images/save.png</file>
+  <file>images/base_bloco_cor_quarto_azul_simples3.svg</file>
+  <file>images/base_bloco_cor_sala_jantar_tinto3.svg</file>
+  <file>images/base_bloco_cor_sala_estar_laranja3.svg</file>
+  <file>images/base_bloco_cor_hall_azul3.svg</file>
+  <file>images/base_bloco_cor_alternativos_cyan3.svg</file>
+  <file>images/base_bloco_cor_corredor_roxo_cinza3.svg</file>
+  <file>images/base_bloco_cor_cozinha_verde3.svg</file>
+  <file>images/base_bloco_cor_despensa_cinza3.svg</file>
+  <file>images/base_bloco_cor_escadas_amarelo_faded3.svg</file>
+  <file>images/base_bloco_cor_escritorio_azul_escuro3.svg</file>
+  <file>images/base_bloco_cor_varanda_torrado3.svg</file>
+  <file>images/base_bloco_cor_wc_rosa3.svg</file>
 </qresource>
 </RCC>

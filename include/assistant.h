@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -41,59 +41,25 @@
 **
 ****************************************************************************/
 
-#ifndef SVGLISTWIDGET_H
-#define SVGLISTWIDGET_H
+#ifndef ASSISTANT_H
+#define ASSISTANT_H
 
-#include <QFrame>
-#include <qwidget.h>
-#include <qpainter.h>
-#include <qpicture.h>
-
-
-#include <QPixmap>
-#include <QtGui>
-
-#include <QtSvg>
-
-#include <QtDebug> // qDegub
-#include <QList>
-#include <QMainWindow>
+#include <QtCore/QString>
 
 QT_BEGIN_NAMESPACE
-class QDragEnterEvent;
-class QDropEvent;
-class QAction;
-class QListWidget;
-class QMenu;
-class QTextEdit;
+class QProcess;
 QT_END_NAMESPACE
 
-
-class SvgListWidget : public QFrame
+class Assistant
 {
 public:
-    SvgListWidget(QWidget *parent=0);
-    QPixmap getPixmapByName(QString name);	
-protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void showSvg(QPixmap svgPixmap, int num_blocks, int c_block );
-    QList<QPixmap> createSvgList();
-    void showSvgs();
-    void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent *event);
-    void createDockWindows();
-	
+    Assistant();
+    ~Assistant();
+    void showDocumentation(const QString &file);
+    
 private:
-	QPainter *paint;
-	QList<QPixmap> qpixmap_list;
-	QTextEdit *textEdit;
-	QListWidget *customerList;
-	QListWidget *paragraphsList;
-	QStringList svgs_filenames;
+    bool startAssistant();
+    QProcess *proc;
 };
-
 
 #endif

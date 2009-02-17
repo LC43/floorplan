@@ -29,6 +29,7 @@ RCC_DIR      = $$BUILD
 INTERFACES = $$UI/floorplan2.ui
 
 HEADERS =    $$INCLUDEPATH/svglistwidget.h \
+             $$INCLUDEPATH/assistant.h \
              $$INCLUDEPATH/dragwidgetgrid.h \
              $$INCLUDEPATH/memoriadescritiva.h \
              $$INCLUDEPATH/mainwindow.h
@@ -37,6 +38,7 @@ RESOURCES =  $$RES/floorplan.qrc
 
 SOURCES =    $$SRC/svglistwidget.cpp \
              $$SRC/dragwidgetgrid.cpp \
+             $$SRC/assistant.cpp \
              $$SRC/memoriadescritiva.cpp \
              $$SRC/mainwindow.cpp \
              $$SRC/main.cpp
@@ -46,3 +48,4 @@ target.path = $$DESTDIR
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro images
 #sources.path = $$[QT_INSTALL_EXAMPLES]/draganddrop/draggableicons
 INSTALLS += target 
+

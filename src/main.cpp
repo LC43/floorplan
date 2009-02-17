@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-
-	MainWindow window;
-	window.show();
+    app.setWindowIcon(QIcon(":/images/floorplan_icon_4848.png"));
+    MainWindow window;
+    window.show();
 	
 
     return app.exec();

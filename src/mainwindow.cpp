@@ -10,7 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
 	setupUi(this);
 	svg = new SvgListWidget();
 	drag = new DragWidgetGrid();
-	SvgList->setWidget(svg);
+	scrollArea->setWidget(svg);
+	//scrollArea->ensureWidgetVisible();
+	scrollArea->setWidgetResizable(true);
 	setCentralWidget(drag);
 
 	createMenus();

@@ -7,6 +7,7 @@
 #include "svglistwidget.h"
 #include "dragwidgetgrid.h"
 #include "memoriadescritiva.h"
+#include "assistant.h"
 
 class MainWindow : public QMainWindow, private Ui::FloorPlan
 {

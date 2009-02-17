@@ -49,17 +49,19 @@
 SvgListWidget::SvgListWidget(QWidget *parent)
 	: QFrame(parent)
 {
-    setMinimumSize(200, 800);
+
 	//setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 	//setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable|QDockWidget::NoDockWidgetFeatures);
-	createDockWindows();
-	createSvgList();
+    //createDockWindows();
+    createSvgList();
+    int num_blocks0 = qpixmap_list.size();
+    setMinimumSize(200, 100*num_blocks0);
 }
 void SvgListWidget::createDockWindows()
 {
-	//QMainWindow::addDockWidget(Qt::RightDockWidgetArea, dock);
-	//viewMenu->addAction(dock->toggleViewAction());
+    //QMainWindow::addDockWidget(Qt::RightDockWidgetArea, dock);
+    //viewMenu->addAction(dock->toggleViewAction());
 }
 
 
