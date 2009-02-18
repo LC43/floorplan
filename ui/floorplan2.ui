@@ -74,8 +74,9 @@
    </widget>
    <widget class="QMenu" name="menuPre_ferencias" >
     <property name="title" >
-     <string>Pre&amp;ferencias</string>
+     <string>Pre&amp;ferências</string>
     </property>
+    <addaction name="actionEditar_Preferencias" />
    </widget>
    <addaction name="menuFicheiro" />
    <addaction name="menuOpera_es" />
@@ -195,6 +196,14 @@
   <action name="actionDiminuir_Zoom" >
    <property name="text" >
     <string>Diminuir Zoom</string>
+   </property>
+  </action>
+  <action name="actionEditar_Preferencias" >
+   <property name="text" >
+    <string>Editar &amp;Preferências</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

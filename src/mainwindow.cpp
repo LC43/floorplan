@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setupUi(this);
 	svg = new SvgListWidget();
 	drag = new DragWidgetGrid();
+	status_escala = new QLabel(this);
 	scrollArea->setWidget(svg);
 	//scrollArea->ensureWidgetVisible();
 	scrollArea->setWidgetResizable(true);
@@ -87,11 +88,13 @@ void MainWindow::createMenus() {
 	
 	menuPre_ferencias->addAction( SvgList->toggleViewAction() );
 
-
-
+	// + Dialogo das preferencias
+	ConfigDialog *preferencias = new ConfigDialog();
+	connect(actionEditar_Preferencias, SIGNAL(triggered()),preferencias,SLOT(showConfigDialog()));
+	connect( preferencias , SIGNAL(escalaAlteradaSignal(QString)),this,SLOT(updateEscala(QString)));
 	// menu Ajuda
 	// + Ajuda
-
+	
 	// + Documentacao
 	actionDocumenta_o->setShortcut(tr("F1"));
 	connect(actionDocumenta_o,SIGNAL(triggered()), this, SLOT(showDocumentation()));
@@ -100,9 +103,19 @@ void MainWindow::createMenus() {
 	// + sobre o Qt (em ingles)
 	connect(actionAcerca_do_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
+	//Status bar:
+
 	
+	status_escala->setText("Escala: " + preferencias->getEscala());
+	statusBar()->addPermanentWidget( status_escala );
+}
+
+void MainWindow::updateEscala(QString escala){
+
+	status_escala->setText("escala: " + escala );
 
 }
+
 void MainWindow::showDocumentation() {
      assistant->showDocumentation("indice.html");
 }

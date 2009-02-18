@@ -8,6 +8,7 @@
 #include "dragwidgetgrid.h"
 #include "memoriadescritiva.h"
 #include "assistant.h"
+#include "configdialog.h"
 
 class MainWindow : public QMainWindow, private Ui::FloorPlan
 {
@@ -17,6 +18,7 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 		MainWindow(QWidget *parent = 0);
 		void showDocumentation(const QString &file);
 		
+
 	private:
 		void createMenus();
 		void setCurrentFile(const QString &fileName);
@@ -36,11 +38,14 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 
 		Assistant *assistant;
 
+		QLabel *status_escala;
+
 	private slots:
 		void open();
 		void openRecentFile();
 		void sobreFloorplan();
 		void showDocumentation();
+		void updateEscala(QString escala);
 };
 
 #endif
