@@ -67,7 +67,7 @@ void DragWidgetGrid::resetZoom(){
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 : QGraphicsView (parent)
 {
-    setMinimumSize(800, 800);
+    setMinimumSize(600, 600);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
     setScene(&scene);
