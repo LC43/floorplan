@@ -52,8 +52,8 @@ SvgListWidget::SvgListWidget(QWidget *parent)
 
     setAcceptDrops(true);
     createSvgList();
-    int num_blocks0 = qpixmap_list.size()+3;
-    setMinimumSize(200, 100*num_blocks0);
+    int num_blocks = qpixmap_list.size()*2;
+    setMinimumSize(200, 100*num_blocks);
 
 }
 
@@ -80,7 +80,7 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 	//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 	//convert to pixmap
 	QPixmap * svgPixmap = new QPixmap(resources_dir + name);
-	qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
+	//qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
 	qpixmap_list.push_back(*svgPixmap);
 	//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
     }
@@ -93,10 +93,10 @@ void SvgListWidget::showSvgs(){
 
     int num_blocks = qpixmap_list.size();
     for (int i = 0; i < num_blocks; ++i) {
-	showSvg( qpixmap_list.at(i), i);
-	qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
+		showSvg( qpixmap_list.at(i), i);
+		//qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
     }
-    
+
 }
 
 
@@ -105,33 +105,28 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
     //do alot of stuff :D
     QLabel *svgIcon = new QLabel(this);
     svgIcon->resize(svgPixmap.width(),svgPixmap.height());
-    qDebug() << "SvgListWidget: " << "svgIconnew height" << svgIcon->height() << "width" << svgIcon->width();
+    //qDebug() << "SvgListWidget: " << "svgIconnew height" << svgIcon->height() << "width" << svgIcon->width();
     svgIcon->setPixmap(svgPixmap);
-    qDebug() << "SvgListWidget: " << "svgIcon height" << svgIcon->height() << "width" << svgIcon->width();
+	//qDebug() << "SvgListWidget: " << "svgIcon height" << svgIcon->height() << "width" << svgIcon->width();
     svgIcon->setScaledContents ( true );
     svgIcon->setMinimumSize(20,20);
-    svgIcon->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    //svgIcon->setText("test");
-    //svgIcon->setMaximumSize(30,30);
-    /*
-      QSize block_size;
-	block_size = this->size();
-	int block_scale_height = block_size.height()*(1.0/num_blocks);
-	int block_scale_width = this->size().width()*(1.0/num_blocks);
-	qDebug() << "SvgListWidget: " << "scale: " << block_scale_width << "original:" << svgIcon->width();
-	qDebug() << "SvgListWidget: " << "scale: " << block_scale_height << "original:" << svgIcon->height();
-	block_size.scale( block_scale_width > svgIcon->width() ? svgIcon->width() : block_scale_width,
-					  block_scale_height > svgIcon->height() ? svgIcon->height() : block_scale_height,
-					  Qt::KeepAspectRatio);
-	svgIcon->resize(block_size);
-	qDebug() << "SvgListWidget: " << "resized:" << svgIcon->width();
-	*/
+	svgIcon->setFrameStyle(QFrame::StyledPanel | QFrame::Raised | QFrame::Shadow_Mask );
+
+
     //FIXME: this.size()
-    svgIcon->move( 20, 20+100*c_block );
+    svgIcon->move( 20, 20+150*c_block );
     svgIcon->setToolTip(svgs_filenames.at(c_block));
     svgIcon->show();
     svgIcon->setAttribute(Qt::WA_DeleteOnClose);
-    
+
+	QLabel *legenda = new QLabel(this);
+	QString legenda_texto = svgs_filenames.at(c_block);
+	
+	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
+	legenda_texto.remove(QRegExp(".[a-z]*$"));
+	legenda->setText( legenda_texto );
+	legenda->move(20, 20+150*c_block-20 );
+	legenda->show();
 }
 
 

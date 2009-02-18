@@ -58,7 +58,7 @@
 #include <QtDebug> // qDegub
 #include <QList>
 #include <QMainWindow>
-
+#include <QRegExp>
 
 
 QT_BEGIN_NAMESPACE
