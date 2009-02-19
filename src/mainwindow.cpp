@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setupUi(this);
 	svg = new SvgListWidget();
 	drag = new DragWidgetGrid();
+	drag->setSvgList(svg);
 	status_escala = new QLabel(this);
 	scrollArea->setWidget(svg);
 	//scrollArea->ensureWidgetVisible();

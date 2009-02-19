@@ -49,7 +49,12 @@
 SvgListWidget::SvgListWidget(QWidget *parent)
 	: QFrame(parent)
 {
-
+    resources_dir = QString(":/images/");
+    resources = QDir(resources_dir);
+	QStringList filters;
+    filters << "*.svg";
+    resources.setNameFilters(filters);
+	svgs_filenames = QStringList(resources.entryList());
     setAcceptDrops(true);
     createSvgList();
     int num_blocks = qpixmap_list.size()*2;
@@ -59,19 +64,15 @@ SvgListWidget::SvgListWidget(QWidget *parent)
 QList<QPixmap> SvgListWidget::createSvgList(){
     // get resource dir
     //FIXME: read it from a .rc file ?
-    QString resources_dir(":/images/");
-    resources = QDir(resources_dir);
     if (!resources.exists())
 	qWarning("ummm.. no resources?");
-    
-    QStringList filters;
+
+	QStringList filters;
     filters << "*.svg";
     resources.setNameFilters(filters);
     QStringList list = QStringList(resources.entryList());
-    
-    //for each in dir
-    
 
+    //for each in dir
     for (int i = 0; i < list.size(); ++i) {
 		QString name = list.at(i);
 		svgs_filenames.append(QString(name));
@@ -123,9 +124,8 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
     svgIcon->setAttribute(Qt::WA_DeleteOnClose);
 
 	QLabel *legenda = new QLabel(this);
-	qDebug () << "Legenda :";
+
 	QString legenda_texto = svgs_filenames.at(c_block);
-	
 	
 	
 	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
@@ -238,14 +238,15 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 QPixmap SvgListWidget::getPixmapByName(QString name) {
 	
 	 int i;
+	 qDebug() << "chega_aqui" << svgs_filenames.size();
 	 for (int i = 0; i < svgs_filenames.size(); ++i) {
 		QString name = svgs_filenames.at(i);
-		qDebug() << "SvgListWidget: " << name << " : " << i;	
+		qDebug() << "Svgsvgs_filenamesWidget: " << name << " : " << i;	
 	}
 	qDebug() << "chega_aqui";
 	qDebug() << name;
 	if(svgs_filenames.empty())
-		qDebug() << "a lista e nula?";
+		qDebug() << "a svgs_filenamesa e nula?";
 	i = svgs_filenames.indexOf(name);
 	qDebug() << i;
 	return qpixmap_list.at(i);

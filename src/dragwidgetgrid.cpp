@@ -448,15 +448,11 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 	  QMatrix m = QMatrix(m11,m12,m21,m22,dx,dy);
 	  // we need to add the pixmap here
 	  QPixmap p = svg_list->getPixmapByName(id);
-	  if(!p){
-		qDebug() << "NULLLLLO";  
-	  }
-	  else { QGraphicsPixmapItem * pixmap = scene.addPixmap(p);
+
+	  QGraphicsPixmapItem * pixmap = scene.addPixmap(p);
 	  
-	 		 pixmap->setMatrix(m,false);
-		 }
-    }
-	
+	  pixmap->setMatrix(m,false);
+	}	
 	
   }
 	
