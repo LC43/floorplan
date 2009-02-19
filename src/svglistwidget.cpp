@@ -54,6 +54,7 @@ SvgListWidget::SvgListWidget(QWidget *parent)
     createSvgList();
     int num_blocks = qpixmap_list.size()*2;
     setMinimumSize(200, 100*num_blocks);
+	svgs_filenames = QVector<QString>();
 }
 
 QList<QPixmap> SvgListWidget::createSvgList(){
@@ -67,12 +68,13 @@ QList<QPixmap> SvgListWidget::createSvgList(){
     QStringList filters;
     filters << "*.svg";
     resources.setNameFilters(filters);
-    svgs_filenames = resources.entryList().toVector();
+    ;
     
     //for each in dir
     
-    for (int i = 0; i < svgs_filenames.size(); ++i) {
-	QString name = svgs_filenames.at(i);
+    for (int i = 0; i < resources.entryList().size(); ++i) {
+	QString name = resources.entryList().at(i);
+	svgs_filenames.append(QString(name));
 	qDebug() << "SvgListWidget: " << name << " : " << i;
 	
 	// load svg
