@@ -54,27 +54,25 @@ SvgListWidget::SvgListWidget(QWidget *parent)
     createSvgList();
     int num_blocks = qpixmap_list.size()*2;
     setMinimumSize(200, 100*num_blocks);
-	svgs_filenames = QStringList();
 }
 
 QList<QPixmap> SvgListWidget::createSvgList(){
     // get resource dir
     //FIXME: read it from a .rc file ?
     QString resources_dir(":/images/");
-    QDir resources(resources_dir);
+    resources = QDir(resources_dir);
     if (!resources.exists())
 	qWarning("ummm.. no resources?");
     
     QStringList filters;
     filters << "*.svg";
     resources.setNameFilters(filters);
-    QStringList list = resources.entryList();
+    svgs_filenames = QStringList(resources.entryList());
     
     //for each in dir
     
-    for (int i = 0; i < list.size(); ++i) {
-	QString name = list.at(i);
-	svgs_filenames.append(QString(name));
+    for (int i = 0; i < svgs_filenames.size(); ++i) {
+	QString name = svgs_filenames.at(i);
 	qDebug() << "SvgListWidget: " << name << " : " << i;
 	
 	// load svg
@@ -122,7 +120,10 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
     svgIcon->setAttribute(Qt::WA_DeleteOnClose);
 
 	QLabel *legenda = new QLabel(this);
+	qDebug () << "Legenda :";
 	QString legenda_texto = svgs_filenames.at(c_block);
+	
+	
 	
 	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
 	legenda_texto.remove(QRegExp(".[a-z]*$"));

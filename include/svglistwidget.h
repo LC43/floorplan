@@ -94,6 +94,7 @@ private:
 	QListWidget *customerList;
 	QListWidget *paragraphsList;
 	QStringList svgs_filenames;
+	QDir resources;
 };
 
 
