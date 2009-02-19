@@ -283,7 +283,7 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
   foreach( QGraphicsItem*  item, items() )
   {
     QGraphicsLineItem *  item_line = dynamic_cast<QGraphicsLineItem*>( item );
-    if ( line )
+    if ( item_line )
     {
       stream->writeEmptyElement( "line" );
 	  QLineF line = item_line->line();
