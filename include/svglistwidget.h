@@ -95,6 +95,7 @@ private:
 	QListWidget *paragraphsList;
 	QStringList svgs_filenames;
 	QDir resources;
+	QString resources_dir;
 };
 
 
