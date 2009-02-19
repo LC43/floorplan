@@ -67,23 +67,26 @@ QList<QPixmap> SvgListWidget::createSvgList(){
     QStringList filters;
     filters << "*.svg";
     resources.setNameFilters(filters);
-    svgs_filenames = QStringList(resources.entryList());
+    QStringList list = QStringList(resources.entryList());
     
     //for each in dir
     
-    for (int i = 0; i < svgs_filenames.size(); ++i) {
-	QString name = svgs_filenames.at(i);
-	qDebug() << "SvgListWidget: " << name << " : " << i;
+
+    for (int i = 0; i < list.size(); ++i) {
+		QString name = list.at(i);
+		svgs_filenames.append(QString(name));
+		qDebug() << "SvgListWidget: " << name << " : " << i;
+
 	
-	// load svg
-	//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
-	//convert to pixmap
-	QPixmap * svgPixmap = new QPixmap(resources_dir + name);
-	//qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
-	qpixmap_list.push_back(*svgPixmap);
-	//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
+		// load svg
+		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
+		//convert to pixmap
+		QPixmap * svgPixmap = new QPixmap(resources_dir + name);
+		//qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
+		qpixmap_list.push_back(*svgPixmap);
+		//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
     }
-	qDebug() << "SvgListWidget done ";
+	qDebug() << "SvgListWidget: done ";
     return qpixmap_list;
   
 }

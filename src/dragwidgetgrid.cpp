@@ -48,21 +48,7 @@
 
 #include "dragwidgetgrid.h"
 
-//static int max_zoom = 10; //percentage
-
-void DragWidgetGrid::increaseZoom(){
-  qreal factor = 1.2;
-  scale(factor, factor);
-}
-
-void DragWidgetGrid::decreaseZoom(){
-    qreal factor = 0.8;
-    scale(factor, factor);
-}
-void DragWidgetGrid::resetZoom(){
-    
-
-}
+static int max_zoom = 10; //percentage
 
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 : QGraphicsView (parent)
@@ -76,8 +62,6 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 	setDragMode(QGraphicsView::RubberBandDrag);
 	selectedItem  = NULL;
 	m_drawline=false;
-    //original 
-    //
 }
 
 
@@ -115,9 +99,13 @@ void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
 
 void DragWidgetGrid::wheelEvent(QWheelEvent* event){
   qreal factor = 1.2;
+  qDebug() << "ini: " << inicial_zoom << "max: " << (inicial_zoom*max_zoom) << "now" << sceneRect().height();
+  if ( sceneRect().height() >= (inicial_zoom*max_zoom) )
+	  return;
   if (event->delta() < 0)
     factor = 1.0 / factor;
   scale(factor, factor);
+  emit zoomChangedSignal(factor);
 
 }
 
@@ -190,7 +178,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 }
 
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
-	
+	//TODO: Fix start drag distance.. tem q ser 1  :/
 	if ((event->pos() - drag_start_pos).manhattanLength()
           < QApplication::startDragDistance())
      return;
@@ -206,10 +194,52 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 	}
 	drag_start_pos = QPoint(0,0);
 }
+void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
+
+// 	TODO: ao largar a tecla, emitir os sinais para a mainwindow retirar da status
+
+
+}
+
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
+		/*
 
+		**** TODO: passar o selectedItem para a status bar
+		*****TODO: resetTransform ()
+		*****TODO: FIXME: posicao dos blocos, setZeValue()
+		*****TODO: ajustar com a distancia pecorrida pelo rato
+		*****TODO: adicionar o mesmo codigo para o mousepress
+		*****TODO: delete key
+		*****TODO: undo/redo logic
+		*****TODO: adcionar accoes ao qtext do mem. descritiva
+
+		
+		accoes:
+		* rodar    :  ctrl             + setas/LMB
+			-> void QGraphicsItem::rotate ( qreal angle )
+			Rotates the current item transformation angle degrees clockwise around its origin.
+
+		* inclinar :  meta             + setas/LMB
+			-> void QGraphicsItem::shear ( qreal sh, qreal sv )
+			Shears the current item transformation by (sh, sv).
+		
+		* escalar  :  alt              + setas/LBM
+			-> void QGraphicsItem::scale ( qreal sx, qreal sy )
+			Scales the current item transformation by (sx, sy) around its origin.
+		
+		* deslocar :  sem modificador  + setas/LMB
+			-> void QGraphicsItem::translate ( qreal dx, qreal dy )
+			Translates the current item transformation by (dx, dy).
+		
+		* inverter : shift
+			-> shift + alt + left : reverte o valor extendido
+		
+		detalhes
+		* deslocar :  + 1 pixel*(1/zoom)
+			se esta com o zoom out em 2x -> 1
+		*/
 		QRectF rec = selectedItem->sceneBoundingRect();
 		QPointF rec_center = rec.center();
 		int mod = QApplication::keyboardModifiers();
@@ -218,20 +248,85 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			case Qt::Key_Control:
 				m_ctrl_flag = true;
 				qDebug() << "ctrl1:" << m_ctrl_flag << "c:" << key_count << "m:" << mod;
+				emit modifierKeyPressedSignal(Qt::Key_Control);
 			break;
+			case Qt::Key_Alt:
+				emit modifierKeyPressedSignal(Qt::Key_Alt);
+			break;
+			case Qt::Key_Meta:
+				emit modifierKeyPressedSignal(Qt::Key_Meta);
+				break;
 			case Qt::Key_Right:
 				qDebug() << "ctrl2:" << m_ctrl_flag << "c:" << key_count << "m:" << mod;
-				mod == Qt::ControlModifier ? selectedItem->rotate(1): selectedItem->rotate(-1);
+				switch(mod){
+					case Qt::ControlModifier:
+						selectedItem->rotate(1);
+					break;
+					case Qt::AltModifier:
+						selectedItem->scale(1.1,1);
+					break;
+					case Qt::MetaModifier:
+						selectedItem->shear(0.1,0);
+					break;
+					default:
+						selectedItem->translate(1,0);
+				}
 				m_ctrl_flag = false;
 			break;
 			case Qt::Key_Left:
-				selectedItem->rotate(-1);
+				switch(mod){
+					case Qt::ControlModifier:
+						selectedItem->rotate(-1);
+						break;
+					case Qt::AltModifier:{
+						qreal rec_width = rec.width();
+						qDebug() << "x: " << rec_width;
+						rec_width -= rec_width*1.1;
+						qDebug() << "a andar: " << -rec_width;
+						selectedItem->translate(rec_width,0);
+						selectedItem->scale(1.1,1);
+						qDebug() << "new size: " << (selectedItem->sceneBoundingRect()).width();
+						break;
+					}
+					case Qt::MetaModifier:
+						selectedItem->shear(-0.1,0);
+						break;
+					default:
+						selectedItem->translate(-1,0);
+				}
 			break;
 			case Qt::Key_Up:
-				//shear default value
+				switch(mod){
+					case Qt::AltModifier:{
+						qreal rec_height= rec.height();
+						rec_height-= rec_height*1.1;
+						selectedItem->translate(0,rec_height);
+						selectedItem->scale(1,1.1);
+						break;
+					}
+					case Qt::MetaModifier:
+						selectedItem->shear(0,0.1);
+						break;
+					default:
+						selectedItem->translate(0,-1);
+				}
+				
 			break;
 			case Qt::Key_Down:
-				//shear "back" default value
+				switch(mod){
+					case Qt::AltModifier: 
+						selectedItem->scale(1,1.1);
+						break;
+					case Qt::MetaModifier:
+						selectedItem->shear(0,-0.1);
+						break;
+					default:
+						selectedItem->translate(0,1);
+				}
+			break;
+			case Qt::Key_Delete:
+				qDebug() << "remove!";
+				scene.removeItem(selectedItem);
 			break;
 		 }
   	}
@@ -313,6 +408,7 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 {
   // read station data from xml stream
+
   while ( !stream->atEnd() )
   {
     stream->readNext();
@@ -363,4 +459,5 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 	
 	
   }
+	
 }

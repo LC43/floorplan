@@ -91,8 +91,6 @@ private:
 	QPainter *paint;
 	QList<QPixmap> qpixmap_list;
 	QTextEdit *textEdit;
-	QListWidget *customerList;
-	QListWidget *paragraphsList;
 	QStringList svgs_filenames;
 	QDir resources;
 };

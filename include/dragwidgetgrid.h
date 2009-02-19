@@ -73,6 +73,7 @@ public:
 	void mouseReleaseEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent* event);
+	void keyReleaseEvent( QKeyEvent * event );
 	void keyPressEvent ( QKeyEvent * event );
 	void setSvgList(SvgListWidget * list) {svg_list = list;};
 	void LoadProject(QXmlStreamReader* stream);
@@ -82,11 +83,11 @@ public slots:
 	void copyToClipboard();
 	void saveToFile();
 	void sendToPrinter();
-	void increaseZoom();
-	void decreaseZoom();
-	void resetZoom();
 	//protected:
 
+signals:
+	void zoomChangedSignal( qreal factor );
+	void modifierKeyPressedSignal(int qttecla);
 private:
 	QPainter *paint;
 	QPicture *pic;
@@ -100,7 +101,7 @@ private:
 	bool m_ctrl_flag;
 	SvgListWidget * svg_list;
 	//QMatrix trans;
-	
+	int inicial_zoom;
 };
 
 
