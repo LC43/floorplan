@@ -48,6 +48,7 @@
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qpicture.h>
+#include <QVector>
 
 
 #include <QPixmap>
@@ -94,7 +95,7 @@ private:
 	QTextEdit *textEdit;
 	QListWidget *customerList;
 	QListWidget *paragraphsList;
-	QStringList svgs_filenames;
+	QVector <QString> svgs_filenames;
 };
 
 

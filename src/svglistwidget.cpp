@@ -54,7 +54,6 @@ SvgListWidget::SvgListWidget(QWidget *parent)
     createSvgList();
     int num_blocks = qpixmap_list.size()*2;
     setMinimumSize(200, 100*num_blocks);
-
 }
 
 QList<QPixmap> SvgListWidget::createSvgList(){
@@ -68,7 +67,7 @@ QList<QPixmap> SvgListWidget::createSvgList(){
     QStringList filters;
     filters << "*.svg";
     resources.setNameFilters(filters);
-    svgs_filenames = resources.entryList();
+    svgs_filenames = resources.entryList().toVector();
     
     //for each in dir
     
@@ -231,11 +230,17 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 
 QPixmap SvgListWidget::getPixmapByName(QString name) {
 	
-	int i =0;
-	for ( QStringList::Iterator it = svgs_filenames.begin(); it != svgs_filenames.end(); ++it,i++) {
-        if(*it == name)
-			break;
-    }
+	 int i;
+	 for (int i = 0; i < svgs_filenames.size(); ++i) {
+		QString name = svgs_filenames.at(i);
+		qDebug() << "SvgListWidget: " << name << " : " << i;	
+	}
+	qDebug() << "chega_aqui";
+	qDebug() << name;
+	if(svgs_filenames.empty())
+		qDebug() << "a lista e nula?";
+	i = svgs_filenames.indexOf(name);
+	qDebug() << i;
 	return qpixmap_list.at(i);
 
 }

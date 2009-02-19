@@ -337,7 +337,7 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 	  qreal m22 = 0.0;
 	  qreal dx = 0.0;
 	  qreal dy = 0.0;
-	  QString id =0;
+	  QString id;
       foreach( QXmlStreamAttribute attribute, stream->attributes() )
       {
 		if ( attribute.name() == "id" ) id = attribute.value().toString();
@@ -348,11 +348,17 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 		if ( attribute.name() == "dx" ) dx = attribute.value().toString().toDouble();
         if ( attribute.name() == "dy" ) dy = attribute.value().toString().toDouble();
       }
+	  qDebug() << id;
 	  QMatrix m = QMatrix(m11,m12,m21,m22,dx,dy);
 	  // we need to add the pixmap here
-	  QGraphicsPixmapItem * pixmap = scene.addPixmap(svg_list->getPixmapByName(id));
+	  QPixmap p = svg_list->getPixmapByName(id);
+	  if(!p){
+		qDebug() << "NULLLLLO";  
+	  }
+	  else { QGraphicsPixmapItem * pixmap = scene.addPixmap(p);
 	  
-	  pixmap->setMatrix(m,false);
+	 		 pixmap->setMatrix(m,false);
+		 }
     }
 	
 	
