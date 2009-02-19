@@ -62,6 +62,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 	setDragMode(QGraphicsView::RubberBandDrag);
 	selectedItem  = NULL;
 	m_drawline=false;
+	inicial_zoom = height();
 }
 
 
@@ -99,14 +100,16 @@ void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
 
 void DragWidgetGrid::wheelEvent(QWheelEvent* event){
   qreal factor = 1.2;
-  qDebug() << "ini: " << inicial_zoom << "max: " << (inicial_zoom*max_zoom) << "now" << sceneRect().height();
-  if ( sceneRect().height() >= (inicial_zoom*max_zoom) )
-	  return;
-  if (event->delta() < 0)
-    factor = 1.0 / factor;
-  scale(factor, factor);
-  emit zoomChangedSignal(factor);
-
+  qDebug() << "ini: " << inicial_zoom << "max: " << (inicial_zoom*max_zoom) << "now" << height();
+  QGraphicsScene cur_scene = scene();
+  if( !cur_scene ) {
+	if ( cur_scene->height() >= (inicial_zoom*max_zoom) )
+		return;
+	if (event->delta() < 0)
+		factor = 1.0 / factor;
+	scale(factor, factor);
+	emit zoomChangedSignal(factor);
+  }
 }
 
 
@@ -197,7 +200,18 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 
 // 	TODO: ao largar a tecla, emitir os sinais para a mainwindow retirar da status
-
+	switch(event->key()){
+		case Qt::Key_Control:
+			emit modifierKeyReleasedSignal(Qt::Key_Control);
+			break;
+		case Qt::Key_Alt:
+			emit modifierKeyReleasedSignal(Qt::Key_Alt);
+			break;
+		case Qt::Key_Meta:
+			emit modifierKeyReleasedSignal(Qt::Key_Meta);
+			break;
+	}
+	
 
 }
 

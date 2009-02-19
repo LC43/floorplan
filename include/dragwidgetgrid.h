@@ -46,6 +46,7 @@
 
 
 #include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QPixmap>
 #include <QtSvg>
 #include <QPrinter>
@@ -87,7 +88,9 @@ public slots:
 
 signals:
 	void zoomChangedSignal( qreal factor );
-	void modifierKeyPressedSignal(int qttecla);
+	void modifierKeyPressedSignal(int qt_tecla);
+	void modifierKeyReleasedSignal(int qt_tecla);
+	
 private:
 	QPainter *paint;
 	QPicture *pic;
