@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 		void updateRecentFileActions();
 		QString strippedName(const QString &fullFileName);
 		void loadFile(const QString &fileName);
+		bool  fileSaveAs();
 		
 		QAction *separatorAction;
 		QTextEdit *textEdit;
@@ -42,6 +43,7 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 
 	private slots:
 		void open();
+		//void save();
 		void openRecentFile();
 		void sobreFloorplan();
 		void showDocumentation();

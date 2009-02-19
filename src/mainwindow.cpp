@@ -221,3 +221,29 @@ void MainWindow::updateRecentFileActions()
 	return QFileInfo(fullFileName).fileName();
 }
 
+bool  MainWindow::fileSaveAs()
+{
+  // get user to select filename and location
+  QString filename = QFileDialog::getSaveFileName();
+  if ( filename.isEmpty() ) return false;
+
+  // open the file and check we can write to it
+  QFile file( filename );
+  if ( !file.open( QIODevice::WriteOnly ) )
+  {
+    ( QString("Failed to write to '%1'").arg(filename) );
+    return false;
+  }
+
+  // open an xml stream writer and write simulation data
+  QXmlStreamWriter  * stream = new QXmlStreamWriter( &file );
+
+  drag->SaveProject(stream);
+
+  stream->writeEndDocument();
+
+  // close the file and display useful message
+  file.close();
+  statusBar()->showMessage( QString("Saved to '%1'").arg(filename) );
+  return true;
+}
