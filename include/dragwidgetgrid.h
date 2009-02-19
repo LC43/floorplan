@@ -75,6 +75,8 @@ public:
     void wheelEvent(QWheelEvent* event);
 	void keyPressEvent ( QKeyEvent * event );
 	void setSvgList(SvgListWidget * list) {svg_list = list;};
+	void LoadProject(QXmlStreamReader* stream);
+	void SaveProject(QXmlStreamWriter* stream);
 public slots:
 	void copyToClipboard();
 	void saveToFile();
@@ -82,8 +84,6 @@ public slots:
 	void increaseZoom();
 	void decreaseZoom();
 	void resetZoom();
-	void LoadProject(QXmlStreamReader* stream);
-	void SaveProject(QXmlStreamWriter* stream);
 	//protected:
 
 private:

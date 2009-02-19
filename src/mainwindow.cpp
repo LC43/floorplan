@@ -136,24 +136,32 @@ void MainWindow::openRecentFile()
 	if (action)
 		loadFile(action->data().toString());
 }
-void MainWindow::loadFile(const QString &fileName)
+void MainWindow::loadFile(const QString &filename)
 {
-	QFile file(fileName);
-	if (!file.open(QFile::ReadOnly | QFile::Text)) {
-		QMessageBox::warning(this, tr("Recent Files"),
-							 tr("Cannot read file %1:\n%2.")
-									 .arg(fileName)
-									 .arg(file.errorString()));
-		return;
-	}
+	
+  if ( filename.isEmpty() ) return ;
 
-	QTextStream in(&file);
-	QApplication::setOverrideCursor(Qt::WaitCursor);
-	textEdit->setPlainText(in.readAll());
-	QApplication::restoreOverrideCursor();
+  // open the file and check we can read from it
+  QFile file( filename );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    statusBar()->showMessage( QString("Failed to open '%1'").arg(filename) );
+    return ;
+  }
 
-	setCurrentFile(fileName);
-	statusBar()->showMessage(tr("File loaded"), 2000);
+  // open an xml stream reader and load simulation data
+  QXmlStreamReader * stream = new QXmlStreamReader( &file );
+	
+  drag->LoadProject(stream);
+	
+  file.close();
+	
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+ // textEdit->setPlainText(in.readAll());
+  QApplication::restoreOverrideCursor();
+  setCurrentFile(filename);
+  statusBar()->showMessage(tr("File loaded"), 2000);
+  
 }
 void MainWindow::sobreFloorplan(){
 	QMessageBox::about(this, tr("Sobre Floor Plan"),
