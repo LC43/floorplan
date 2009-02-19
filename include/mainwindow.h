@@ -43,7 +43,8 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 
 	private slots:
 		void open();
-		//void save();
+		void save();
+		void new_plant();
 		void openRecentFile();
 		void sobreFloorplan();
 		void showDocumentation();

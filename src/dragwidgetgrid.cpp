@@ -268,6 +268,15 @@ void DragWidgetGrid::sendToPrinter(){
 
 /************************************ writeStream ************************************/
 
+void  DragWidgetGrid::resetView(){
+ foreach( QGraphicsItem*  item, items() )
+  {
+	scene.removeItem(item);  
+  }
+  resetMatrix();
+  resetTransform();
+}
+
 void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 {
   // write station data to xml stream

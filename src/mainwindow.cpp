@@ -24,8 +24,18 @@ void MainWindow::createMenus() {
 	
 	//menuFicheiro
 	// TODO: + novo
+	
+	// novo
+	action_Novo->setShortcut(tr("Ctrl+N"));
+	action_Novo->setStatusTip(tr("Criar nova planta"));
+	connect(action_Novo, SIGNAL(triggered()), this, SLOT(new_plant()));
+	
+	actionGuardar->setShortcut(tr("Ctrl+G"));
+	actionGuardar->setStatusTip(tr("Guardar projecto actual"));
+	connect(actionGuardar, SIGNAL(triggered()), this, SLOT(save()));
+	
 	// + abrir
-	actionAbrir->setShortcut(tr("Ctrl+N"));
+	actionAbrir->setShortcut(tr("Ctrl+A"));
 	actionAbrir->setStatusTip(tr("Abrir uma planta"));
 	connect(actionAbrir, SIGNAL(triggered()), this, SLOT(open()));
 
@@ -128,6 +138,30 @@ void MainWindow::open()
 	QString fileName = QFileDialog::getOpenFileName(this);
 	if (!fileName.isEmpty())
 		loadFile(fileName);
+}
+
+
+void MainWindow::save()
+{
+	fileSaveAs();
+}
+
+void MainWindow::new_plant()
+{
+	QMessageBox diag;
+	diag.setInformativeText(tr("Deseja guardar o projecto actual"));
+ 	diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel | QMessageBox::Ignore);
+	diag.setDefaultButton(QMessageBox::Cancel);
+	int ret = diag.exec();
+	switch(ret){
+		case QMessageBox::Ok:
+		 save();
+		break;
+		case QMessageBox::Ignore:
+		//temos de resetar scene
+		drag->resetView();
+		break;
+	}
 }
 
 void MainWindow::openRecentFile()

@@ -77,6 +77,7 @@ public:
 	void setSvgList(SvgListWidget * list) {svg_list = list;};
 	void LoadProject(QXmlStreamReader* stream);
 	void SaveProject(QXmlStreamWriter* stream);
+	void resetView();
 public slots:
 	void copyToClipboard();
 	void saveToFile();
