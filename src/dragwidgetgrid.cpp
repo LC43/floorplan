@@ -100,16 +100,10 @@ void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
 
 void DragWidgetGrid::wheelEvent(QWheelEvent* event){
   qreal factor = 1.2;
-  qDebug() << "ini: " << inicial_zoom << "max: " << (inicial_zoom*max_zoom) << "now" << height();
-  QGraphicsScene cur_scene = scene();
-  if( !cur_scene ) {
-	if ( cur_scene->height() >= (inicial_zoom*max_zoom) )
-		return;
 	if (event->delta() < 0)
 		factor = 1.0 / factor;
 	scale(factor, factor);
 	emit zoomChangedSignal(factor);
-  }
 }
 
 
