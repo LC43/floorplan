@@ -156,14 +156,6 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 			m_drawline = true;
 		else
 			selectedItem = item;
-		qDebug() << "selected pos" << selectedItem->pos();
-		qDebug() << "selected in rx pos" << selectedItem->pos().rx();
-		qDebug() << "selected in x pos" << selectedItem->pos().x();
-		qDebug() << "selected in x pos from scene"
-				<< mapFromScene(selectedItem->pos().x(),
-								selectedItem->pos().y());
-		//qDebug() << "selected scene pos" << mapToScene( item_pos );
-		qDebug() << "event pos" << event->pos();
 
 		QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
 		drag_distance_to_mouse = event->pos() - item_point;
@@ -186,12 +178,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 }
 
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
-	//DONE: Fix start drag distance.. tem q ser 1  :/
-	qDebug() << "old Pos: " << drag_start_pos;
-	qDebug() << "New Pos: " << event->pos();
-	qDebug() << "distance manh: " << (event->pos() - drag_start_pos).manhattanLength();
-	qDebug() << "distance dist: " << event->pos() - drag_start_pos;
-	qDebug() << "distance mouse: " << drag_distance_to_mouse;
+
 	if ((event->pos() - drag_start_pos).manhattanLength()
           < 1 )
      return;
@@ -202,12 +189,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-// 		QPointF mapToScene ( const QPointF & point ) const
-// 		QPointF mapToScene ( qreal x, qreal y ) const
-// 		void setPos ( const QPointF & pos )
-// 		void setPos ( qreal x, qreal y )
-// 		const QPoint & pos () const
-// 		QPointF posF () const
+
 		qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
 		qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
 		selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
@@ -237,13 +219,10 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 		**** TODO: passar o selectedItem para a status bar
 		*****TODO: resetTransform ()
 		*****TODO: FIXME: posicao dos blocos, setZeValue()
-		*****DONE: ajustar com a distancia pecorrida pelo rato
 		*****TODO: adicionar o mesmo codigo para o mousepress
-		*****DONE: delete key
 		*****TODO: undo/redo logic
 		*****TODO: adcionar accoes ao qtext do mem. descritiva
 
-		
 		accoes:
 		* rodar    :  ctrl             + setas/LMB
 			-> void QGraphicsItem::rotate ( qreal angle )
