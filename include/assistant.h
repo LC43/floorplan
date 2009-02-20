@@ -45,6 +45,7 @@
 #define ASSISTANT_H
 
 #include <QtCore/QString>
+#include <QtHelp>
 
 QT_BEGIN_NAMESPACE
 class QProcess;

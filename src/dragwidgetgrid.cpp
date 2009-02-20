@@ -143,10 +143,11 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
 	QGraphicsItem *item;
 	bool selected = false;
+	qDebug() << "-------------";
 	if ((item = itemAt(event->pos())) == NULL) {
-         qDebug() << "You didn't click on an item.";
+		qDebug() << "You didn't click on an item: " << event->pos();
      } else {
-		qDebug() << "You clicked on an item.";
+		qDebug() << "You clicked on an item: " << event->pos();
 		selected=true;
      }
 	 
@@ -154,8 +155,18 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		if(!selected)
 			m_drawline = true;
 		else
-			selectedItem = item;	
+			selectedItem = item;
+		qDebug() << "selected pos" << selectedItem->pos();
+		qDebug() << "selected in rx pos" << selectedItem->pos().rx();
+		qDebug() << "selected in x pos" << selectedItem->pos().x();
+		qDebug() << "selected in x pos from scene"
+				<< mapFromScene(selectedItem->pos().x(),
+								selectedItem->pos().y());
+		//qDebug() << "selected scene pos" << mapToScene( item_pos );
+		qDebug() << "event pos" << event->pos();
 
+		QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
+		drag_distance_to_mouse = event->pos() - item_point;
 		drag_start_pos = event->pos();
 	}
 	else if(selected){
@@ -175,25 +186,37 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 }
 
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
-	//TODO: Fix start drag distance.. tem q ser 1  :/
+	//DONE: Fix start drag distance.. tem q ser 1  :/
+	qDebug() << "old Pos: " << drag_start_pos;
+	qDebug() << "New Pos: " << event->pos();
+	qDebug() << "distance manh: " << (event->pos() - drag_start_pos).manhattanLength();
+	qDebug() << "distance dist: " << event->pos() - drag_start_pos;
+	qDebug() << "distance mouse: " << drag_distance_to_mouse;
 	if ((event->pos() - drag_start_pos).manhattanLength()
-          < QApplication::startDragDistance())
+          < 1 )
      return;
-
+	
 	if(m_drawline)
 	{
 		scene.addLine(QLineF(mapToScene(event->pos()),mapToScene(drag_start_pos)),QPen(Qt::SolidLine));
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-		selectedItem->setPos(mapToScene(event->pos()));
+// 		QPointF mapToScene ( const QPointF & point ) const
+// 		QPointF mapToScene ( qreal x, qreal y ) const
+// 		void setPos ( const QPointF & pos )
+// 		void setPos ( qreal x, qreal y )
+// 		const QPoint & pos () const
+// 		QPointF posF () const
+		qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
+		qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
+		selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
 		selectedItem = NULL;
 	}
 	drag_start_pos = QPoint(0,0);
 }
 void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 
-// 	TODO: ao largar a tecla, emitir os sinais para a mainwindow retirar da status
 	switch(event->key()){
 		case Qt::Key_Control:
 			emit modifierKeyReleasedSignal(Qt::Key_Control);
@@ -205,10 +228,7 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 			emit modifierKeyReleasedSignal(Qt::Key_Meta);
 			break;
 	}
-	
-
 }
-
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
@@ -217,9 +237,9 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 		**** TODO: passar o selectedItem para a status bar
 		*****TODO: resetTransform ()
 		*****TODO: FIXME: posicao dos blocos, setZeValue()
-		*****TODO: ajustar com a distancia pecorrida pelo rato
+		*****DONE: ajustar com a distancia pecorrida pelo rato
 		*****TODO: adicionar o mesmo codigo para o mousepress
-		*****TODO: delete key
+		*****DONE: delete key
 		*****TODO: undo/redo logic
 		*****TODO: adcionar accoes ao qtext do mem. descritiva
 
@@ -465,3 +485,12 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
   }
 	
 }
+void DragWidgetGrid::increaseZoom(){
+	qreal factor = 1.2;
+	scale(factor, factor);
+	}
+void DragWidgetGrid::decreaseZoom(){
+	qreal factor = 0.8;
+	scale(factor, factor);
+}
+

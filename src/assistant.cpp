@@ -85,13 +85,18 @@ bool Assistant::startAssistant()
         app += QLatin1String("Assistant.app/Contents/MacOS/Assistant");    
 #endif
 
-        QStringList args;
+		QString collection_file;
+		collection_file.append("docs");
+		collection_file.append(QDir::separator());
+		collection_file.append("floorplan.qhc");
+		QStringList args;
         args << QLatin1String("-collectionFile")
-	     << QLatin1String("docs/floorplan.qhc")
-	     << QLatin1String("-enableRemoteControl");
-
+		//<< QLatin1String("docs/floorplan.qhc")
+		<<  collection_file
+		<< QLatin1String("-enableRemoteControl");
+		
         proc->start(app, args);
-
+		qDebug() << " lido a coleccao";
         if (!proc->waitForStarted()) {
             QMessageBox::critical(0, QObject::tr("Simple Text Viewer"),
                 QObject::trUtf8("Não foi possível lançar o Assistant (%1)").arg(app));

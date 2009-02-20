@@ -80,10 +80,14 @@ public:
 	void LoadProject(QXmlStreamReader* stream);
 	void SaveProject(QXmlStreamWriter* stream);
 	void resetView();
+	
 public slots:
 	void copyToClipboard();
 	void saveToFile();
 	void sendToPrinter();
+	//used by mainwindow menu
+	void increaseZoom();
+	void decreaseZoom();
 	//protected:
 
 signals:
@@ -99,6 +103,7 @@ private:
 	QMatrix original;
 	QGraphicsItem * selectedItem;
 	QPoint drag_start_pos;
+	QPointF drag_distance_to_mouse;
 	bool m_drawline;
 	QGraphicsLineItem * line;
 	bool m_ctrl_flag;

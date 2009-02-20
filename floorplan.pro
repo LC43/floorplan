@@ -1,5 +1,5 @@
 QT += svg xml
-
+CONFIG += help
 # binary
 TARGET  = floorplan
 
@@ -14,10 +14,10 @@ RES     = resources
 UI      = ui
 
 # add .ui -> .h file to include path
-unix:UI_DIR  = $$INCLUDEPATH
+UI_DIR  = $$INCLUDEPATH
 
 # moc_ 
-unix:MOC_DIR = $$BUILD
+MOC_DIR = $$BUILD
 
 # .o
 OBJECTS_DIR  = $$BUILD
@@ -34,7 +34,7 @@ HEADERS =    $$INCLUDEPATH/svglistwidget.h \
              $$INCLUDEPATH/memoriadescritiva.h \
              $$INCLUDEPATH/pages.h \
              $$INCLUDEPATH/configdialog.h \
-             $$INCLUDEPATH/mainwindow.h \
+             $$INCLUDEPATH/mainwindow.h
                
 
 RESOURCES =  $$RES/floorplan.qrc
@@ -51,6 +51,5 @@ SOURCES =    $$SRC/svglistwidget.cpp \
 # install
 target.path = $$DESTDIR
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro images
-#sources.path = $$[QT_INSTALL_EXAMPLES]/draganddrop/draggableicons
 INSTALLS += target 
 
