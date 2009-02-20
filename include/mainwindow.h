@@ -40,6 +40,14 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 		Assistant *assistant;
 
 		QLabel *status_escala;
+		QLabel *status_selectedItem;
+		QLabel *status_modifiers;
+		QLabel *status_modifiers_ctrl;
+		QLabel *status_modifiers_ctrl_stt;
+		QLabel *status_modifiers_meta;
+		QLabel *status_modifiers_meta_stt;
+		QLabel *status_modifiers_alt;
+		QLabel *status_modifiers_alt_stt;
 
 	private slots:
 		void open();
@@ -49,6 +57,9 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 		void sobreFloorplan();
 		void showDocumentation();
 		void updateEscala(QString escala);
+		void resetSelectedItem();
+		void updateSelectedItem(QString name);
+		void updateModifierPressed(bool state, int modifier);
 };
 
 #endif

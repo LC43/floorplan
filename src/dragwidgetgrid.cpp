@@ -40,7 +40,20 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+	/*
 
+		**** DONE: passar o selectedItem para a status bar
+		*****TODO: resetTransform ()
+		*****TODO: FIXME: posicao dos blocos, setZeValue()
+		*****TODO: adicionar o mesmo codigo para o mousepress
+		*****TODO: undo/redo logic
+		*****TODO: adcionar accoes ao qtext do mem. descritiva
+		*****TODO: impressao à escala
+		*****TODO: conectores: janelas (1.2-1.5) , portas (0.90-1.20)
+		*****TODO: FIXME: aumentar o traco das linhas
+
+
+	*/
 #include <QtGui>
 #include <QMessageBox>
 #include <QXmlStreamAttributes>
@@ -48,7 +61,7 @@
 
 #include "dragwidgetgrid.h"
 
-static int max_zoom = 10; //percentage
+//static int max_zoom = 10; //percentage
 
 DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 : QGraphicsView (parent)
@@ -146,6 +159,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	qDebug() << "-------------";
 	if ((item = itemAt(event->pos())) == NULL) {
 		qDebug() << "You didn't click on an item: " << event->pos();
+		emit selectedItemOff();
      } else {
 		qDebug() << "You clicked on an item: " << event->pos();
 		selected=true;
@@ -154,9 +168,13 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	 if(event->button() == Qt::LeftButton) {
 		if(!selected)
 			m_drawline = true;
-		else
+		else{
 			selectedItem = item;
-
+			//NOTE: isnt there a more elegant way to get the name?
+			QGraphicsPixmapItem *  pixmap = dynamic_cast<QGraphicsPixmapItem*>( item );
+			QString name = pixmap->data(ObjectID).toString();
+			emit selectedItemOn(name);
+		}
 		QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
 		drag_distance_to_mouse = event->pos() - item_point;
 		drag_start_pos = event->pos();
@@ -169,7 +187,8 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		int ret = diag.exec();
 		switch(ret){
 			case QMessageBox::Ok:
-				scene.removeItem(item);	
+				scene.removeItem(item);
+				emit selectedItemOff();
 			break;
 			default:
 			break;
@@ -189,11 +208,13 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-
 		qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
 		qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
 		selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
 		selectedItem = NULL;
+
+		//WARNING: can go null until we can select more than one block
+		emit selectedItemOff();
 	}
 	drag_start_pos = QPoint(0,0);
 }
@@ -201,28 +222,24 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 
 	switch(event->key()){
 		case Qt::Key_Control:
-			emit modifierKeyReleasedSignal(Qt::Key_Control);
+			emit modifierKeySignal(false, Qt::Key_Control);
 			break;
 		case Qt::Key_Alt:
-			emit modifierKeyReleasedSignal(Qt::Key_Alt);
+			emit modifierKeySignal(false, Qt::Key_Alt);
 			break;
 		case Qt::Key_Meta:
-			emit modifierKeyReleasedSignal(Qt::Key_Meta);
+			emit modifierKeySignal(false, Qt::Key_Meta);
 			break;
 	}
 }
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
-		/*
+	
+/*
 
-		**** TODO: passar o selectedItem para a status bar
-		*****TODO: resetTransform ()
-		*****TODO: FIXME: posicao dos blocos, setZeValue()
-		*****TODO: adicionar o mesmo codigo para o mousepress
-		*****TODO: undo/redo logic
-		*****TODO: adcionar accoes ao qtext do mem. descritiva
 
+		
 		accoes:
 		* rodar    :  ctrl             + setas/LMB
 			-> void QGraphicsItem::rotate ( qreal angle )
@@ -250,21 +267,18 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 		QRectF rec = selectedItem->sceneBoundingRect();
 		QPointF rec_center = rec.center();
 		int mod = QApplication::keyboardModifiers();
-		int key_count = event->count();
 		switch(event->key()){
 			case Qt::Key_Control:
 				m_ctrl_flag = true;
-				qDebug() << "ctrl1:" << m_ctrl_flag << "c:" << key_count << "m:" << mod;
-				emit modifierKeyPressedSignal(Qt::Key_Control);
+				emit modifierKeySignal(true, Qt::Key_Control);
 			break;
 			case Qt::Key_Alt:
-				emit modifierKeyPressedSignal(Qt::Key_Alt);
+				emit modifierKeySignal(true, Qt::Key_Alt);
 			break;
 			case Qt::Key_Meta:
-				emit modifierKeyPressedSignal(Qt::Key_Meta);
+				emit modifierKeySignal(true, Qt::Key_Meta);
 				break;
 			case Qt::Key_Right:
-				qDebug() << "ctrl2:" << m_ctrl_flag << "c:" << key_count << "m:" << mod;
 				switch(mod){
 					case Qt::ControlModifier:
 						selectedItem->rotate(1);

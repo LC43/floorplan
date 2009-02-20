@@ -11,12 +11,23 @@ MainWindow::MainWindow(QWidget *parent)
 	svg = new SvgListWidget();
 	drag = new DragWidgetGrid();
 	drag->setSvgList(svg);
+	
 	status_escala = new QLabel(this);
+	status_selectedItem = new QLabel(this);
+	status_modifiers = new QLabel(this);
+	status_modifiers_ctrl = new QLabel(this);
+	status_modifiers_ctrl_stt = new QLabel(this);
+	status_modifiers_meta = new QLabel(this);
+	status_modifiers_meta_stt = new QLabel(this);
+	status_modifiers_alt = new QLabel(this);
+ 	status_modifiers_alt_stt = new QLabel(this);
+
 	scrollArea->setWidget(svg);
 	//scrollArea->ensureWidgetVisible();
 	scrollArea->setWidgetResizable(true);
 	setCentralWidget(drag);
 	assistant = new Assistant;
+
 	createMenus();
 
 }
@@ -24,8 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::createMenus() {
 	
 	//menuFicheiro
-	// TODO: + novo
-	
+
 	// novo
 	action_Novo->setShortcut(tr("Ctrl+N"));
 	action_Novo->setStatusTip(tr("Criar nova planta"));
@@ -115,10 +125,84 @@ void MainWindow::createMenus() {
 	connect(actionAcerca_do_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 	//Status bar:
-
 	
-	status_escala->setText("Escala: " + preferencias->getEscala());
+	// ++ from drag
+
+	connect(drag, SIGNAL(selectedItemOn(QString)), this, SLOT(updateSelectedItem(QString)));
+	connect(drag, SIGNAL(selectedItemOff()), this, SLOT(resetSelectedItem()));
+
+	//TODO: divide the text into their own qlabel
+	status_selectedItem->setText(tr("Item seleccionado: ") + tr("Nada"));
+	statusBar()->addPermanentWidget( status_selectedItem );
+
+	connect(drag,SIGNAL(modifierKeySignal(bool, int)),this, SLOT(updateModifierPressed(bool, int)));
+	//TODO: change *_stt (state) por pixmap colorizado
+	QFont font_bold;
+	font_bold.setBold(true);
+
+	status_modifiers->setText(tr("Modificadores: "));
+	status_modifiers_ctrl->setText(trUtf8("Control (Rotação): "));
+	status_modifiers_ctrl->setFont(font_bold);
+	status_modifiers_ctrl_stt->setText(tr("Nada"));
+	status_modifiers_meta->setText(trUtf8("Meta (Inclinação): "));
+	status_modifiers_meta->setFont(font_bold);
+	status_modifiers_meta_stt->setText(tr("Nada"));
+	status_modifiers_alt->setText(trUtf8("Alt (Escalar): "));
+	status_modifiers_alt->setFont(font_bold);
+ 	status_modifiers_alt_stt->setText(tr("Nada"));
+
+	statusBar()->addPermanentWidget( status_modifiers );
+	statusBar()->addPermanentWidget( status_modifiers_ctrl );
+	statusBar()->addPermanentWidget( status_modifiers_ctrl_stt );
+	statusBar()->addPermanentWidget( status_modifiers_meta );
+	statusBar()->addPermanentWidget( status_modifiers_meta_stt );
+	statusBar()->addPermanentWidget( status_modifiers_alt );
+ 	statusBar()->addPermanentWidget( status_modifiers_alt_stt );
+
+
+	status_escala->setText(tr("Escala: ") + preferencias->getEscala());
 	statusBar()->addPermanentWidget( status_escala );
+}
+void MainWindow::resetSelectedItem(){
+	status_selectedItem->setText(tr("Item seleccionado: ") + tr("Nada"));
+}
+void MainWindow::updateSelectedItem(QString name){
+	status_selectedItem->setText(tr("Item seleccionado: ") + name);
+	// set to name
+}
+// mylabel->setPalette(QPalette(Qt::red));
+
+void MainWindow::updateModifierPressed(bool state, int modifier){
+	QString estado;
+	QPalette palete;
+	qDebug() << "estado" << state;
+	qDebug() << "ctr" << modifier << "=" << Qt::ControlModifier;
+	switch(modifier){
+		case Qt::Key_Control:
+			if( state ){
+				estado = "On";
+				palete = QPalette(Qt::green);
+			} else {
+				estado = tr("Nada");
+				palete = QPalette();
+			}
+			status_modifiers_ctrl_stt->setPalette(palete);
+			status_modifiers_ctrl_stt->setText(estado);
+			
+			break;
+		case Qt::Key_Alt:
+			estado = trUtf8("Alt (Escalar): ");
+			state ? estado.append( "On") : estado.append(tr("Nada"));
+			status_modifiers_alt->setText(estado);
+			break;
+		case Qt::Key_Meta:
+			estado = trUtf8("Meta (Inclinação): ");
+			state ? estado.append( "On") : estado.append(tr("Nada"));
+			status_modifiers_meta->setText(estado);
+			break;
+		default:
+			qDebug() << "oops" ;
+	}
 }
 
 void MainWindow::updateEscala(QString escala){

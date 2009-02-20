@@ -92,9 +92,10 @@ public slots:
 
 signals:
 	void zoomChangedSignal( qreal factor );
-	void modifierKeyPressedSignal(int qt_tecla);
-	void modifierKeyReleasedSignal(int qt_tecla);
-	
+	void modifierKeySignal( bool state, int qt_key );
+	void selectedItemOn(QString name);
+	void selectedItemOff();
+		
 private:
 	QPainter *paint;
 	QPicture *pic;
