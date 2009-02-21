@@ -181,14 +181,13 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	}
 	else if(selected){
 		QMessageBox diag;
-		diag.setInformativeText("Tem a certeza que deseja apagar o item em questao?");
+		diag.setInformativeText("Deseja reverter alteraçoes efectuadas ao objecto?");
  		diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
 		diag.setDefaultButton(QMessageBox::Cancel);
 		int ret = diag.exec();
 		switch(ret){
 			case QMessageBox::Ok:
-				scene.removeItem(item);
-				emit selectedItemOff();
+				item->resetTransform();
 			break;
 			default:
 			break;
