@@ -277,17 +277,17 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			case Qt::Key_Meta:
 				emit modifierKeySignal(true, Qt::Key_Meta);
 				break;
-			case QT::Key_PageUp:
+			case Qt::Key_PageUp:
 				switch(mod){
 					case Qt::ControlModifier:
-						item->setZValue(item->zValue()+1.0);
+						selectedItem->setZValue(selectedItem->zValue()+1.0);
 					break;
 				}
 			break;
-			case QT::Key_PageDown:
+			case Qt::Key_PageDown:
 				switch(mod){
 					case Qt::ControlModifier:
-						item->setZValue(item->zValue()-1.0);
+						selectedItem->setZValue(selectedItem->zValue()-1.0);
 					break;
 				}
 			break;
