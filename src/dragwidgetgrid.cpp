@@ -44,6 +44,13 @@
 		*****TODO: not critical: undo/redo logic
 		*****TODO: impressao à escala
 		*****TODO: conectores: janelas (1.2-1.5) , portas (0.90-1.20)
+
+
+		+ escala
+		
+
+
+		
 	*/
 #include <QtGui>
 #include <QMessageBox>
@@ -195,9 +202,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 }
 
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
-	/*if ((event->pos() - drag_start_pos).manhattanLength() < 1 )
-		return;
-	*/
+
 	if(m_drawline && (event->pos() - drag_start_pos).manhattanLength() != 0 ){
 		QPen linha;
 		linha.setStyle(Qt::SolidLine);
@@ -211,12 +216,10 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		int mod = QApplication::keyboardModifiers();
 		switch(mod){
 			case Qt::ControlModifier:
-				// rotate logaritmic
+				//FIXME: rotate exponential
 				selectedItem->rotate(distance_moved_x+distance_moved_y);
 				break;
 			case Qt::ShiftModifier:
-				// se para baixo ou para frente,  aumentar: + -> 1*factor
-				// para cima ou para a esquerda,  diminuir: - -> 1/factor
 				qreal factor_x;
 				qreal factor_y;
 				qDebug() << "dist_x:" << distance_moved_x << "dist_y" << distance_moved_y;
@@ -232,8 +235,6 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				selectedItem->scale(factor_x, factor_y);
 				break;
 			case Qt::MetaModifier:
-				// tem q ser passinhos 'caninhos..
-				// divide by 10 ?
 				selectedItem->shear( distance_moved_x/10, distance_moved_y/10 );
 				break;
 			default:{
@@ -271,11 +272,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
 	
 /*
-		git commit -a -m "fixed some bugs with drawing the lines, enlarged the line, fixed the new dialog, cleaned and reaged drawidgetgrid.cpp \
-		* changed the name of the pixmaps' tooltip \
-		* Completed Memoria Descritiva widget,\
-		* added actions to mouseEvents, \
-		* fixed drawing line even if the block was selected"
+
 
 		
 		accoes:
