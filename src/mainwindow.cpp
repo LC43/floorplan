@@ -1,7 +1,6 @@
 #include <QtGui>
 
 #include "mainwindow.h"
-#include "textedit.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)

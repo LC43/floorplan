@@ -183,6 +183,11 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 				emit selectedItemOn(name);
 			else
 				emit selectedItemOn("Linha");
+			
+			qDebug() << "Selected Item collides with:";
+			foreach(QGraphicsItem*  item,detectBorderCollisions()){
+				qDebug() << item->data(ObjectID).toString();	
+			}
 		}
 	}
 	else if(selected){
