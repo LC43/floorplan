@@ -500,3 +500,6 @@ void DragWidgetGrid::decreaseZoom(){
 	scale(factor, factor);
 }
 
+QList<QGraphicsItem *>  DragWidgetGrid::detectBorderCollisions(){
+		return scene.collidingItems(selectedItem,Qt::IntersectsItemBoundingRect);
+}

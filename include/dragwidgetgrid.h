@@ -97,6 +97,7 @@ signals:
 	void selectedItemOff();
 		
 private:
+	QList<QGraphicsItem *>  detectBorderCollisions();
 	QPainter *paint;
 	QPicture *pic;
 	QGraphicsScene scene;
