@@ -41,18 +41,9 @@
 **
 ****************************************************************************/
 	/*
-
-		**** DONE: passar o selectedItem para a status bar
-		*****TODO: resetTransform ()
-		*****TODO: FIXME: posicao dos blocos, setZeValue()
-		*****TODO: adicionar o mesmo codigo para o mousepress
-		*****TODO: undo/redo logic
-		*****TODO: adcionar accoes ao qtext do mem. descritiva
+		*****TODO: not critical: undo/redo logic
 		*****TODO: impressao à escala
 		*****TODO: conectores: janelas (1.2-1.5) , portas (0.90-1.20)
-		*****TODO: FIXME: aumentar o traco das linhas
-
-
 	*/
 #include <QtGui>
 #include <QMessageBox>
@@ -159,29 +150,37 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	qDebug() << "-------------";
 	if ((item = itemAt(event->pos())) == NULL) {
 		qDebug() << "You didn't click on an item: " << event->pos();
+		selectedItem = NULL;
 		emit selectedItemOff();
      } else {
 		qDebug() << "You clicked on an item: " << event->pos();
+		m_drawline = false;
 		selected=true;
      }
 	 
 	 if(event->button() == Qt::LeftButton) {
-		if(!selected)
+		if(!selected){
 			m_drawline = true;
+			drag_start_pos = event->pos();
+		}
 		else{
 			selectedItem = item;
 			//NOTE: isnt there a more elegant way to get the name?
 			QGraphicsPixmapItem *  pixmap = dynamic_cast<QGraphicsPixmapItem*>( item );
 			QString name = pixmap->data(ObjectID).toString();
-			emit selectedItemOn(name);
+			// adjust mouse
+			QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
+			drag_distance_to_mouse = event->pos() - item_point;
+			drag_start_pos = event->pos();
+			if( !name.isEmpty() )
+				emit selectedItemOn(name);
+			else
+				emit selectedItemOn("Linha");
 		}
-		QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
-		drag_distance_to_mouse = event->pos() - item_point;
-		drag_start_pos = event->pos();
 	}
 	else if(selected){
 		QMessageBox diag;
-		diag.setInformativeText("Deseja reverter alteraçoes efectuadas ao objecto?");
+		diag.setInformativeText(trUtf8("Deseja reverter alterações efectuadas ao objecto?"));
  		diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
 		diag.setDefaultButton(QMessageBox::Cancel);
 		int ret = diag.exec();
@@ -196,25 +195,61 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 }
 
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
-
-	if ((event->pos() - drag_start_pos).manhattanLength()
-          < 1 )
-     return;
-	
-	if(m_drawline)
-	{
-		scene.addLine(QLineF(mapToScene(event->pos()),mapToScene(drag_start_pos)),QPen(Qt::SolidLine));
+	/*if ((event->pos() - drag_start_pos).manhattanLength() < 1 )
+		return;
+	*/
+	if(m_drawline && (event->pos() - drag_start_pos).manhattanLength() != 0 ){
+		QPen linha;
+		linha.setStyle(Qt::SolidLine);
+		linha.setWidth(2);
+		scene.addLine(QLineF(mapToScene(event->pos()),mapToScene(drag_start_pos)),linha);
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-		qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
-		qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
-		selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
-		selectedItem = NULL;
+		qreal distance_moved_x = drag_start_pos.x() - event->posF().x();
+		qreal distance_moved_y = drag_start_pos.y() - event->posF().y();
+		int mod = QApplication::keyboardModifiers();
+		switch(mod){
+			case Qt::ControlModifier:
+				// rotate logaritmic
+				selectedItem->rotate(distance_moved_x+distance_moved_y);
+				break;
+			case Qt::ShiftModifier:
+				// se para baixo ou para frente,  aumentar: + -> 1*factor
+				// para cima ou para a esquerda,  diminuir: - -> 1/factor
+				qreal factor_x;
+				qreal factor_y;
+				qDebug() << "dist_x:" << distance_moved_x << "dist_y" << distance_moved_y;
+				if( distance_moved_x > 1 ){
+					factor_x = 1 - (distance_moved_x/100);
+				}
+				else
+					factor_x = 1 - (distance_moved_x/100);
+				if( distance_moved_y > 1 )
+					factor_y = 1 - (distance_moved_y/100);
+				else
+					factor_y = 1 - (distance_moved_y/100);
+				selectedItem->scale(factor_x, factor_y);
+				break;
+			case Qt::MetaModifier:
+				// tem q ser passinhos 'caninhos..
+				// divide by 10 ?
+				selectedItem->shear( distance_moved_x/10, distance_moved_y/10 );
+				break;
+			default:{
+				// no modifier
+				qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
+				qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
+				selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
+			}
+		}
+		
+		//selectedItem = NULL;
 
 		//WARNING: can go null until we can select more than one block
-		emit selectedItemOff();
+		//emit selectedItemOff();
 	}
+	drag_distance_to_mouse  = QPointF(0,0);
 	drag_start_pos = QPoint(0,0);
 }
 void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
@@ -223,8 +258,8 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 		case Qt::Key_Control:
 			emit modifierKeySignal(false, Qt::Key_Control);
 			break;
-		case Qt::Key_Alt:
-			emit modifierKeySignal(false, Qt::Key_Alt);
+		case Qt::Key_Shift:
+			emit modifierKeySignal(false, Qt::Key_Shift);
 			break;
 		case Qt::Key_Meta:
 			emit modifierKeySignal(false, Qt::Key_Meta);
@@ -236,7 +271,11 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
 	
 /*
-
+		git commit -a -m "fixed some bugs with drawing the lines, enlarged the line, fixed the new dialog, cleaned and reaged drawidgetgrid.cpp \
+		* changed the name of the pixmaps' tooltip \
+		* Completed Memoria Descritiva widget,\
+		* added actions to mouseEvents, \
+		* fixed drawing line even if the block was selected"
 
 		
 		accoes:
@@ -248,7 +287,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			-> void QGraphicsItem::shear ( qreal sh, qreal sv )
 			Shears the current item transformation by (sh, sv).
 		
-		* escalar  :  alt              + setas/LBM
+		* escalar  :  shift           + setas/LBM
 			-> void QGraphicsItem::scale ( qreal sx, qreal sy )
 			Scales the current item transformation by (sx, sy) around its origin.
 		
@@ -256,9 +295,9 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			-> void QGraphicsItem::translate ( qreal dx, qreal dy )
 			Translates the current item transformation by (dx, dy).
 		
-		* inverter : shift
+		* inverter : ?
 			-> shift + alt + left : reverte o valor extendido
-		
+
 		detalhes
 		* deslocar :  + 1 pixel*(1/zoom)
 			se esta com o zoom out em 2x -> 1
@@ -268,15 +307,85 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 		int mod = QApplication::keyboardModifiers();
 		switch(event->key()){
 			case Qt::Key_Control:
-				m_ctrl_flag = true;
 				emit modifierKeySignal(true, Qt::Key_Control);
 			break;
-			case Qt::Key_Alt:
-				emit modifierKeySignal(true, Qt::Key_Alt);
+			case Qt::Key_Shift:
+				emit modifierKeySignal(true, Qt::Key_Shift);
 			break;
 			case Qt::Key_Meta:
 				emit modifierKeySignal(true, Qt::Key_Meta);
 				break;
+			case Qt::Key_Right:
+				switch(mod){
+					case Qt::ControlModifier:
+						selectedItem->rotate(1);
+					break;
+					case Qt::ShiftModifier:
+						selectedItem->scale(1.1,1);
+					break;
+					case Qt::MetaModifier:
+						selectedItem->shear(0.1,0);
+					break;
+					default:
+						selectedItem->translate(1,0);
+				}
+			break;
+			case Qt::Key_Left:
+				switch(mod){
+					case Qt::ControlModifier:
+						selectedItem->rotate(-1);
+					break;
+					case Qt::ShiftModifier:{
+// 						qreal rec_width = rec.width();
+						//rec_width -= rec_width*1.1;
+						//selectedItem->translate(rec_width,0);
+						selectedItem->scale(0.9,1);
+						break;
+					}
+					case Qt::MetaModifier:
+						selectedItem->shear(-0.1,0);
+						break;
+					default:
+						selectedItem->translate(-1,0);
+				}
+			break;
+			case Qt::Key_Up:
+				switch(mod){
+					case Qt::ControlModifier:
+						break;
+					case Qt::ShiftModifier:{
+// 						qreal rec_height= rec.height();
+// 						rec_height-= rec_height*1.1;
+// 						selectedItem->translate(0,rec_height);
+						selectedItem->scale(1,0.9);
+						break;
+					}
+					case Qt::MetaModifier:
+						selectedItem->shear(0,0.1);
+						break;
+					default:
+						selectedItem->translate(0,-1);
+				}
+				
+			break;
+			case Qt::Key_Down:
+				switch(mod){
+					case Qt::ControlModifier:
+						break;
+					case Qt::ShiftModifier:
+						selectedItem->scale(1,1.1);
+						break;
+					case Qt::MetaModifier:
+						selectedItem->shear(0,-0.1);
+						break;
+					default:
+						selectedItem->translate(0,1);
+				}
+			break;
+			case Qt::Key_Delete:
+				qDebug() << "remove!";
+				scene.removeItem(selectedItem);
+			break;
 			case Qt::Key_PageUp:
 				switch(mod){
 					case Qt::ControlModifier:
@@ -290,77 +399,6 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->setZValue(selectedItem->zValue()-1.0);
 					break;
 				}
-			break;
-			case Qt::Key_Right:
-				switch(mod){
-					case Qt::ControlModifier:
-						selectedItem->rotate(1);
-					break;
-					case Qt::AltModifier:
-						selectedItem->scale(1.1,1);
-					break;
-					case Qt::MetaModifier:
-						selectedItem->shear(0.1,0);
-					break;
-					default:
-						selectedItem->translate(1,0);
-				}
-				m_ctrl_flag = false;
-			break;
-			case Qt::Key_Left:
-				switch(mod){
-					case Qt::ControlModifier:
-						selectedItem->rotate(-1);
-						break;
-					case Qt::AltModifier:{
-						qreal rec_width = rec.width();
-						qDebug() << "x: " << rec_width;
-						rec_width -= rec_width*1.1;
-						qDebug() << "a andar: " << -rec_width;
-						selectedItem->translate(rec_width,0);
-						selectedItem->scale(1.1,1);
-						qDebug() << "new size: " << (selectedItem->sceneBoundingRect()).width();
-						break;
-					}
-					case Qt::MetaModifier:
-						selectedItem->shear(-0.1,0);
-						break;
-					default:
-						selectedItem->translate(-1,0);
-				}
-			break;
-			case Qt::Key_Up:
-				switch(mod){
-					case Qt::AltModifier:{
-						qreal rec_height= rec.height();
-						rec_height-= rec_height*1.1;
-						selectedItem->translate(0,rec_height);
-						selectedItem->scale(1,1.1);
-						break;
-					}
-					case Qt::MetaModifier:
-						selectedItem->shear(0,0.1);
-						break;
-					default:
-						selectedItem->translate(0,-1);
-				}
-				
-			break;
-			case Qt::Key_Down:
-				switch(mod){
-					case Qt::AltModifier: 
-						selectedItem->scale(1,1.1);
-						break;
-					case Qt::MetaModifier:
-						selectedItem->shear(0,-0.1);
-						break;
-					default:
-						selectedItem->translate(0,1);
-				}
-			break;
-			case Qt::Key_Delete:
-				qDebug() << "remove!";
-				scene.removeItem(selectedItem);
 			break;
 		 }
   	}
@@ -501,5 +539,7 @@ void DragWidgetGrid::decreaseZoom(){
 }
 
 QList<QGraphicsItem *>  DragWidgetGrid::detectBorderCollisions(){
-		return scene.collidingItems(selectedItem,Qt::IntersectsItemBoundingRect);
+    return scene.collidingItems(selectedItem,Qt::IntersectsItemBoundingRect);
 }
+
+

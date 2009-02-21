@@ -85,7 +85,7 @@ protected:
     void showSvgs();
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *event);
-    //void createDockWindows();
+
 	
 private:
 	QPainter *paint;

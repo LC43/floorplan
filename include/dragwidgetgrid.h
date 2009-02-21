@@ -97,7 +97,6 @@ signals:
 	void selectedItemOff();
 		
 private:
-	QList<QGraphicsItem *>  detectBorderCollisions();
 	QPainter *paint;
 	QPicture *pic;
 	QGraphicsScene scene;
@@ -108,10 +107,10 @@ private:
 	QPointF drag_distance_to_mouse;
 	bool m_drawline;
 	QGraphicsLineItem * line;
-	bool m_ctrl_flag;
 	SvgListWidget * svg_list;
 	//QMatrix trans;
 	int inicial_zoom;
+	QList<QGraphicsItem *>  detectBorderCollisions();
 };
 
 

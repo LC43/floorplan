@@ -46,8 +46,8 @@ class MainWindow : public QMainWindow, private Ui::FloorPlan
 		QLabel *status_modifiers_ctrl_stt;
 		QLabel *status_modifiers_meta;
 		QLabel *status_modifiers_meta_stt;
-		QLabel *status_modifiers_alt;
-		QLabel *status_modifiers_alt_stt;
+		QLabel *status_modifiers_shift;
+		QLabel *status_modifiers_shift_stt;
 
 	private slots:
 		void open();

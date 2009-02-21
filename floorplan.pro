@@ -31,9 +31,9 @@ INTERFACES = $$UI/floorplan2.ui
 HEADERS =    $$INCLUDEPATH/svglistwidget.h \
              $$INCLUDEPATH/assistant.h \
              $$INCLUDEPATH/dragwidgetgrid.h \
-             $$INCLUDEPATH/memoriadescritiva.h \
              $$INCLUDEPATH/pages.h \
              $$INCLUDEPATH/configdialog.h \
+             $$INCLUDEPATH/memoriadescritiva.h \
              $$INCLUDEPATH/mainwindow.h
                
 
@@ -42,9 +42,9 @@ RESOURCES =  $$RES/floorplan.qrc
 SOURCES =    $$SRC/svglistwidget.cpp \
              $$SRC/dragwidgetgrid.cpp \
              $$SRC/assistant.cpp \
-             $$SRC/memoriadescritiva.cpp \
              $$SRC/pages.cpp \
              $$SRC/configdialog.cpp \
+             $$SRC/memoriadescritiva.cpp \
              $$SRC/mainwindow.cpp \
              $$SRC/main.cpp
  

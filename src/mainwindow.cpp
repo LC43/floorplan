@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include "mainwindow.h"
-
+#include "textedit.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -14,13 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
 	
 	status_escala = new QLabel(this);
 	status_selectedItem = new QLabel(this);
-	status_modifiers = new QLabel(this);
+	//status_modifiers = new QLabel(this);
 	status_modifiers_ctrl = new QLabel(this);
 	status_modifiers_ctrl_stt = new QLabel(this);
 	status_modifiers_meta = new QLabel(this);
 	status_modifiers_meta_stt = new QLabel(this);
-	status_modifiers_alt = new QLabel(this);
- 	status_modifiers_alt_stt = new QLabel(this);
+	status_modifiers_shift = new QLabel(this);
+ 	status_modifiers_shift_stt = new QLabel(this);
 
 	scrollArea->setWidget(svg);
 	//scrollArea->ensureWidgetVisible();
@@ -60,9 +60,11 @@ void MainWindow::createMenus() {
 		recentFileActions[i]->setVisible(false);
 		connect(recentFileActions[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
 	}
-	for (int i = 0; i < MaxRecentFiles; ++i)
-		menuRecentes->addAction(recentFileActions[i]);
 	
+	for (int i = 0; i < MaxRecentFiles; ++i){
+		menuRecentes->addAction(recentFileActions[i]);
+		qDebug() << recentFileActions[i]->text() ;
+	}
 	updateRecentFileActions();
 
 
@@ -70,8 +72,6 @@ void MainWindow::createMenus() {
 	actionSair->setShortcut(tr("Ctrl+Q"));
 	connect(actionSair, SIGNAL(triggered()), qApp, SLOT(quit()));
 
-	//TODO: + guardar
-	
 	// menu Operacoes
 	// + imprimir
 	actionImprimir->setShortcut(tr("Ctrl+I"));
@@ -89,8 +89,11 @@ void MainWindow::createMenus() {
 	connect(actionAumentar_Zoom, SIGNAL(triggered()),drag, SLOT(increaseZoom()));
 	connect(actionDiminuir_Zoom, SIGNAL(triggered()),drag, SLOT(decreaseZoom()));
 
+	/********************** **********************************************/
 	// + abrir novo widget para a memoria descritiva
 	MemoriaDescritiva *mem_desc = new MemoriaDescritiva();
+	mem_desc->resize(700,800);
+//	TextEdit *mem_desc = new TextEdit();
 	actionMemoria_Descritiva->setShortcut(tr("Ctrl+D"));
 	connect(actionMemoria_Descritiva,SIGNAL(triggered()),mem_desc,SLOT(showMemoriaDescritiva()));
 
@@ -140,34 +143,35 @@ void MainWindow::createMenus() {
 	QFont font_bold;
 	font_bold.setBold(true);
 
-	status_modifiers->setText(tr("Modificadores: "));
+
+	
+	//status_modifiers->setText(tr("Modificadores: "));
 	status_modifiers_ctrl->setText(trUtf8("Control (Rotação): "));
 	status_modifiers_ctrl->setFont(font_bold);
 	status_modifiers_ctrl_stt->setText(tr("Nada"));
 	status_modifiers_meta->setText(trUtf8("Meta (Inclinação): "));
 	status_modifiers_meta->setFont(font_bold);
 	status_modifiers_meta_stt->setText(tr("Nada"));
-	status_modifiers_alt->setText(trUtf8("Alt (Escalar): "));
-	status_modifiers_alt->setFont(font_bold);
- 	status_modifiers_alt_stt->setText(tr("Nada"));
-
-	statusBar()->addPermanentWidget( status_modifiers );
+	status_modifiers_shift->setText(trUtf8("Shift (Escalar): "));
+	status_modifiers_shift->setFont(font_bold);
+ 	status_modifiers_shift_stt->setText(tr("Nada"));
+	//statusBar()->addPermanentWidget( status_modifiers );
 	statusBar()->addPermanentWidget( status_modifiers_ctrl );
 	statusBar()->addPermanentWidget( status_modifiers_ctrl_stt );
 	statusBar()->addPermanentWidget( status_modifiers_meta );
 	statusBar()->addPermanentWidget( status_modifiers_meta_stt );
-	statusBar()->addPermanentWidget( status_modifiers_alt );
- 	statusBar()->addPermanentWidget( status_modifiers_alt_stt );
-
+	statusBar()->addPermanentWidget( status_modifiers_shift );
+ 	statusBar()->addPermanentWidget( status_modifiers_shift_stt );
+	
 
 	status_escala->setText(tr("Escala: ") + preferencias->getEscala());
 	statusBar()->addPermanentWidget( status_escala );
 }
 void MainWindow::resetSelectedItem(){
-	status_selectedItem->setText(tr("Item seleccionado: ") + tr("Nada"));
+	status_selectedItem->setText(tr("Item: ") + tr("Nada"));
 }
 void MainWindow::updateSelectedItem(QString name){
-	status_selectedItem->setText(tr("Item seleccionado: ") + name);
+	status_selectedItem->setText(tr("Item : ") + name);
 	// set to name
 }
 // mylabel->setPalette(QPalette(Qt::red));
@@ -175,8 +179,6 @@ void MainWindow::updateSelectedItem(QString name){
 void MainWindow::updateModifierPressed(bool state, int modifier){
 	QString estado;
 	QPalette palete;
-	qDebug() << "estado" << state;
-	qDebug() << "ctr" << modifier << "=" << Qt::ControlModifier;
 	switch(modifier){
 		case Qt::Key_Control:
 			if( state ){
@@ -190,15 +192,27 @@ void MainWindow::updateModifierPressed(bool state, int modifier){
 			status_modifiers_ctrl_stt->setText(estado);
 			
 			break;
-		case Qt::Key_Alt:
-			estado = trUtf8("Alt (Escalar): ");
-			state ? estado.append( "On") : estado.append(tr("Nada"));
-			status_modifiers_alt->setText(estado);
-			break;
+		case Qt::Key_Shift:
+			if( state ){
+				estado = "On";
+				palete = QPalette(Qt::green);
+			} else {
+				estado = tr("Nada");
+				palete = QPalette();
+			}
+			status_modifiers_shift_stt->setPalette(palete);
+			status_modifiers_shift_stt->setText(estado);
+		break;
 		case Qt::Key_Meta:
-			estado = trUtf8("Meta (Inclinação): ");
-			state ? estado.append( "On") : estado.append(tr("Nada"));
-			status_modifiers_meta->setText(estado);
+			if( state ){
+				estado = "On";
+				palete = QPalette(Qt::green);
+			} else {
+				estado = tr("Nada");
+				palete = QPalette();
+			}
+			status_modifiers_meta_stt->setPalette(palete);
+			status_modifiers_meta_stt->setText(estado);
 			break;
 		default:
 			qDebug() << "oops" ;
@@ -218,70 +232,7 @@ void MainWindow::closeEvent(QCloseEvent *){
      delete assistant;
 }
 
-void MainWindow::open()
-{
-	QString fileName = QFileDialog::getOpenFileName(this);
-	if (!fileName.isEmpty())
-		loadFile(fileName);
-}
-
-
-void MainWindow::save()
-{
-	fileSaveAs();
-}
-
-void MainWindow::new_plant()
-{
-	QMessageBox diag;
-	diag.setInformativeText(tr("Deseja guardar o projecto actual"));
- 	diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel | QMessageBox::Ignore);
-	diag.setDefaultButton(QMessageBox::Cancel);
-	int ret = diag.exec();
-	switch(ret){
-		case QMessageBox::Ok:
-		 save();
-		break;
-		case QMessageBox::Ignore:
-		//temos de resetar scene
-		drag->resetView();
-		break;
-	}
-}
-
-void MainWindow::openRecentFile()
-{
-	QAction *action = qobject_cast<QAction *>(sender());
-	if (action)
-		loadFile(action->data().toString());
-}
-void MainWindow::loadFile(const QString &filename)
-{
-	
-  if ( filename.isEmpty() ) return ;
-
-  // open the file and check we can read from it
-  QFile file( filename );
-  if ( !file.open( QIODevice::ReadOnly ) )
-  {
-    statusBar()->showMessage( QString("Failed to open '%1'").arg(filename) );
-    return ;
-  }
-
-  // open an xml stream reader and load simulation data
-  QXmlStreamReader * stream = new QXmlStreamReader( &file );
-	
-  drag->LoadProject(stream);
-	
-  file.close();
-	
-  QApplication::setOverrideCursor(Qt::WaitCursor);
- // textEdit->setPlainText(in.readAll());
-  QApplication::restoreOverrideCursor();
-  setCurrentFile(filename);
-  statusBar()->showMessage(tr("File loaded"), 2000);
-  
-}
+/****************  about  ******************************/
 void MainWindow::sobreFloorplan(){
 	QMessageBox::about(this, tr("Sobre Floor Plan"),
 					   trUtf8("O <b>Floorplan</b> é um programa de desenho de plantas arquitectónicas para habitações, "
@@ -290,15 +241,119 @@ void MainWindow::sobreFloorplan(){
 							   "mais complexos."));
 }
 
+/* *******************************************************************/
+/*          File related     -- nothing else to see                  */
+/*********************************************************************/
+
+void MainWindow::new_plant()
+{
+	QMessageBox diag;
+	diag.setInformativeText(tr("Deseja guardar o projecto actual?"));
+	//diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel | QMessageBox::Discard);
+	
+	QPushButton *forgetButton = diag.addButton(trUtf8("Esquecer Alterações"),QMessageBox::DestructiveRole);
+	QPushButton *saveButton = diag.addButton(tr("Gravar"),QMessageBox::AcceptRole);
+	diag.addButton(tr("Cancelar"),QMessageBox::RejectRole);
+	//diag.setDefaultButton(QMessageBox::Cancel);
+	diag.exec();
+	if( diag.clickedButton() == forgetButton )
+		drag->resetView();
+	else if( diag.clickedButton() == saveButton ) {
+			save();
+			drag->resetView();
+	}
+
+}
+/****************  Save ******************************/
+
+void MainWindow::save()
+{
+	fileSaveAs();
+}
+
+bool  MainWindow::fileSaveAs()
+{
+  // get user to select filename and location
+	QString filename = QFileDialog::getSaveFileName();
+	if ( filename.isEmpty() ) return false;
+
+  // open the file and check we can write to it
+	QFile file( filename );
+	if ( !file.open( QIODevice::WriteOnly ) )
+	{
+		( QString("Failed to write to '%1'").arg(filename) );
+		return false;
+	}
+
+  // open an xml stream writer and write simulation data
+	QXmlStreamWriter  * stream = new QXmlStreamWriter( &file );
+
+	drag->SaveProject(stream);
+
+	stream->writeEndDocument();
+
+  // close the file and display useful message
+	file.close();
+	setCurrentFile( filename );
+	statusBar()->showMessage( QString("Guardado em '%1'").arg(filename),2000 );
+	return true;
+}
+
+/****************  Open ******************************/
+
+
+void MainWindow::open()
+{
+	QString fileName = QFileDialog::getOpenFileName(this);
+	if (!fileName.isEmpty())
+		loadFile(fileName);
+}
+
+void MainWindow::loadFile(const QString &filename)
+{
+	
+	if ( filename.isEmpty() ) return ;
+
+  // open the file and check we can read from it
+	QFile file( filename );
+	if ( !file.open( QIODevice::ReadOnly ) )
+	{
+		statusBar()->showMessage( QString("Falhou a abrir o ficheiro '%1'").arg(filename) );
+		return ;
+	}
+
+  // open an xml stream reader and load simulation data
+	QXmlStreamReader * stream = new QXmlStreamReader( &file );
+	
+	drag->LoadProject(stream);
+	
+	file.close();
+	
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+ // textEdit->setPlainText(in.readAll());
+	QApplication::restoreOverrideCursor();
+	setCurrentFile(filename);
+	statusBar()->showMessage(tr("Ficheiro Aberto"), 2000);
+  
+}
+
+/****************  Recents ******************************/
+
+void MainWindow::openRecentFile()
+{
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (action)
+		loadFile(action->data().toString());
+}
 // guarda o nome do ficheiro nas preferencias
 void MainWindow::setCurrentFile(const QString &fileName)
 {
 	curFile = fileName;
 	if (curFile.isEmpty())
-		setWindowTitle(tr("Recent Files"));
+		setWindowTitle(tr("Ficheiros Recentes"));
 	else
 		setWindowTitle(tr("%1 - %2").arg(strippedName(curFile))
-				.arg(tr("Recent Files")));
+				.arg(tr("Ficheiros Recentes")));
 
 	QSettings settings("CodePoets", "Floorplan");
 	QStringList files = settings.value("recentFileList").toStringList();
@@ -340,29 +395,4 @@ void MainWindow::updateRecentFileActions()
 	return QFileInfo(fullFileName).fileName();
 }
 
-bool  MainWindow::fileSaveAs()
-{
-  // get user to select filename and location
-  QString filename = QFileDialog::getSaveFileName();
-  if ( filename.isEmpty() ) return false;
 
-  // open the file and check we can write to it
-  QFile file( filename );
-  if ( !file.open( QIODevice::WriteOnly ) )
-  {
-    ( QString("Failed to write to '%1'").arg(filename) );
-    return false;
-  }
-
-  // open an xml stream writer and write simulation data
-  QXmlStreamWriter  * stream = new QXmlStreamWriter( &file );
-
-  drag->SaveProject(stream);
-
-  stream->writeEndDocument();
-
-  // close the file and display useful message
-  file.close();
-  statusBar()->showMessage( QString("Saved to '%1'").arg(filename) );
-  return true;
-}

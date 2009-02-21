@@ -20,5 +20,46 @@
   <file>images/varanda.svg</file>
   <file>images/wc.svg</file>
   <file>images/config.png</file>
+  <!-- for memoria descritiva -->
+  <file>images/memdesc/logo32.png</file>
+  <file>images/memdesc/mac/editcopy.png</file>
+  <file>images/memdesc/mac/editcut.png</file>
+  <file>images/memdesc/mac/editpaste.png</file>
+  <file>images/memdesc/mac/editredo.png</file>
+  <file>images/memdesc/mac/editundo.png</file>
+  <file>images/memdesc/mac/exportpdf.png</file>
+  <file>images/memdesc/mac/filenew.png</file>
+  <file>images/memdesc/mac/fileopen.png</file>
+  <file>images/memdesc/mac/fileprint.png</file>
+  <file>images/memdesc/mac/filesave.png</file>
+  <file>images/memdesc/mac/textbold.png</file>
+  <file>images/memdesc/mac/textcenter.png</file>
+  <file>images/memdesc/mac/textitalic.png</file>
+  <file>images/memdesc/mac/textjustify.png</file>
+  <file>images/memdesc/mac/textleft.png</file>
+  <file>images/memdesc/mac/textright.png</file>
+  <file>images/memdesc/mac/textunder.png</file>
+  <file>images/memdesc/mac/zoomin.png</file>
+  <file>images/memdesc/mac/zoomout.png</file>
+  <file>images/memdesc/menu/editcopy.png</file>
+  <file>images/memdesc/menu/editcut.png</file>
+  <file>images/memdesc/menu/editpaste.png</file>
+  <file>images/memdesc/menu/editredo.png</file>
+  <file>images/memdesc/menu/editundo.png</file>
+  <file>images/memdesc/menu/exportpdf.png</file>
+  <file>images/memdesc/menu/filenew.png</file>
+  <file>images/memdesc/menu/fileopen.png</file>
+  <file>images/memdesc/menu/fileprint.png</file>
+  <file>images/memdesc/menu/filesave.png</file>
+  <file>images/memdesc/menu/textbold.png</file>
+  <file>images/memdesc/menu/textcenter.png</file>
+  <file>images/memdesc/menu/textitalic.png</file>
+  <file>images/memdesc/menu/textjustify.png</file>
+  <file>images/memdesc/menu/textleft.png</file>
+  <file>images/memdesc/menu/textright.png</file>
+  <file>images/memdesc/menu/textunder.png</file>
+  <file>images/memdesc/menu/zoomin.png</file>
+  <file>images/memdesc/menu/zoomout.png</file>
+
 </qresource>
 </RCC>

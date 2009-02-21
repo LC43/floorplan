@@ -116,20 +116,18 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
     svgIcon->setMinimumSize(20,20);
 	svgIcon->setFrameStyle(QFrame::StyledPanel | QFrame::Raised | QFrame::Shadow_Mask );
 
+	QString legenda_texto = svgs_filenames.at(c_block);
+	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
+	legenda_texto.remove(QRegExp(".[a-z]*$"));
 
     //FIXME: this.size()
     svgIcon->move( 20, 20+150*c_block );
-    svgIcon->setToolTip(svgs_filenames.at(c_block));
+    svgIcon->setToolTip( legenda_texto );
     svgIcon->show();
     svgIcon->setAttribute(Qt::WA_DeleteOnClose);
 
 	QLabel *legenda = new QLabel(this);
 
-	QString legenda_texto = svgs_filenames.at(c_block);
-	
-	
-	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
-	legenda_texto.remove(QRegExp(".[a-z]*$"));
 	legenda->setText( legenda_texto );
 	legenda->move(20, 20+150*c_block-20 );
 	legenda->show();
