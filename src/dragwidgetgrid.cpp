@@ -73,6 +73,7 @@
 
 //#include <math.h>
 #include "dragwidgetgrid.h"
+#include "ScenePixmapItem.h"
 
 //static int max_zoom = 10; //percentage
 
@@ -151,7 +152,9 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         }
 		
 
-		QGraphicsPixmapItem * item = scene.addPixmap(pixmap);
+		ScenePixmapItem * item = new ScenePixmapItem(NULL,&scene);
+		
+		item->setPixmap(pixmap);
 		
 		item->setPos(item->pos() + mapToScene(event->pos() - offset));
 		
@@ -195,7 +198,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		else{
 			selectedItem = item;
 			//NOTE: isnt there a more elegant way to get the name?
-			QGraphicsPixmapItem *  pixmap = dynamic_cast<QGraphicsPixmapItem*>( item );
+			ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( item );
 			QString name = pixmap->data(ObjectID).toString();
 			// adjust mouse
 			QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
@@ -536,7 +539,7 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
       stream->writeAttribute( "y2", QString("%1").arg(line.y2()));
     }
 	
-	 QGraphicsPixmapItem *  pixmap = dynamic_cast<QGraphicsPixmapItem*>( item );
+	 ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( item );
 	 if ( pixmap )
     {
 	  QMatrix m = pixmap->sceneMatrix ();
@@ -597,7 +600,9 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 	  // we need to add the pixmap here
 	  QPixmap p = svg_list->getPixmapByName(id);
 
-	  QGraphicsPixmapItem * pixmap = scene.addPixmap(p);
+	 ScenePixmapItem * pixmap = new ScenePixmapItem(NULL,&scene);
+		
+	 pixmap->setPixmap(p);
 	  
 	  pixmap->setMatrix(m,false);
 	}	

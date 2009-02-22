@@ -43,6 +43,7 @@ SOURCES =    $$SRC/svglistwidget.cpp \
              $$SRC/dragwidgetgrid.cpp \
              $$SRC/assistant.cpp \
              $$SRC/pages.cpp \
+			 $$SRC/ScenePixmapItem.cpp \
              $$SRC/configdialog.cpp \
              $$SRC/memoriadescritiva.cpp \
              $$SRC/mainwindow.cpp \
