@@ -63,7 +63,14 @@ void SvgListWidget::createConnectorsList(){
 	filters << "*.svg";
 	resources.setNameFilters(filters);
 	svgs_filenames = QStringList(resources.entryList());
+	QStringList list = QStringList(resources.entryList());
 
+    //for each in dir
+	for (int i = 0; i < list.size(); ++i) {
+		QString name = list.at(i);
+		svgs_filenames.append(QString(name));
+		qDebug() << "SvgListWidget: " << name << " : " << i;
+	}
 }
 
 QList<QPixmap> SvgListWidget::createSvgList(){
