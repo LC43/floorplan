@@ -214,8 +214,13 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
         return;
-    QPixmap pixmap = *child->pixmap();
-
+	QPixmap pixmap;
+	const QPixmap * p = child->pixmap();
+ 
+	if(!p)
+		return;
+	else
+		pixmap = *p;
 
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
