@@ -265,7 +265,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				break;
 			}
 
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 			case Qt::MetaModifier:{
 #else
 			case Qt::AltModifier:{
@@ -315,7 +315,7 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 		case Qt::Key_Shift:
 			emit modifierKeySignal(false, Qt::Key_Shift);
 			break;
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 			case Qt::Key_Meta:
 #else
 			case Qt::Key_Alt:
@@ -375,7 +375,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ShiftModifier:
 						selectedItem->scale(1.1,1);
 					break;
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 						selectedItem->shear(0.1,0);
 					break;
@@ -400,7 +400,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->scale(0.9,1);
 						break;
 					}
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 						selectedItem->shear(0.1,0);
 						break;
@@ -424,7 +424,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->scale(1,0.9);
 						break;
 					}
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 						selectedItem->shear(0.1,0);
 						break;
@@ -445,7 +445,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ShiftModifier:
 						selectedItem->scale(1,1.1);
 						break;
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 						selectedItem->shear(0.1,0);
 						break;
