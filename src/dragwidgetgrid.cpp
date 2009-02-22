@@ -44,33 +44,17 @@
 		*****TODO: not critical: undo/redo logic
 		*****TODO: not critical: a scene so mostra as scroll bars se houver objectos fora do "view port"
 		*****TODO: impressao à escala
-		*****TODO: conectores: janelas (1.2-1.5) , portas (0.90-1.20)
+		*****DONE: (RUI)conectores: janelas (1.2-1.5) , portas (0.90-1.20)
 		*****TODO: boundingRegion <-- calcular a fronteira d todos os objectos ?
-		*****TODO: FIXME: os connectores tem q ter por def um z alto.
-
-		+ escala
-		item_size = dragged_item->getSize()
-		item_size /= 25; // 100pixels / 25 = 4 metros
-		dragged_item->tooltip(item_size)
-
-		if (transformation) then getSize..apply the same transformation..tooltip it
-		ex:
-		size: 100
-		item_size = 100/25 = 4
-		scale 1.1 -> 100*1.1 = 110 -> 4*1.1 = 4.4 ( 4.4 *25 = 110 certo!)
-		rotation +1 -> não altera
-		translation +1 -> nao altera
-		shear +1 -> nao altera um dos lados, mas o outro
-		qreal angulo = atan2(10 , 100 );
-		qreal new_side = 100 / sen(angulo)
+		*****DONE: (RUI) os connectores tem q ter por def um z alto.
 
 
 	*/
 #include <QtGui>
 #include <QMessageBox>
 #include <QXmlStreamAttributes>
+#include <QTransform>
 
-//#include <math.h>
 #include "dragwidgetgrid.h"
 #include "ScenePixmapItem.h"
 
@@ -110,7 +94,7 @@ void DragWidgetGrid::dragEnterEvent(QDragEnterEvent *event)
 
 void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
 {
-  
+
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
@@ -121,11 +105,11 @@ void DragWidgetGrid::dragMoveEvent(QDragMoveEvent *event)
     } else {
         event->ignore();
     }
-  
+
 }
 
 void DragWidgetGrid::wheelEvent(QWheelEvent* event){
-  qreal factor = 1.2;
+    qreal factor = 1.2;
 	if (event->delta() < 0)
 		factor = 1.0 / factor;
 	scale(factor, factor);
@@ -273,6 +257,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 	else if(selectedItem){
 		qreal distance_moved_x = drag_start_pos.x() - event->posF().x();
 		qreal distance_moved_y = drag_start_pos.y() - event->posF().y();
+		qDebug() << "distance: x: " << distance_moved_x << " | y: " << distance_moved_y;
 		int mod = QApplication::keyboardModifiers();
 		switch(mod){
 			case Qt::ControlModifier:
@@ -303,24 +288,62 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 #else
 			case Qt::AltModifier:{
 #endif
-				selectedItem->shear( distance_moved_x/10, distance_moved_y/10 );
 
-				QRectF rec = selectedItem->sceneBoundingRect();
+				qreal old_width =  selectedItem->data(ObjectX).toDouble();
+				qreal old_height = selectedItem->data(ObjectY).toDouble();
+				
+				qreal new_x, new_y;
 
-				//TODO: FIXME: shear isnt this simple :)
-				//shear +1 -> nao altera um dos lados, mas o outro
-				/*qreal angulo = atan2(distance_moved_x);
-				qreal new_side = 100 / sin(angulo);
-				qDebug() << "angulo: " << angulo << "side: " << new_side;
-				o q acontece se ambos vectores se mexem :S
-				*/
+				qreal sh = distance_moved_x/10;
+				if ( distance_moved_x != 0 && fabs(distance_moved_x) > fabs(distance_moved_y) ){
+					if( distance_moved_x > 0 ) {
+						qDebug() << "right ffs! " << -sh ;
+						selectedItem->shear( -sh ,0 ); //right;
+					}
+					else {
+						qDebug() << "left left! " << -sh ;
+						selectedItem->shear( -sh,0 ); // left;
+					}
+
+					QTransform mt = selectedItem->sceneTransform();
+
+					// adjacent
+					new_x = old_width;
+					// opposite
+					new_y = calculateOpposite(selectedItem->sceneBoundingRect(),new_x );
+					
+					qDebug() << "oposto: " << new_y << "adjacente: " << new_x;
+
+				}
+				else if( distance_moved_y != 0  ){
+					if (distance_moved_y > 0 )
+						selectedItem->shear( 0,0.1 ); // down;
+					else
+						selectedItem->shear( 0,-0.1 ); // up;
+					// adjacent
+					new_y = old_height;
+					// opposite 
+					new_x = calculateOpposite(selectedItem->sceneBoundingRect(), new_y);
+					
+					
+				}
+ 				else {
+					// nothing happened, both distances were zero
+					new_y = old_height;
+					// opposite
+ 					new_x = old_width;
+ 					
+ 				}
+
+				//TODO: FIXME: shear still isnt this simple :S
+
 				QString i_size;
-				i_size = QString("x: %1 | y: %2").arg(rec.width()).arg(rec.height());
+				i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
 				selectedItem->setToolTip( i_size );
 				qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
-				selectedItem->setData(ObjectX,rec.width());
-				selectedItem->setData(ObjectY,rec.height());
-				
+				qDebug() << "y_a:" << selectedItem->sceneBoundingRect().height();
+				selectedItem->setData(ObjectX,new_x);
+				selectedItem->setData(ObjectY,new_y);
 				break;
 			}
 			default:{
@@ -331,10 +354,6 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 			}
 		}
 		
-		//selectedItem = NULL;
-
-		//WARNING: can go null until we can select more than one block
-		//emit selectedItemOff();
 	}
 	drag_distance_to_mouse  = QPointF(0,0);
 	drag_start_pos = QPoint(0,0);
@@ -388,6 +407,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 		* deslocar :  + 1 pixel*(1/zoom)
 			se esta com o zoom out em 2x -> 1
 		*/
+		
 		QRectF rec = selectedItem->sceneBoundingRect();
 		QPointF rec_center = rec.center();
 		int mod = QApplication::keyboardModifiers();
@@ -428,9 +448,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->rotate(-1);
 					break;
 					case Qt::ShiftModifier:{
-// 						qreal rec_width = rec.width();
-						//rec_width -= rec_width*1.1;
-						//selectedItem->translate(rec_width,0);
+
 						selectedItem->scale(0.9,1);
 						break;
 					}
@@ -452,9 +470,6 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ControlModifier:
 						break;
 					case Qt::ShiftModifier:{
-// 						qreal rec_height= rec.height();
-// 						rec_height-= rec_height*1.1;
-// 						selectedItem->translate(0,rec_height);
 						selectedItem->scale(1,0.9);
 						break;
 					}
@@ -493,7 +508,6 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 				}
 			break;
 			case Qt::Key_Delete:
-				qDebug() << "remove!";
 				scene.removeItem(selectedItem);
 			break;
 			case Qt::Key_PageUp:
@@ -657,4 +671,21 @@ bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
 	return (intersect_or_in && !in);
 }
 
+qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
+
+	qreal rec_w = rec.width();
+	qreal rec_h = rec.height();
+	// get diagonal, hypotenuse, h
+	// diagonal: (0,0) -> ( b_w = b_rec.width, b_h = b_rec.height )
+	// hypotenuse:
+	qreal h = sqrt( rec_w*rec_w + rec_h*rec_h );
+
+	// get the angle with arcsin:
+	qreal a = asin ( adjacent / h );
+
+	//calculate opposite
+	qreal o = h * cos( a );
+	return o;
+				
+}
 

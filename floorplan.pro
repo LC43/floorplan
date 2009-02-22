@@ -54,3 +54,6 @@ target.path = $$DESTDIR
 sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro images
 INSTALLS += target 
 
+QMAKE_CLEAN += src/*~
+QMAKE_CLEAN += include/*~
+

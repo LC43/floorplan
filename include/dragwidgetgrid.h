@@ -113,6 +113,7 @@ private:
 	//QMatrix trans;
 	int inicial_zoom;
 	bool detectBorderCollisions(QGraphicsItem *);
+	qreal calculateOpposite(QRectF rec, qreal adjacent );
 };
 
 
