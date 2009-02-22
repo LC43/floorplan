@@ -153,10 +153,11 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         }
 
 		if(svg_list->isConnectorBeingDragged){
+			qDebug() << "e um connector";
 			svg_list->isConnectorBeingDragged = false;
 			selectedItem = scene.itemAt(QPointF(event->pos()));
 			if(selectedItem){
-				 item = new ScenePixmapItem(NULL,&scene);
+				item = new ScenePixmapItem(NULL,&scene);
 		
 				item->setPixmap(pixmap);
 				
@@ -176,6 +177,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 				}
 				else scene.removeItem(item);			
 			}
+			else return;
 		}else{
 
 			item = new ScenePixmapItem(NULL,&scene);

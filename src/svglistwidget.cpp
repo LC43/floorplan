@@ -66,13 +66,12 @@ void SvgListWidget::createConnectorsList(){
 	QStringList filters;
 	filters << "*.svg";
 	resources.setNameFilters(filters);
-    QStringList list = QStringList(resources.entryList());
+    connectors = QStringList(resources.entryList());
 
     //for each in dir
-    for (int i = 0; i < list.size(); ++i) {
-		QString name = list.at(i);
-		connectors.append(QString(name));
-		qDebug() << "SvgListWidget: " << name << " : " << i;
+    for (int i = 0; i < connectors.size(); ++i) {
+		QString name = connectors.at(i);
+		qDebug() << "Connector: " << name << " : " << i;
 		// load svg
 		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 		//convert to pixmap
@@ -278,6 +277,8 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 }
 
 bool SvgListWidget::isConector(QString name){
-	int i = connectors.indexOf(name);
+	QString str = name.toLower().append(".svg");
+	int i = connectors.indexOf(str);
+	qDebug() << "Connector " << str << " value " << i;
 	return (i != -1);
 }
