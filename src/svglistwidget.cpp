@@ -52,31 +52,40 @@ SvgListWidget::SvgListWidget(QWidget *parent)
 
     setAcceptDrops(true);
     createSvgList();
+	createConnectorsList();
     int num_blocks = qpixmap_list.size()*2;
     setMinimumSize(200, 100*num_blocks);
 }
 void SvgListWidget::createConnectorsList(){
 
-	resources_dir = QString(":/images/connectors/");
-	resources = QDir( resources_dir );
+	QString connectors_dir = QString(":/images/connectors/");
+	QDir resources = QDir( connectors_dir );
 	QStringList filters;
 	filters << "*.svg";
 	resources.setNameFilters(filters);
-	svgs_filenames = QStringList(resources.entryList());
-	QStringList list = QStringList(resources.entryList());
+    QStringList list = QStringList(resources.entryList());
 
     //for each in dir
-	for (int i = 0; i < list.size(); ++i) {
+    for (int i = 0; i < list.size(); ++i) {
 		QString name = list.at(i);
-		svgs_filenames.append(QString(name));
+		connectors.append(QString(name));
 		qDebug() << "SvgListWidget: " << name << " : " << i;
-	}
+
+		// load svg
+		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
+		//convert to pixmap
+		QPixmap * svgPixmap = new QPixmap(connectors_dir + name);
+		//qDebug() << "SvgListWidget: " << "pixmap height" << svgPixmap->height() << "width" << svgPixmap->width();
+		qpixmap_list.push_back(*svgPixmap);
+		//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
+    }
+	qDebug() << "Connectors List: done";
 }
 
 QList<QPixmap> SvgListWidget::createSvgList(){
 
 	resources_dir = QString(":/images/");
-	resources = QDir(resources_dir);
+	QDir resources = QDir(resources_dir);
 	QStringList filters;
 	filters << "*.svg";
 
@@ -106,7 +115,6 @@ QList<QPixmap> SvgListWidget::createSvgList(){
     }
 	qDebug() << "SvgListWidget: done";
     return qpixmap_list;
-  
 }
 
 
@@ -250,20 +258,14 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 
 
 QPixmap SvgListWidget::getPixmapByName(QString name) {
-	
-	 int i;
-	 qDebug() << "chega_aqui" << svgs_filenames.size();
-	 for (int i = 0; i < svgs_filenames.size(); ++i) {
-		QString name = svgs_filenames.at(i);
-		qDebug() << "Svgsvgs_filenamesWidget: " << name << " : " << i;	
-	}
-	qDebug() << "chega_aqui";
-	qDebug() << name;
-	if(svgs_filenames.empty())
-		qDebug() << "a svgs_filenamesa e nula?";
+	int i;
+	int size = svgs_filenames.size () -1;
 	i = svgs_filenames.indexOf(name);
-	qDebug() << i;
-	return qpixmap_list.at(i);
-
+	if(i == -1)
+		i = connectors.indexOf(name);
+	else{
+		qpixmap_list.at(i);
+	}
+	return qpixmap_list.at(i+size);
 }
 

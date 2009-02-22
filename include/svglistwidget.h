@@ -74,7 +74,7 @@ class SvgListWidget : public QFrame
 {
 public:
     SvgListWidget(QWidget *parent=0);
-    QPixmap getPixmapByName(QString name);	
+    QPixmap getPixmapByName(QString name);
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
@@ -93,8 +93,9 @@ private:
 	QList<QPixmap> qpixmap_list;
 	QTextEdit *textEdit;
 	QStringList svgs_filenames;
-	QDir resources;
+	QStringList connectors;
 	QString resources_dir;
+	bool isConnectorBeingDragged;
 };
 
 
