@@ -214,8 +214,8 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
     QLabel *child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
         return;
-
     QPixmap pixmap = *child->pixmap();
+
 
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
@@ -226,10 +226,12 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
     mimeData->setData("application/x-dnditemdata", itemData);
 	mimeData->setText(child->toolTip());
 
-	if(isConector(child->toolTip()))
+	if(isConnector(child->toolTip()))
 		isConnectorBeingDragged=true;
-
-    QDrag *drag = new QDrag(this);
+	else
+		isConnectorBeingDragged=false;
+	
+	QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
     drag->setHotSpot(event->pos() - child->pos());
@@ -276,9 +278,9 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 	return qpixmap_list.at(i+size);
 }
 
-bool SvgListWidget::isConector(QString name){
+bool SvgListWidget::isConnector(QString name){
 	QString str = name.toLower().append(".svg");
 	int i = connectors.indexOf(str);
-	qDebug() << "Connector " << str << " value " << i;
+	qDebug() << "Connector " << str << " value " << i << " bool " << (i != -1);
 	return (i != -1);
 }

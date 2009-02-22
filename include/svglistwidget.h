@@ -89,7 +89,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
 	
 private:
-	bool isConector(QString name);
+	bool isConnector(QString name);
 	QPainter *paint;
 	QList<QPixmap> qpixmap_list;
 	QTextEdit *textEdit;
