@@ -101,7 +101,7 @@ QList<QPixmap> SvgListWidget::createSvgList(){
     resources.setNameFilters(filters);
 
     //for each in dir
-    for (int i = 0; i < list.size(); ++i) {
+    for (int i = 0; i < svgs_filenames.size(); ++i) {
 		QString name = svgs_filenames.at(i);
 		qDebug() << "SvgListWidget: " << name << " : " << i;
 		// load svg
@@ -279,5 +279,5 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 
 bool SvgListWidget::isConector(QString name){
 	int i = connectors.indexOf(name);
-	return (i != -1)
+	return (i != -1);
 }

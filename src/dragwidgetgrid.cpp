@@ -142,6 +142,8 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         QPixmap pixmap;
         QPoint offset;
         dataStream >> pixmap >> offset;
+		
+		ScenePixmapItem * item;
 
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
@@ -149,20 +151,47 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         } else {
             event->acceptProposedAction();
         }
-		
 
-		ScenePixmapItem * item = new ScenePixmapItem(NULL,&scene);
+		if(svg_list->isConnectorBeingDragged){
+			svg_list->isConnectorBeingDragged = false;
+			selectedItem = scene.itemAt(QPointF(event->pos()));
+			if(selectedItem){
+				 item = new ScenePixmapItem(NULL,&scene);
 		
-		item->setPixmap(pixmap);
+				item->setPixmap(pixmap);
+				
+				item->setPos(item->pos() + mapToScene(event->pos() - offset));
+				
+				if(detectBorderCollisions(item)){
+					item->setParentItem(selectedItem);
+					
+					item->setZValue(selectedItem->zValue()+1);
+										
+					item->setCursor(Qt::ClosedHandCursor);
 		
-		item->setPos(item->pos() + mapToScene(event->pos() - offset));
+					item->setData(ObjectID,event->mimeData()->text());
 		
-		item->setCursor(Qt::ClosedHandCursor);
+					item->setData(ObjectX,pixmap.width());
+					item->setData(ObjectY,pixmap.height());
+				}
+				else scene.removeItem(item);			
+			}
+		}else{
+
+			item = new ScenePixmapItem(NULL,&scene);
 		
-		item->setData(ObjectID,event->mimeData()->text());
+			item->setPixmap(pixmap);
 		
-		item->setData(ObjectX,pixmap.width());
-		item->setData(ObjectY,pixmap.height());
+			item->setPos(item->pos() + mapToScene(event->pos() - offset));
+		
+			item->setCursor(Qt::ClosedHandCursor);
+		
+			item->setData(ObjectID,event->mimeData()->text());
+		
+			item->setData(ObjectX,pixmap.width());
+			item->setData(ObjectY,pixmap.height());
+		
+		}
 		
 		QString i_size = QString("x: %1 | y: %2").arg(pixmap.width()).arg(pixmap.height());
 		item->setToolTip( i_size );
@@ -207,11 +236,11 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 				emit selectedItemOn(name);
 			else
 				emit selectedItemOn("Linha");
-			
+			/*
 			qDebug() << "Selected Item collides with:";
 			foreach(QGraphicsItem*  item,detectBorderCollisions()){
 				qDebug() << item->data(ObjectID).toString();	
-			}
+			}*/
 		}
 	}
 	else if(selected){
@@ -619,15 +648,11 @@ void DragWidgetGrid::decreaseZoom(){
 	scale(factor, factor);
 }
 
-QList<QGraphicsItem *>  DragWidgetGrid::detectBorderCollisions(){
-    QList<QGraphicsItem *>  intersect_or_in = scene.collidingItems(selectedItem,Qt::IntersectsItemBoundingRect);
-	QList<QGraphicsItem *>  in = scene.collidingItems(selectedItem,Qt::ContainsItemShape);
+bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
+    bool intersect_or_in = selectedItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
+	bool in = selectedItem->collidesWithItem(item,Qt::ContainsItemShape);
 	
-	foreach(QGraphicsItem * item,in){
-		intersect_or_in.removeAll(item);
-	}
-		
-	return intersect_or_in;
+	return (intersect_or_in && !in);
 }
 
 

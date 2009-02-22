@@ -112,7 +112,7 @@ private:
 	SvgListWidget * svg_list;
 	//QMatrix trans;
 	int inicial_zoom;
-	QList<QGraphicsItem *>  detectBorderCollisions();
+	bool detectBorderCollisions(QGraphicsItem *);
 };
 
 
