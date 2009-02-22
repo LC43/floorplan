@@ -55,6 +55,9 @@ SvgListWidget::SvgListWidget(QWidget *parent)
 	createConnectorsList();
     int num_blocks = qpixmap_list.size()*2;
     setMinimumSize(200, 100*num_blocks);
+	
+	numberOfConnectors = connectors.size();
+	numberOfSpaces = svgs_filenames.size();
 }
 void SvgListWidget::createConnectorsList(){
 
@@ -70,7 +73,6 @@ void SvgListWidget::createConnectorsList(){
 		QString name = list.at(i);
 		connectors.append(QString(name));
 		qDebug() << "SvgListWidget: " << name << " : " << i;
-
 		// load svg
 		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 		//convert to pixmap
@@ -84,7 +86,7 @@ void SvgListWidget::createConnectorsList(){
 
 QList<QPixmap> SvgListWidget::createSvgList(){
 
-	resources_dir = QString(":/images/");
+	QString resources_dir = QString(":/images/");
 	QDir resources = QDir(resources_dir);
 	QStringList filters;
 	filters << "*.svg";
@@ -97,14 +99,11 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 	qWarning("ummm.. no resources?");
 
     resources.setNameFilters(filters);
-    QStringList list = QStringList(resources.entryList());
 
     //for each in dir
     for (int i = 0; i < list.size(); ++i) {
-		QString name = list.at(i);
-		svgs_filenames.append(QString(name));
+		QString name = svgs_filenames.at(i);
 		qDebug() << "SvgListWidget: " << name << " : " << i;
-
 		// load svg
 		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 		//convert to pixmap
@@ -124,7 +123,6 @@ void SvgListWidget::showSvgs(){
     for (int i = 0; i < num_blocks; ++i) {
 		showSvg( qpixmap_list.at(i), i);
     }
-
 }
 
 
@@ -140,7 +138,13 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
     svgIcon->setMinimumSize(20,20);
 	svgIcon->setFrameStyle(QFrame::StyledPanel | QFrame::Raised | QFrame::Shadow_Mask );
 
-	QString legenda_texto = svgs_filenames.at(c_block);
+	QString legenda_texto;
+
+	qDebug() << "c_block " << c_block << " numberOfSpaces " << numberOfSpaces;  
+	if(c_block < numberOfSpaces)
+		legenda_texto = svgs_filenames.at(c_block);
+	else legenda_texto = connectors.at(c_block - numberOfSpaces);
+
 	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
 	legenda_texto.remove(QRegExp(".[a-z]*$"));
 
@@ -244,6 +248,7 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
         child->setPixmap(pixmap);
     }
 }
+
 void SvgListWidget::paintEvent(QPaintEvent *){
 
 	//do i need a painter :/

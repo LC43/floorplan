@@ -94,8 +94,9 @@ private:
 	QTextEdit *textEdit;
 	QStringList svgs_filenames;
 	QStringList connectors;
-	QString resources_dir;
 	bool isConnectorBeingDragged;
+	int numberOfConnectors;
+	int numberOfSpaces;
 };
 
 
