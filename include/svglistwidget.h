@@ -82,6 +82,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void showSvg(QPixmap svgPixmap, int c_block );
     QList<QPixmap> createSvgList();
+	void createConnectorsList();
     void showSvgs();
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *event);

@@ -78,11 +78,16 @@ bool Assistant::startAssistant()
         proc = new QProcess();
 
     if (proc->state() != QProcess::Running) {
-        QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
-#if !defined(Q_OS_MAC)
-        app += QLatin1String("assistant");
+
+#if !defined(Q_OS_WIN)
+		QString app = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator();
 #else
-        app += QLatin1String("Assistant.app/Contents/MacOS/Assistant");    
+		QString app = QString();
+#endif
+#if !defined(Q_OS_MAC)
+		app += QLatin1String("assistant");
+#else
+		app += QLatin1String("Assistant.app/Contents/MacOS/Assistant");
 #endif
 
 		QString collection_file;
@@ -98,8 +103,8 @@ bool Assistant::startAssistant()
         proc->start(app, args);
 		qDebug() << " lido a coleccao";
         if (!proc->waitForStarted()) {
-            QMessageBox::critical(0, QObject::tr("Simple Text Viewer"),
-                QObject::trUtf8("Não foi possível lançar o Assistant (%1)").arg(app));
+            QMessageBox::critical(0, QObject::tr("Assistente"),
+                QObject::trUtf8("Não foi possível lançar o Assistante (%1)").arg(app));
             return false;
         }    
     }

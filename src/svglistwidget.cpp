@@ -49,26 +49,37 @@
 SvgListWidget::SvgListWidget(QWidget *parent)
 	: QFrame(parent)
 {
-    resources_dir = QString(":/images/");
-    resources = QDir(resources_dir);
-	QStringList filters;
-    filters << "*.svg";
-    resources.setNameFilters(filters);
-	svgs_filenames = QStringList(resources.entryList());
+
     setAcceptDrops(true);
     createSvgList();
     int num_blocks = qpixmap_list.size()*2;
     setMinimumSize(200, 100*num_blocks);
 }
+void SvgListWidget::createConnectorsList(){
+
+	resources_dir = QString(":/images/connectors/");
+	resources = QDir( resources_dir );
+	QStringList filters;
+	filters << "*.svg";
+	resources.setNameFilters(filters);
+	svgs_filenames = QStringList(resources.entryList());
+
+}
 
 QList<QPixmap> SvgListWidget::createSvgList(){
+
+	resources_dir = QString(":/images/");
+	resources = QDir(resources_dir);
+	QStringList filters;
+	filters << "*.svg";
+
+	resources.setNameFilters(filters);
+	svgs_filenames = QStringList(resources.entryList());
     // get resource dir
     //FIXME: read it from a .rc file ?
     if (!resources.exists())
 	qWarning("ummm.. no resources?");
 
-	QStringList filters;
-    filters << "*.svg";
     resources.setNameFilters(filters);
     QStringList list = QStringList(resources.entryList());
 
@@ -78,7 +89,6 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 		svgs_filenames.append(QString(name));
 		qDebug() << "SvgListWidget: " << name << " : " << i;
 
-	
 		// load svg
 		//qDebug() << "SvgListWidget: " << "svg height" << picSvg->height() << "width" << picSvg->width();
 		//convert to pixmap
@@ -87,7 +97,7 @@ QList<QPixmap> SvgListWidget::createSvgList(){
 		qpixmap_list.push_back(*svgPixmap);
 		//showSvg( &svgPixmap, svgs_filenames.size()+1, i );
     }
-	qDebug() << "SvgListWidget: done ";
+	qDebug() << "SvgListWidget: done";
     return qpixmap_list;
   
 }
@@ -98,7 +108,6 @@ void SvgListWidget::showSvgs(){
     int num_blocks = qpixmap_list.size();
     for (int i = 0; i < num_blocks; ++i) {
 		showSvg( qpixmap_list.at(i), i);
-		//qDebug() << "SvgListWidget: " << "iterating over list. index of:" << i;
     }
 
 }

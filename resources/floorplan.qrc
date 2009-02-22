@@ -20,6 +20,9 @@
   <file>images/varanda.svg</file>
   <file>images/wc.svg</file>
   <file>images/config.png</file>
+  <!-- connectors -->
+  <file>images/connectors/porta.svg</file>
+  <file>images/connectors/janela.svg</file>
   <!-- for memoria descritiva -->
   <file>images/memdesc/logo32.png</file>
   <file>images/memdesc/mac/editcopy.png</file>

@@ -42,12 +42,27 @@
 ****************************************************************************/
 	/*
 		*****TODO: not critical: undo/redo logic
+		*****TODO: not critical: a scene so mostra as scroll bars se houver objectos fora do "view port"
 		*****TODO: impressao à escala
 		*****TODO: conectores: janelas (1.2-1.5) , portas (0.90-1.20)
-
+		*****TODO: boundingRegion <-- calcular a fronteira d todos os objectos ?
+		*****TODO: FIXME: os connectores tem q ter por def um z alto.
 
 		+ escala
-		
+		item_size = dragged_item->getSize()
+		item_size /= 25; // 100pixels / 25 = 4 metros
+		dragged_item->tooltip(item_size)
+
+		if (transformation) then getSize..apply the same transformation..tooltip it
+		ex:
+		size: 100
+		item_size = 100/25 = 4
+		scale 1.1 -> 100*1.1 = 110 -> 4*1.1 = 4.4 ( 4.4 *25 = 110 certo!)
+		rotation +1 -> não altera
+		translation +1 -> nao altera
+		shear +1 -> nao altera um dos lados, mas o outro
+		qreal angulo = atan2(10 , 100 );
+		qreal new_side = 100 / sen(angulo)
 
 
 		
@@ -56,7 +71,7 @@
 #include <QMessageBox>
 #include <QXmlStreamAttributes>
 
-
+//#include <math.h>
 #include "dragwidgetgrid.h"
 
 //static int max_zoom = 10; //percentage
@@ -144,6 +159,13 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		
 		item->setData(ObjectID,event->mimeData()->text());
 		
+		item->setData(ObjectX,pixmap.width());
+		item->setData(ObjectY,pixmap.height());
+		
+		QString i_size = QString("x: %1 | y: %2").arg(pixmap.width()).arg(pixmap.height());
+		item->setToolTip( i_size );
+		
+		
     } else {
         event->ignore();
     }
@@ -224,24 +246,50 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				//FIXME: rotate exponential
 				selectedItem->rotate(distance_moved_x+distance_moved_y);
 				break;
-			case Qt::ShiftModifier:
+			case Qt::ShiftModifier:{
+				qDebug() << "x_b:" << selectedItem->sceneBoundingRect().width();
 				qreal factor_x;
 				qreal factor_y;
 				qDebug() << "dist_x:" << distance_moved_x << "dist_y" << distance_moved_y;
-				if( distance_moved_x > 1 ){
-					factor_x = 1 - (distance_moved_x/100);
-				}
-				else
-					factor_x = 1 - (distance_moved_x/100);
-				if( distance_moved_y > 1 )
-					factor_y = 1 - (distance_moved_y/100);
-				else
-					factor_y = 1 - (distance_moved_y/100);
+				factor_x = 1 - (distance_moved_x/100);
+				factor_y = 1 - (distance_moved_y/100);
 				selectedItem->scale(factor_x, factor_y);
+				//TODO: FIXME: boundingRect returns a wrong size, and i dont know if scale() works well
+				QRectF rec = selectedItem->sceneBoundingRect();
+				QString i_size;
+				i_size = QString("x: %1 | y: %2").arg(rec.width()).arg(rec.height());
+				selectedItem->setToolTip( i_size );
+				qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
+				selectedItem->setData(ObjectX,rec.width());
+				selectedItem->setData(ObjectY,rec.height());
 				break;
-			case Qt::MetaModifier:
+			}
+
+#if !defined(Q_OS_WINDOWS)
+			case Qt::MetaModifier:{
+#else
+			case Qt::AltModifier:{
+#endif
 				selectedItem->shear( distance_moved_x/10, distance_moved_y/10 );
+
+				QRectF rec = selectedItem->sceneBoundingRect();
+
+				//TODO: FIXME: shear isnt this simple :)
+				//shear +1 -> nao altera um dos lados, mas o outro
+				/*qreal angulo = atan2(distance_moved_x);
+				qreal new_side = 100 / sin(angulo);
+				qDebug() << "angulo: " << angulo << "side: " << new_side;
+				o q acontece se ambos vectores se mexem :S
+				*/
+				QString i_size;
+				i_size = QString("x: %1 | y: %2").arg(rec.width()).arg(rec.height());
+				selectedItem->setToolTip( i_size );
+				qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
+				selectedItem->setData(ObjectX,rec.width());
+				selectedItem->setData(ObjectY,rec.height());
+				
 				break;
+			}
 			default:{
 				// no modifier
 				qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
@@ -267,7 +315,11 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 		case Qt::Key_Shift:
 			emit modifierKeySignal(false, Qt::Key_Shift);
 			break;
-		case Qt::Key_Meta:
+#if !defined(Q_OS_WINDOWS)
+			case Qt::Key_Meta:
+#else
+			case Qt::Key_Alt:
+#endif		
 			emit modifierKeySignal(false, Qt::Key_Meta);
 			break;
 	}
@@ -278,8 +330,6 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	
 /*
 
-
-		
 		accoes:
 		* rodar    :  ctrl             + setas/LMB
 			-> void QGraphicsItem::rotate ( qreal angle )
@@ -325,9 +375,15 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ShiftModifier:
 						selectedItem->scale(1.1,1);
 					break;
+#if !defined(Q_OS_WINDOWS)
 					case Qt::MetaModifier:
 						selectedItem->shear(0.1,0);
 					break;
+#else
+					case Qt::AltModifier:
+						selectedItem->shear(0.1,0);
+						break;
+#endif
 					default:
 						selectedItem->translate(1,0);
 				}
@@ -344,9 +400,15 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->scale(0.9,1);
 						break;
 					}
+#if !defined(Q_OS_WINDOWS)
 					case Qt::MetaModifier:
-						selectedItem->shear(-0.1,0);
+						selectedItem->shear(0.1,0);
 						break;
+#else
+					case Qt::AltModifier:
+						selectedItem->shear(0.1,0);
+						break;
+#endif
 					default:
 						selectedItem->translate(-1,0);
 				}
@@ -362,9 +424,15 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->scale(1,0.9);
 						break;
 					}
+#if !defined(Q_OS_WINDOWS)
 					case Qt::MetaModifier:
-						selectedItem->shear(0,0.1);
+						selectedItem->shear(0.1,0);
 						break;
+#else
+					case Qt::AltModifier:
+						selectedItem->shear(0.1,0);
+						break;
+#endif
 					default:
 						selectedItem->translate(0,-1);
 				}
@@ -377,9 +445,15 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ShiftModifier:
 						selectedItem->scale(1,1.1);
 						break;
+#if !defined(Q_OS_WINDOWS)
 					case Qt::MetaModifier:
-						selectedItem->shear(0,-0.1);
+						selectedItem->shear(0.1,0);
 						break;
+#else
+					case Qt::AltModifier:
+						selectedItem->shear(0.1,0);
+						break;
+#endif
 					default:
 						selectedItem->translate(0,1);
 				}

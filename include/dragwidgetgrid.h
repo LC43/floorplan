@@ -61,6 +61,8 @@
 
 #define ObjectName 0
 #define ObjectID 1
+#define ObjectX 2
+#define ObjectY 3
 
 
 class DragWidgetGrid : public QGraphicsView

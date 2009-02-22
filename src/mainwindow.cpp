@@ -148,7 +148,11 @@ void MainWindow::createMenus() {
 	status_modifiers_ctrl->setText(trUtf8("Control (Rotação): "));
 	status_modifiers_ctrl->setFont(font_bold);
 	status_modifiers_ctrl_stt->setText(tr("Nada"));
+#if !defined(Q_OS_WINDOWS)
 	status_modifiers_meta->setText(trUtf8("Meta (Inclinação): "));
+#else
+	status_modifiers_meta->setText(trUtf8("Alt (Inclinação): "));
+#endif		
 	status_modifiers_meta->setFont(font_bold);
 	status_modifiers_meta_stt->setText(tr("Nada"));
 	status_modifiers_shift->setText(trUtf8("Shift (Escalar): "));
