@@ -227,6 +227,9 @@ void SvgListWidget::mousePressEvent(QMouseEvent *event)
     mimeData->setData("application/x-dnditemdata", itemData);
 	mimeData->setText(child->toolTip());
 
+	if(isConector(child->toolTip()))
+		isConnectorBeingDragged=true;
+
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
@@ -264,7 +267,7 @@ void SvgListWidget::paintEvent(QPaintEvent *){
 
 QPixmap SvgListWidget::getPixmapByName(QString name) {
 	int i;
-	int size = svgs_filenames.size () -1;
+	int size = svgs_filenames.size ();
 	i = svgs_filenames.indexOf(name);
 	if(i == -1)
 		i = connectors.indexOf(name);
@@ -274,3 +277,7 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 	return qpixmap_list.at(i+size);
 }
 
+bool SvgListWidget::isConector(QString name){
+	int i = connectors.indexOf(name);
+	return (i != -1)
+}
