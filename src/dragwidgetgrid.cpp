@@ -65,7 +65,6 @@
 		qreal new_side = 100 / sen(angulo)
 
 
-		
 	*/
 #include <QtGui>
 #include <QMessageBox>
@@ -315,10 +314,11 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 		case Qt::Key_Shift:
 			emit modifierKeySignal(false, Qt::Key_Shift);
 			break;
+
 #if !defined(Q_OS_WIN)
 			case Qt::Key_Meta:
 #else
-			case Qt::Key_Alt:
+		case Qt::Key_Alt:
 #endif		
 			emit modifierKeySignal(false, Qt::Key_Meta);
 			break;
@@ -402,11 +402,11 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					}
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
-						selectedItem->shear(0.1,0);
+						selectedItem->shear(-0.1,0);
 						break;
 #else
 					case Qt::AltModifier:
-						selectedItem->shear(0.1,0);
+						selectedItem->shear(-0.1,0);
 						break;
 #endif
 					default:
@@ -426,11 +426,11 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					}
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
-						selectedItem->shear(0.1,0);
+						selectedItem->shear(0,-0.1);
 						break;
 #else
 					case Qt::AltModifier:
-						selectedItem->shear(0.1,0);
+						selectedItem->shear(0,-0.1);
 						break;
 #endif
 					default:
@@ -447,11 +447,11 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						break;
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
-						selectedItem->shear(0.1,0);
+						selectedItem->shear(0,0.1);
 						break;
 #else
 					case Qt::AltModifier:
-						selectedItem->shear(0.1,0);
+						selectedItem->shear(0,0.1);
 						break;
 #endif
 					default:
