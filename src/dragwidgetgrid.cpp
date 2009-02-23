@@ -139,18 +139,20 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		if(svg_list->isConnectorBeingDragged){
 			qDebug() << "e um connector";
 			svg_list->isConnectorBeingDragged = false;
-			selectedItem = scene.itemAt(QPointF(event->pos()));
-			if(selectedItem){
+			
+			underItem = itemAt(event->pos());
+			if(underItem == NULL){
 				item = new ScenePixmapItem(NULL,&scene);
 		
 				item->setPixmap(pixmap);
 				
 				item->setPos(item->pos() + mapToScene(event->pos() - offset));
-				
+				qDebug() << "no no no :S";
 				if(detectBorderCollisions(item)){
+					qDebug() << "did we not colide?" << detectBorderCollisions(item);
 					item->setParentItem(selectedItem);
 					
-					item->setZValue(selectedItem->zValue()+1);
+					item->setZValue(underItem->zValue()+1);
 										
 					item->setCursor(Qt::ClosedHandCursor);
 		
@@ -283,11 +285,11 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				break;
 			}
 
-#if !defined(Q_OS_WIN)
+			#if !defined(Q_OS_WIN)
 			case Qt::MetaModifier:{
-#else
+			#else
 			case Qt::AltModifier:{
-#endif
+			#endif
 
 				qreal old_width =  selectedItem->data(ObjectX).toDouble();
 				qreal old_height = selectedItem->data(ObjectY).toDouble();
@@ -665,12 +667,21 @@ void DragWidgetGrid::decreaseZoom(){
 }
 
 bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
-    bool intersect_or_in = selectedItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
-	bool in = selectedItem->collidesWithItem(item,Qt::ContainsItemShape);
-	
+	qDebug() << "a detectar.." ;
+	bool intersect_or_in = underItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
+	ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( underItem );
+	QString name = pixmap->data(ObjectID).toString();
+	if( intersect_or_in)
+		qDebug() << "inter com: " << name;
+	bool in = underItem->collidesWithItem(item,Qt::ContainsItemShape);
+	if( !in )
+		qDebug() << "colide com: " << name;
 	return (intersect_or_in && !in);
 }
+/*
+	only works if its sheared on only one side
 
+*/
 qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
 
 	qreal rec_w = rec.width();

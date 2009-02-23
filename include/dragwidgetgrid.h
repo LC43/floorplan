@@ -105,6 +105,7 @@ private:
 	QBrush brush;
 	QMatrix original;
 	QGraphicsItem * selectedItem;
+	QGraphicsItem * underItem;
 	QPoint drag_start_pos;
 	QPointF drag_distance_to_mouse;
 	bool m_drawline;
