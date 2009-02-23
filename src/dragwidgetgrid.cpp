@@ -141,7 +141,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 			svg_list->isConnectorBeingDragged = false;
 			
 			underItem = itemAt(event->pos());
-			if(underItem == NULL){
+			if(underItem != NULL){
 				item = new ScenePixmapItem(NULL,&scene);
 		
 				item->setPixmap(pixmap);
@@ -183,13 +183,22 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		
 		QString i_size = QString("x: %1 | y: %2").arg(pixmap.width()).arg(pixmap.height());
 		item->setToolTip( i_size );
-		
-		
     } else {
         event->ignore();
     }
 }
-
+bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
+	qDebug() << "a detectar.." ;
+	bool intersect_or_in = underItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
+	ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( underItem );
+	QString name = pixmap->data(ObjectID).toString();
+	if( intersect_or_in)
+		qDebug() << "inter com: " << name;
+	bool in = underItem->collidesWithItem(item,Qt::ContainsItemShape);
+	if( in )
+		qDebug() << "colide com: " << name;
+	return !(intersect_or_in && !in);
+}
 
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 {
@@ -666,18 +675,7 @@ void DragWidgetGrid::decreaseZoom(){
 	scale(factor, factor);
 }
 
-bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
-	qDebug() << "a detectar.." ;
-	bool intersect_or_in = underItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
-	ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( underItem );
-	QString name = pixmap->data(ObjectID).toString();
-	if( intersect_or_in)
-		qDebug() << "inter com: " << name;
-	bool in = underItem->collidesWithItem(item,Qt::ContainsItemShape);
-	if( !in )
-		qDebug() << "colide com: " << name;
-	return (intersect_or_in && !in);
-}
+
 /*
 	only works if its sheared on only one side
 
