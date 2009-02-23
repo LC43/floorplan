@@ -76,6 +76,7 @@ public:
     SvgListWidget(QWidget *parent=0);
     QPixmap getPixmapByName(QString name);
 	bool isConnectorBeingDragged;
+	bool isConnector(QString name);
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
@@ -89,7 +90,6 @@ protected:
     void resizeEvent(QResizeEvent *event);
 	
 private:
-	bool isConnector(QString name);
 	QPainter *paint;
 	QList<QPixmap> qpixmap_list;
 	QTextEdit *textEdit;

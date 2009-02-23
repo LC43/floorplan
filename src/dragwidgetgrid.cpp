@@ -141,7 +141,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 			svg_list->isConnectorBeingDragged = false;
 			
 			underItem = itemAt(event->pos());
-			if(underItem != NULL){
+			if(underItem){
 				item = new ScenePixmapItem(NULL,&scene);
 		
 				item->setPixmap(pixmap);
@@ -149,8 +149,8 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 				item->setPos(item->pos() + mapToScene(event->pos() - offset));
 				qDebug() << "no no no :S";
 				if(detectBorderCollisions(item)){
-					qDebug() << "did we not colide?" << detectBorderCollisions(item);
-					item->setParentItem(selectedItem);
+					qDebug() << "we collided";
+					item->setParentItem(underItem);
 					
 					item->setZValue(underItem->zValue()+1);
 										
@@ -187,6 +187,8 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
         event->ignore();
     }
 }
+
+
 bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
 	qDebug() << "a detectar.." ;
 	bool intersect_or_in = underItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
@@ -197,7 +199,7 @@ bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
 	bool in = underItem->collidesWithItem(item,Qt::ContainsItemShape);
 	if( in )
 		qDebug() << "colide com: " << name;
-	return !(intersect_or_in && !in);
+	return (intersect_or_in && !in);
 }
 
 void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
@@ -361,7 +363,13 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				// no modifier
 				qreal new_pos_x = event->posF().x() - drag_distance_to_mouse.x();
 				qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
-				selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
+				if(svg_list->isConnector(selectedItem->data(ObjectID).toString())){
+					underItem = itemAt(event->pos());
+					if(!underItem)
+						scene.removeItem(selectedItem);
+					else selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));		
+				}
+				else selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
 			}
 		}
 		

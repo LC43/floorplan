@@ -144,12 +144,15 @@ void SvgListWidget::showSvg(QPixmap svgPixmap, int c_block ){
 		legenda_texto = svgs_filenames.at(c_block);
 	else legenda_texto = connectors.at(c_block - numberOfSpaces);
 
+
+	svgIcon->setToolTip( legenda_texto );
+
 	legenda_texto.replace(0,1,(legenda_texto.at(0).toUpper()));
 	legenda_texto.remove(QRegExp(".[a-z]*$"));
 
     //FIXME: this.size()
     svgIcon->move( 20, 20+150*c_block );
-    svgIcon->setToolTip( legenda_texto );
+    
     svgIcon->show();
     svgIcon->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -284,8 +287,7 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 }
 
 bool SvgListWidget::isConnector(QString name){
-	QString str = name.toLower().append(".svg");
-	int i = connectors.indexOf(str);
-	qDebug() << "Connector " << str << " value " << i << " bool " << (i != -1);
+	int i = connectors.indexOf(name);
+	qDebug() << "Connector " << name << " value " << i << " bool " << (i != -1);
 	return (i != -1);
 }
