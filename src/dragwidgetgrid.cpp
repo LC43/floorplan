@@ -152,6 +152,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 					qDebug() << "we collided";
 					item->setParentItem(underItem);
 					
+					item->setPos(0,0);
 					item->setZValue(underItem->zValue()+1);
 										
 					item->setCursor(Qt::ClosedHandCursor);
