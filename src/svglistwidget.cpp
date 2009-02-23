@@ -278,10 +278,11 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 	int i;
 	int size = svgs_filenames.size ();
 	i = svgs_filenames.indexOf(name);
-	if(i == -1)
+	if(i == -1){
 		i = connectors.indexOf(name);
+	}
 	else{
-		qpixmap_list.at(i);
+		return qpixmap_list.at(i);
 	}
 	return qpixmap_list.at(i+size);
 }
