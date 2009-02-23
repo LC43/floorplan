@@ -366,8 +366,10 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				qreal new_pos_y = event->posF().y() - drag_distance_to_mouse.y();
 				if(svg_list->isConnector(selectedItem->data(ObjectID).toString())){
 					underItem = itemAt(event->pos());
-					if(underItem)
-						selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));		
+					if(underItem){
+						selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
+						selectedItem->setParentItem(underItem);
+					}		
 				}
 				else selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
 			}
