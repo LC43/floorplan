@@ -146,7 +146,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		
 				item->setPixmap(pixmap);
 				
-				item->setPos(item->pos() + mapToScene(event->pos() - offset));
+				item->setPos(underItem->scenePos());
 				qDebug() << "no no no :S";
 				if(detectBorderCollisions(item)){
 					qDebug() << "we collided";
@@ -614,6 +614,10 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 	  stream->writeAttribute( "m22", QString("%1").arg(m.m22 () ));  
 	  stream->writeAttribute( "dx", QString("%1").arg(m.dx ()  ));
 	  stream->writeAttribute( "dy", QString("%1").arg(m.dy ()));
+	  stream->writeAttribute( "zValue", QString("%1").arg(item->zValue()));
+	  if(item->parentItem ())
+	  	stream->writeAttribute( "child", QString("%1").arg(1));
+	  else stream->writeAttribute( "child", QString("%1").arg(0));
     }
 	
   }
@@ -647,6 +651,8 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 	  qreal m22 = 0.0;
 	  qreal dx = 0.0;
 	  qreal dy = 0.0;
+	  qreal z = 0.0;
+	  int child = 0;
 	  QString id;
       foreach( QXmlStreamAttribute attribute, stream->attributes() )
       {
@@ -657,6 +663,8 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
         if ( attribute.name() == "m22" ) m22 = attribute.value().toString().toDouble();
 		if ( attribute.name() == "dx" ) dx = attribute.value().toString().toDouble();
         if ( attribute.name() == "dy" ) dy = attribute.value().toString().toDouble();
+		if ( attribute.name() == "zValue" ) z = attribute.value().toString().toDouble();
+		if ( attribute.name() == "child" ) child = attribute.value().toString().toInt();
       }
 	  qDebug() << id;
 	  QMatrix m = QMatrix(m11,m12,m21,m22,dx,dy);
@@ -666,8 +674,15 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 	 ScenePixmapItem * pixmap = new ScenePixmapItem(NULL,&scene);
 		
 	 pixmap->setPixmap(p);
+	 
+	 pixmap->setZValue(z);
 	  
-	  pixmap->setMatrix(m,false);
+	 pixmap->setMatrix(m,false);
+	  
+	  if(child)
+	  {
+		  pixmap->setParentItem(itemAt(pixmap->pos().toPoint()));
+	  }
 	}	
 	
   }
