@@ -115,11 +115,17 @@ private:
 	//QMatrix trans;
 	int inicial_zoom;
 	bool detectBorderCollisions(QGraphicsItem *);
-	qreal calculateOpposite(QRectF rec, qreal adjacent );
 	QString itemName(QGraphicsItem*);
 	QString beautifyName(QString);
 	QRectF msceneBoundingRect(QGraphicsItem*);
-	qreal metodoDosQuadrados(qreal, QRectF);
+
+	qreal metodoDosQuadrados( QRectF , qreal );
+	qreal calculateOpposite(QRectF rec, qreal adjacent );
+	
+	void printQTransform(  QTransform mt );
+	
+
+	
 };
 
 

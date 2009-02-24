@@ -6,11 +6,18 @@ ScenePixmapItem::ScenePixmapItem(QGraphicsItem * parent, QGraphicsScene * scene)
 
 QRectF ScenePixmapItem::boundingRect (){
 	QPixmap p = pixmap();
-	qDebug() << "mto util..."; // obrigado por testares :)
+// 	qDebug() << "mto util..."; // obrigado por testares :)
 	return QRectF(0.0,0.0,(qreal)p.width(),(qreal)p.height());
 }
+
 QRectF ScenePixmapItem::sceneBoundingRect() {
+	if( !parentItem() ){
 // 		if (d_ptr->parent || d_ptr->hasTransform)
-			return sceneTransform().mapRect(boundingRect());
-// 		return boundingRect().translated(d_ptr->pos);
+		qDebug() << "has parent";
+		return sceneTransform().mapRect(boundingRect());
+	}
+	else {
+		qDebug() << "has not parent"; // totally random choice for scenePos() :S
+		return boundingRect().translated(scenePos());
+	}
 }

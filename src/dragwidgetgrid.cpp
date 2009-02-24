@@ -44,9 +44,8 @@
 		*****TODO: not critical: undo/redo logic
 		*****TODO: not critical: a scene so mostra as scroll bars se houver objectos fora do "view port"
 		*****TODO: impressao à escala
-		*****DONE: (RUI)conectores: janelas (1.2-1.5) , portas (0.90-1.20)
 		*****TODO: boundingRegion <-- calcular a fronteira d todos os objectos ?
-		*****DONE: (RUI) os connectores tem q ter por def um z alto.
+
 
 
 	*/
@@ -157,8 +156,6 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		
 					item->setData(ObjectID,event->mimeData()->text());
 		
-// 					item->setData(ObjectX,pixmap.width());
-// 					item->setData(ObjectY,pixmap.height());
 				}
 				else scene.removeItem(item);			
 			}
@@ -175,9 +172,7 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		
 			item->setData(ObjectID,event->mimeData()->text());
 		
-// 			item->setData(ObjectX,pixmap.width());
-// 			item->setData(ObjectY,pixmap.height());
-		
+
 		}
 		
 		qreal pixmap_width = pixmap.width();
@@ -231,8 +226,8 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		else{
 			selectedItem = item;
 			//NOTE: isnt there a more elegant way to get the name?
-			ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( item );
-			QString name = pixmap->data(ObjectID).toString();
+			
+			QString name = itemName( item );
 			// adjust mouse
 			QPointF item_point = mapFromScene(selectedItem->pos().x(), selectedItem->pos().y());
 			drag_distance_to_mouse = event->pos() - item_point;
@@ -241,22 +236,17 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 				emit selectedItemOn(beautifyName(name));
 			else
 				emit selectedItemOn("Linha");
-			/*
-			qDebug() << "Selected Item collides with:";
-			foreach(QGraphicsItem*  item,detectBorderCollisions()){
-				qDebug() << item->data(ObjectID).toString();	
-			}*/
 		}
 	}
 	else if(selected){
 		QMessageBox diag;
-		diag.setInformativeText(trUtf8("Deseja reverter alterações efectuadas ao objecto?"));
+		diag.setText(trUtf8("Deseja reverter alterações efectuadas ao objecto?"));
  		diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
 		diag.setDefaultButton(QMessageBox::Cancel);
 		int ret = diag.exec();
 		switch(ret){
 			case QMessageBox::Ok:
-				item->resetTransform();
+				item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
 			break;
 			default:
 			break;
@@ -264,7 +254,6 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	}
 }
 QString DragWidgetGrid::itemName(QGraphicsItem *item){
-// 	ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( item );
 	QString name = item->data(ObjectID).toString();
 	return name;
 }
@@ -277,8 +266,9 @@ QString DragWidgetGrid::beautifyName(QString uglyname){
 QRectF DragWidgetGrid::msceneBoundingRect(QGraphicsItem *item){
 	ScenePixmapItem *  scene_pixmap_item = dynamic_cast<ScenePixmapItem*>( item );
 	return scene_pixmap_item->sceneBoundingRect();
+	return item->sceneBoundingRect();
 }
-qreal DragWidgetGrid::metodoDosQuadrados( qreal side, QRectF big_rec ){
+qreal DragWidgetGrid::metodoDosQuadrados( QRectF big_rec, qreal side ){
 	qDebug() << "º º º º º º º º º º º º º º º º º º º º º º º º º º º º";
 	qDebug() << "º º º º º º º º º º º º metodo dos quadrados  º º º º º";
 	qDebug() << "º º º º º º º º º º º º º º º º º º º º º º º º º º º º";
@@ -304,6 +294,35 @@ qreal DragWidgetGrid::metodoDosQuadrados( qreal side, QRectF big_rec ){
 	qDebug() << " after scaling: " << new_y ;
 	return new_y;
 }
+
+/* 	only works if its sheared on only one side */
+qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
+
+	qreal rec_w = rec.width();
+	qreal rec_h = rec.height();
+	qDebug() << "tri rec w:" << rec_w << " h: " << rec_h;
+	// get diagonal, hypotenuse, h
+	// diagonal: (0,0) -> ( b_w = b_rec.width, b_h = b_rec.height )
+	// hypotenuse:
+	qreal h = sqrt( rec_w*rec_w + rec_h*rec_h );
+	qDebug() << "tri rec hyp: " << h;
+	qDebug() << "tri rec adj: " << adjacent;
+	// get the angle with arcsin:
+	qreal a = acos ( adjacent / h );
+	qDebug() << "tri rec angle: " << a;
+	//calculate opposite
+	qreal o = h * sin( a );
+	qDebug() << "tri rec o: " << o;
+	return o;
+				
+}
+
+void DragWidgetGrid::printQTransform(  QTransform mt ){
+	qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
+	qDebug() << "mt2x: " << mt.m21() << "\t" << mt.m22() << "\t" << mt.m23();
+	qDebug() << "mt3x: " << mt.m31() << "\t" << mt.m32() << "\t" << mt.m33();
+	qDebug() << "___________________";
+}
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 
 	if(m_drawline && (event->pos() - drag_start_pos).manhattanLength() != 0 ){
@@ -316,7 +335,6 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 	else if(selectedItem){
 		qreal distance_moved_x = drag_start_pos.x() - event->posF().x();
 		qreal distance_moved_y = drag_start_pos.y() - event->posF().y();
-		qDebug() << "distance: x: " << distance_moved_x << " | y: " << distance_moved_y;
 		int mod = QApplication::keyboardModifiers();
 		switch(mod){
 			case Qt::ControlModifier:
@@ -326,14 +344,12 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 			case Qt::ShiftModifier:{
 				qreal factor_x;
 				qreal factor_y;
-// 				qDebug() << "dist_x:" << distance_moved_x << "dist_y" << distance_moved_y;
+
 				factor_x = 1 - (distance_moved_x/100);
 				factor_y = 1 - (distance_moved_y/100);
 				if(svg_list->isConnector(selectedItem->data(ObjectID).toString())) {
 					// limite porta: 0.90 - 1.2
 					// limite porta: 0.90 - 1.2
-					// As portas dimensões de 0,90 a 1,20 de largura. [TODO]
-					// As janelas serão de 1,2 a 1,50 metros. [TODO]
                     // nao podem ser escalados no eixo_y (in)felizmente, o x roda com o objecto
                     selectedItem->scale(1 , factor_y );
                     QRectF rec = selectedItem->sceneBoundingRect();
@@ -394,149 +410,71 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				qreal sh = distance_moved_x/100;
 				QString name = itemName( selectedItem );
 				
-// 				if(svg_list->isConnector(name)) {
-// 					if ( name.contains("porta", Qt::CaseInsensitive) ){
-// 						new_x = old_width;
-// 						new_y = calculateOpposite(selectedItem->sceneBoundingRect(),new_x );
-// 						if(  ){
-// 						}
-// 					} else if ( name.contains("janela", Qt::CaseInsensitive) ){
-// 						
-// 					}
-				/*} else { // moving on the x axis.. parallel..lely */
+				// moving on the x axis.. parallel..lely */
 				if ( distance_moved_x != 0 && fabs(distance_moved_x) > fabs(distance_moved_y) ){
 
-
+					selectedItem->shear( -sh ,0 ); //right!! turn right! the other right! .. :p
+					qDebug() << "\t\tafter 1st shear";
+					/*
+					se for um shear uni-direccional aplicado a uma matriz onde ja haja
+					um shear noutra direccao de um vector  perpendicular,
+					 + entao: metodo dos quadrados
+					 + caso contrario, metodo do triangulo :>
+							 */
+					/*
+					se em x,
+						a = x0 = x1,  o = y1, h = diagonal
+					se em y,
+						a = y0 = y1, o = x1, h = diagonal*/
 					
-					// As portas dimensões de 0,90 a 1,20 de largura. [TODO]
-					// As janelas serão de 1,2 a 1,50 metros. [TODO]
-					// if( distance_moved_x > 0 )
-					selectedItem->shear( -sh ,0 ); //right!! turn right! omg.. :D
-					// else
-					// selectedItem->shear( -sh,0 ); // left! go left! the other left!
-					QTransform mt = selectedItem->sceneTransform();
 					// adjacent
 					new_x = old_width; //*ScalingToReal;
-					// opposite
-					// se for um shear uni-direccional aplicado a uma matriz onde ja haja
-					// um shear noutra direccao de um vector  perpendicular,
-					 // + entao: metodo dos quadrados
-					//  + caso contrario, metodo do triangulo :>
-/*
-					if (m.12() != 0 )
-						quadrado;
-					else
-						triangulo;
-
-					//quadrado:
+					QTransform mt = selectedItem->sceneTransform();
 					QRectF big_rec = msceneBoundingRect(  selectedItem );
-					new_y = metodoDosQuadrados( big_rec );*/
-
-					// new_y = calculateOpposite( rec ,new_x );
-					// se o x n se altera, n fazemos nada para verificar o tamanho do
-					// connector
-					// if(svg_list->isConnector(name)) {
-					/*
-
-
-
-					
-
-git commit -a -m "lots of stuff, read below
-				* sorry for the extra lines, but its getting too messy with all the comments,
-					but i might need them again.. will be deleted soon-ish
-				* commiting:
-					* renamed scenepixmapitem files
-					* ugly (and not 100% tested) sceneBoundingRect in scenepixmapitem
-					* so now we might be using msceneBoundingRect( GraphicsItem *) <- that might break alot :D
-					* introduced some name handling functions in drag.
-					* removed setparent for underitem.. was it needed or could hv used the enum ?
-					* changed the scale ( 1 'm' / 25 pixels )
-					* still trying to fix the calculation of side length
-					** specially hard work done on shear..
-					* fixed scaling and made it more smother in transformation with mouse
-					* shearing move under /100 instead of /10
-					* added limits to transformations of the connectors (uff!)
-
-					* tried somewhat to make sense into the svglist lenght
-
-					* cleaned the quarto.svg"
-
-
-
-					
-						if( rec.height() > 1.2*ScalingToReal ) {
-						qreal factor_h = 1.2*ScalingToReal / rec.height();
-						selectedItem->scale(1, factor_h );
-					} else if( rec.height() < 0.9*ScalingToReal){
-						qreal factor_h = 0.9*ScalingToReal / rec.height() ;
-						selectedItem->scale(1, factor_h );
+					qDebug() << "x:" << big_rec.width() << " | y: " << big_rec.height();
+					qDebug() << "new_x: " << new_x;
+					printQTransform( mt  );
+					// opposite
+					if (mt.m12() != 0 )
+						new_y = metodoDosQuadrados( big_rec, new_x*ScalingToReal );
+					else {
+						qDebug() << "triangle";
+						new_y = calculateOpposite( big_rec, new_x*ScalingToReal );
 					}
-
-						0.9*ScalingToReal 		 1.5*ScalingToReal   1.2*ScalingToReal
-						** se horinzontl:
-							construir um novo qrectf ( big - known_side (x) )
-							e a hipotenusa do novo é o y :S
-							
-						** se vertical:
-							contruir um novo qrectf ( big - known_side (y) )
-							e a hip. do novo é o x :D
-						*/
-					qDebug() << "new x: " << new_x*ScalingToReal;	
+					qDebug() << "new_y : " << new_y << "(without scalingtoreal)";
+					new_y /= ScalingToReal;
 					if(svg_list->isConnector(name)) {
+						// os connectores so tem shear horizontal..
 						if ( name.contains("porta", Qt::CaseInsensitive) ){
-							QTransform mt = selectedItem->sceneTransform();
-							qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
-							qDebug() << "mt2x: " << mt.m21() << "\t" << mt.m22() << "\t" << mt.m23();
-							qDebug() << "mt3x: " << mt.m31() << "\t" << mt.m32() << "\t" << mt.m33();
-							qDebug() << "___________________";
-
-
-
-							
-							qDebug() << ":S: new_y: " << new_y << "<=?" << 1.2;
-							qDebug() << ":S: new_y: " << new_y << ">=?" << 0.9;
+							qDebug() << "new_y: " << new_y << " >? " << 1.2;
 							if( new_y > 1.2 ){
-// 								qreal over_max = 1.2 - new_y;
-								QRectF new_rec = selectedItem->sceneBoundingRect();
+
 								// height esta fixo
-								qDebug() << "x:" << new_rec.width();
 								selectedItem->shear( -mt.m21() , 0  );
-								qDebug() << "$$$$$$$$$$$$$$ new_x: " << new_x;
-								qreal angle = asin( new_x / 1.2 );
-								qDebug() << "$$$$$$$$$$$$$$$  angulo" << angle;
-								mt = selectedItem->sceneTransform();
-								qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
-								qDebug() << "mt2x: " << mt.m21() << "\t" << mt.m22() << "\t" << mt.m23();
-								qDebug() << "mt3x: " << mt.m31() << "\t" << mt.m32() << "\t" << mt.m33();
-								qDebug() << "___________________";
-								qreal new_sh = 1.2 * cos(angle) ;
-								qDebug() << "++++++++++++++" ;
-								qDebug() << "new_sh" << new_sh;
-								qDebug() << "++++++++++++++" ;
-								if( sh > 0 ) 
+								qDebug() << "\t\tafter clearing:";
+								printQTransform( selectedItem->sceneTransform()  );
+								
+								qreal angle = acos( new_x / 1.2 );
+								qreal new_sh = 1.2 * sin(angle) ;
+								qDebug() << "sh: " << sh << "  \tnew sh: " << new_sh;
+								if( sh > 0 )
 									selectedItem->shear( -new_sh , 0  );
-								else
-									selectedItem->shear( new_sh , 0  );
-								mt = selectedItem->sceneTransform();
-								qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
-								qDebug() << "mt2x: " << mt.m21() << "\t" << mt.m22() << "\t" << mt.m23();
-								qDebug() << "mt3x: " << mt.m31() << "\t" << mt.m32() << "\t" << mt.m33();
-								qDebug() << "___________________";
-								new_rec = selectedItem->sceneBoundingRect();
-								qDebug() << "x:" << new_rec.width();
+// 								else // TODO: figure out what happens..
+// 									selectedItem->shear( new_sh , 0  );
+
+								qDebug() << "\t\tafter maximizing:";
+								printQTransform( selectedItem->sceneTransform()  );
+								
 								new_y = 1.2;
-// 							} else if( new_y < 0.9 ){
-// 								qreal less_min = 0.9 - new_y ;
-// 								selectedItem->shear( less_min*ScalingToReal/10, 0 );
-// 								new_y = 0.9;
+								/*
+								 // parece-me q o minimo q o connector pode ter é o tamanho
+								// que tinha inicial, q é smp válido.
+							} else if( new_y < 0.9 ){
+								qreal less_min = 0.9 - new_y ;
+								selectedItem->shear( less_min*ScalingToReal/10, 0 );
+								new_y = 0.9;
+								*/
 							}
-							mt = selectedItem->sceneTransform();
-							qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
-							qDebug() << "mt2x: " << mt.m21() << "\t" << mt.m22() << "\t" << mt.m23();
-							qDebug() << "mt3x: " << mt.m31() << "\t" << mt.m32() << "\t" << mt.m33();
-							qDebug() << "___________________";
-							
 						} else if ( name.contains("janela", Qt::CaseInsensitive) ){
 							if( new_y > 1.5){
 								qreal over_max = 1.5 - new_y;
@@ -549,31 +487,23 @@ git commit -a -m "lots of stuff, read below
 							}
 						}
 					}
-// 					qDebug() << "oposto: " << new_y << "adjacente: " << new_x;
-					qDebug() << "new x: " << new_x*ScalingToReal;	
-				} else if( distance_moved_y != 0  ){  // moving on the y axis ..
+				qDebug() << "new x: " << new_x*ScalingToReal;
+			} else if( distance_moved_y != 0  ){  // moving on the y axis ..
 					if(svg_list->isConnector(name)) {
-						// wont happen but keeps gcc quiet :)
-						new_y = old_height;
-					// opposite
+						// do nothing, expect keep gcc quiet :)
 						new_x = old_width;
+						new_y = old_height;
 					} else {
 						selectedItem->shear( 0, distance_moved_y/100); // up/ down;
-
 						// adjacent
 						new_y = old_height;
-						// opposite 
-// 						new_x = calculateOpposite(selectedItem->sceneBoundingRect(), new_y);
-						QRectF big_rec = selectedItem->sceneBoundingRect();
-						// we build a new square rect with the known side
-						QRectF * known_rec = new QRectF (new_y, new_y, big_rec.width(), big_rec.height() );
-						qreal rec_w = known_rec->width();
-						qreal rec_h = known_rec->height();
-						// the remaining rect will contain the new side
-// 						qreal h = sqrt( rec_w*rec_w + rec_h*rec_h );
-						//new_y = h!! :D
-						new_x = sqrt( rec_w*rec_w + rec_h*rec_h );
-						new_x /= ScalingToReal;
+						QTransform mt = selectedItem->sceneTransform();
+						QRectF big_rec = msceneBoundingRect(  selectedItem );
+						// opposite
+						if (mt.m12() != 0 )
+							new_x = metodoDosQuadrados( big_rec, new_y );
+						else
+							new_x = calculateOpposite( big_rec, new_y );
 					}
 				}else {
 					// nothing happened, both distances were zero
@@ -583,17 +513,14 @@ git commit -a -m "lots of stuff, read below
 					new_x = old_width;
 				}
 
-				//TODO: FIXME: shear still isnt this simple :S
+
 
 				QString i_size;
 				i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
 				selectedItem->setToolTip( i_size );
-// 				qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
-// 				qDebug() << "y_a:" << selectedItem->sceneBoundingRect().height();
 				selectedItem->setData(ObjectX,new_x);
 				selectedItem->setData(ObjectY,new_y);
 				break;
-				/*}*/
 			}
 			default:{
 				// no modifier
@@ -603,8 +530,7 @@ git commit -a -m "lots of stuff, read below
 					underItem = itemAt(event->pos());
 					if(underItem){
 						selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
-// 						selectedItem->setParentItem(underItem);
-					}		
+					}
 				}
 				else selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
 			}
@@ -781,9 +707,10 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 				}
 			break;
 		 }
+		 qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
+		 qDebug() << "y_a:" << selectedItem->sceneBoundingRect().height();
   	}
-	qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
-	qDebug() << "y_a:" << selectedItem->sceneBoundingRect().height();
+
 }
 
 void DragWidgetGrid::copyToClipboard()
@@ -938,25 +865,4 @@ void DragWidgetGrid::decreaseZoom(){
 }
 
 
-/*
-	only works if its sheared on only one side
-
-*/
-qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
-
-	qreal rec_w = rec.width();
-	qreal rec_h = rec.height();
-	// get diagonal, hypotenuse, h
-	// diagonal: (0,0) -> ( b_w = b_rec.width, b_h = b_rec.height )
-	// hypotenuse:
-	qreal h = sqrt( rec_w*rec_w + rec_h*rec_h );
-
-	// get the angle with arcsin:
-	qreal a = asin ( adjacent / h );
-
-	//calculate opposite
-	qreal o = h * cos( a );
-	return o;
-				
-}
 
