@@ -34,6 +34,7 @@ HEADERS =    $$INCLUDEPATH/svglistwidget.h \
              $$INCLUDEPATH/pages.h \
              $$INCLUDEPATH/configdialog.h \
              $$INCLUDEPATH/memoriadescritiva.h \
+             $$INCLUDEPATH/scenepixmapitem.h \
              $$INCLUDEPATH/mainwindow.h
                
 
@@ -43,11 +44,12 @@ SOURCES =    $$SRC/svglistwidget.cpp \
              $$SRC/dragwidgetgrid.cpp \
              $$SRC/assistant.cpp \
              $$SRC/pages.cpp \
-			 $$SRC/ScenePixmapItem.cpp \
+             $$SRC/scenepixmapitem.cpp \
              $$SRC/configdialog.cpp \
              $$SRC/memoriadescritiva.cpp \
              $$SRC/mainwindow.cpp \
              $$SRC/main.cpp
+
  
 # install
 target.path = $$DESTDIR

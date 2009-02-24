@@ -14,7 +14,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    version="1.0"
-   sodipodi:docname="base_dormir2.svg"
+   sodipodi:docname="quarto.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
@@ -43,7 +43,7 @@
      inkscape:window-width="1670"
      inkscape:window-height="950"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="23"
      showguides="true"
      inkscape:guide-bbox="true">
     <sodipodi:guide
@@ -72,29 +72,8 @@
        width="100"
        height="100"
        x="0"
-       y="-0.21551724"
+       y="0"
        ry="0"
        rx="0" />
-    <rect
-       style="opacity:1;fill:#ffdead;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2455"
-       width="38.362068"
-       height="56.25"
-       x="30.603449"
-       y="2.5862069" />
-    <rect
-       style="opacity:1;fill:#ffdead;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2459"
-       width="9.4827595"
-       height="8.4051714"
-       x="18.534483"
-       y="2.801724" />
-    <rect
-       style="opacity:1;fill:#ffdead;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect2461"
-       width="9.4827595"
-       height="8.4051714"
-       x="71.982758"
-       y="2.9094837" />
   </g>
 </svg>

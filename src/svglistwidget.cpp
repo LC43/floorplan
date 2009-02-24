@@ -53,8 +53,8 @@ SvgListWidget::SvgListWidget(QWidget *parent)
     setAcceptDrops(true);
     createSvgList();
 	createConnectorsList();
-    int num_blocks = qpixmap_list.size()*2;
-    setMinimumSize(200, 100*num_blocks);
+    int num_blocks = qpixmap_list.size();
+    setMinimumSize(200, 260*num_blocks);
 	
 	numberOfConnectors = connectors.size();
 	numberOfSpaces = svgs_filenames.size();
@@ -289,6 +289,6 @@ QPixmap SvgListWidget::getPixmapByName(QString name) {
 
 bool SvgListWidget::isConnector(QString name){
 	int i = connectors.indexOf(name);
-	qDebug() << "Connector " << name << " value " << i << " bool " << (i != -1);
+// 	qDebug() << "Connector " << name << " value " << i << " bool " << (i != -1);
 	return (i != -1);
 }

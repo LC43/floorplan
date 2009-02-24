@@ -63,6 +63,7 @@
 #define ObjectID 1
 #define ObjectX 2
 #define ObjectY 3
+#define ScalingToReal 25
 
 
 class DragWidgetGrid : public QGraphicsView
@@ -115,6 +116,9 @@ private:
 	int inicial_zoom;
 	bool detectBorderCollisions(QGraphicsItem *);
 	qreal calculateOpposite(QRectF rec, qreal adjacent );
+	QString itemName(QGraphicsItem*);
+	QString beautifyName(QString);
+	QRectF msceneBoundingRect(QGraphicsItem*);
 };
 
 
