@@ -802,6 +802,7 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
   // write station data to xml stream
 	foreach( QGraphicsItem*  item, items() )
 	{
+		stream->setAutoFormatting(true);
 		QGraphicsLineItem *  item_line = dynamic_cast<QGraphicsLineItem*>( item );
 		if ( item_line )
 		{
@@ -839,15 +840,17 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 {
   // read station data from xml stream
-  
+
+
 	while ( !stream->atEnd() )
 	{
 		stream->readNext();
-		if (stream->name() == "line" )
-		{
+		if (stream->name() == "line" ){
+			qDebug() << "Linhas: \n";
+			
 			qreal x1 = 0.0, y1 = 0.0,x2 = 0.0,y2=0.0;
-			foreach( QXmlStreamAttribute attribute, stream->attributes() )
-			{
+			foreach( QXmlStreamAttribute attribute, stream->attributes() ){
+				qDebug() << "att: " << attribute.name().toString();
 				if ( attribute.name() == "x1" ) x1 = attribute.value().toString().toDouble();
 				if ( attribute.name() == "y1" ) y1 = attribute.value().toString().toDouble();
 				if ( attribute.name() == "x1" ) x2 = attribute.value().toString().toDouble();
@@ -871,6 +874,7 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 			QString id;
 			foreach( QXmlStreamAttribute attribute, stream->attributes() )
 			{
+				qDebug() << "att: " << attribute.name().toString();
 				if ( attribute.name() == "id" ) id = attribute.value().toString();
 				if ( attribute.name() == "m11" ) m11 = attribute.value().toString().toDouble();
 				if ( attribute.name() == "m12" ) m12 = attribute.value().toString().toDouble();
@@ -886,30 +890,25 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 			qDebug() << id;
 		
 			QMatrix * m = new QMatrix(m11,m12,m21,m22,dx,dy);
-		// we need to add the pixmap here
+			// we need to add the pixmap here
 		
 			ScenePixmapItem * pixmap = new ScenePixmapItem(NULL,&scene);
 		
 			pixmap->setPixmap(svg_list->getPixmapByName(id));
-		
 			pixmap->setData(ObjectID,id);
-		
 			pixmap->setData(ObjectX,new_x);
-		
 			pixmap->setData(ObjectY,new_y);
-		
 			pixmap->setToolTip( QString("x: %1 | y: %2").arg(new_x).arg(new_y));
- 
 			pixmap->setZValue(z);
-	  
 			pixmap->setMatrix(*m,false);
 	  
-			if(child)
-			{
+			if(child) {
 				pixmap->setParentItem(itemAt(pixmap->pos().toPoint()));
 			}
 		}
 	
+	}if (stream->hasError()) {
+		qDebug() << "oops: " << stream->errorString();
 	}
 	
 }
