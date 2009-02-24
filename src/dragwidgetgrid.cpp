@@ -448,7 +448,6 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 						if ( name.contains("porta", Qt::CaseInsensitive) ){
 							qDebug() << "new_y: " << new_y << " >? " << 1.2;
 							if( new_y > 1.2 ){
-
 								// height esta fixo
 								selectedItem->shear( -mt.m21() , 0  );
 								qDebug() << "\t\tafter clearing:";
@@ -467,7 +466,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 								
 								new_y = 1.2;
 								/*
-								 // parece-me q o minimo q o connector pode ter é o tamanho
+								 // TODO: parece-me q o minimo q o connector pode ter é o tamanho
 								// que tinha inicial, q é smp válido.
 							} else if( new_y < 0.9 ){
 								qreal less_min = 0.9 - new_y ;
@@ -477,13 +476,17 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 							}
 						} else if ( name.contains("janela", Qt::CaseInsensitive) ){
 							if( new_y > 1.5){
-								qreal over_max = 1.5 - new_y;
-								selectedItem->shear(0, over_max*ScalingToReal/10 );
+								selectedItem->shear( -mt.m21() , 0  );
+								qreal angle = acos( new_x / 1.5 );
+								qreal new_sh = 1.5 * sin(angle) ;
+								if( sh > 0 )
+									selectedItem->shear( -new_sh , 0  );
 								new_y = 1.5;
-							}else if( new_y < 1.2 ){
-								qreal less_min = 1.2 - new_y ;
-								selectedItem->shear(0, less_min*ScalingToReal/10 );
-								new_y = 1.2;
+// 							}else if( new_y < 1.2 ){
+								// TODO: same here, does it change to less than?
+// 								qreal less_min = 1.2 - new_y ;
+// 								selectedItem->shear(0, less_min*ScalingToReal/10 );
+// 								new_y = 1.2;
 							}
 						}
 					}
