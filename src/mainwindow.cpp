@@ -291,6 +291,10 @@ bool  MainWindow::fileSaveAs()
   // open an xml stream writer and write simulation data
 	QXmlStreamWriter  * stream = new QXmlStreamWriter( &file );
 
+	stream->setAutoFormatting( true );
+  	stream->writeStartDocument();
+	stream->writeStartElement( "floorplan" );
+
 	drag->SaveProject(stream);
 
 	stream->writeEndDocument();
@@ -328,8 +332,20 @@ void MainWindow::loadFile(const QString &filename)
 
   // open an xml stream reader and load simulation data
 	QXmlStreamReader * stream = new QXmlStreamReader( &file );
-	
-	drag->LoadProject(stream);
+		
+  while ( !stream->atEnd() )
+  {
+    stream->readNext();
+    if ( stream->isStartElement() )
+    {
+      if ( stream->name() == "floorplan" )
+        drag->LoadProject(stream);
+      else
+        stream->raiseError( QString("Unrecognised element '%1'").arg(stream->name().toString()) );
+    }
+  }
+		
+	 
 	
 	file.close();
 	
