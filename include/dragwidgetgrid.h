@@ -120,8 +120,9 @@ private:
 	QRectF msceneBoundingRect(QGraphicsItem*);
 
 	qreal metodoDosQuadrados( QRectF , qreal );
-	qreal calculateOpposite(QRectF rec, qreal adjacent );
-	
+	qreal calculateOpposite( QRectF , qreal );
+	qreal newShearedY( QGraphicsItem * , qreal );
+	void reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal new_y );
 	void printQTransform(  QTransform mt );
 	
 

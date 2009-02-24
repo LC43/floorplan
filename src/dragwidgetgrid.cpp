@@ -316,6 +316,56 @@ qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
 	return o;
 				
 }
+qreal DragWidgetGrid::newShearedY( QGraphicsItem * item, qreal x ) {
+	qreal new_y;
+	QTransform mt = item->sceneTransform();
+	QRectF big_rec = msceneBoundingRect(  item );
+	if (mt.m12() != 0 )
+		new_y = metodoDosQuadrados( big_rec, x*ScalingToReal );
+	else
+		new_y = calculateOpposite( big_rec, x*ScalingToReal );
+	return new_y;
+}
+
+void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal new_y ) {
+	QString name = itemName( selectedItem );
+    new_y /= ScalingToReal;
+	QTransform mt = item->sceneTransform();
+	if(svg_list->isConnector(name)) {
+	// os connectores so tem shear horizontal..
+		if ( name.contains("porta", Qt::CaseInsensitive) ){
+
+		    if( new_y > 1.2 ){
+				// height esta fixo
+				selectedItem->shear( -mt.m21() , 0  );
+
+				qreal angle = acos( new_x / 1.2 );
+				qreal new_sh = 1.2 * sin(angle) ;
+
+				if( sh > 0 )
+					selectedItem->shear( -new_sh , 0  );
+				new_y = 1.2;
+			}
+		} else if ( name.contains("janela", Qt::CaseInsensitive) ){
+			if( new_y > 1.5){
+				selectedItem->shear( -mt.m21() , 0  );
+				qreal angle = acos( new_x / 1.5 );
+				qreal new_sh = 1.5 * sin(angle) ;
+				if( sh > 0 )
+					selectedItem->shear( -new_sh , 0  );
+				new_y = 1.5;
+			}
+		}
+		QString i_size;
+		i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
+		selectedItem->setToolTip( i_size );
+		selectedItem->setData(ObjectX,new_x);
+		selectedItem->setData(ObjectY,new_y);
+	}
+}
+
+
+
 
 void DragWidgetGrid::printQTransform(  QTransform mt ){
 	qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
@@ -333,6 +383,9 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		m_drawline = false;	
 	}
 	else if(selectedItem){
+		qDebug() << "<<<<<<<<<<<<<<<<<\nstart:" << drag_start_pos;
+		qDebug() << "end:" << event->posF()<< "\n<<<<<<<<<<<<<<<<";
+		
 		qreal distance_moved_x = drag_start_pos.x() - event->posF().x();
 		qreal distance_moved_y = drag_start_pos.y() - event->posF().y();
 		int mod = QApplication::keyboardModifiers();
@@ -408,13 +461,26 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				qreal new_x, new_y;
 
 				qreal sh = distance_moved_x/100;
+				qDebug() << "distance:" << distance_moved_x << "|" << distance_moved_y;
 				QString name = itemName( selectedItem );
 				
 				// moving on the x axis.. parallel..lely */
 				if ( distance_moved_x != 0 && fabs(distance_moved_x) > fabs(distance_moved_y) ){
+					qDebug() << "\t\tbefore 1st shear";
+					printQTransform( selectedItem->sceneTransform()  );
 
+
+					QRectF f_rec = msceneBoundingRect(  selectedItem );
+
+
+					qreal frec_w = f_rec.width();
+					qreal frec_h = f_rec.height();
+					qDebug() << "++1st rec w:" << frec_w << " h: " << frec_h;
+
+					
 					selectedItem->shear( -sh ,0 ); //right!! turn right! the other right! .. :p
 					qDebug() << "\t\tafter 1st shear";
+					printQTransform( selectedItem->sceneTransform()  );
 					/*
 					se for um shear uni-direccional aplicado a uma matriz onde ja haja
 					um shear noutra direccao de um vector  perpendicular,
@@ -426,14 +492,22 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 						a = x0 = x1,  o = y1, h = diagonal
 					se em y,
 						a = y0 = y1, o = x1, h = diagonal*/
+					QTransform mt = selectedItem->sceneTransform();
+					QRectF big_rec = msceneBoundingRect(  selectedItem );
+
+
+					qreal brec_w = big_rec.width();
+					qreal brec_h = big_rec.height();
+					qDebug() << "++biggie rec w:" << brec_w << " h: " << brec_h;
+
+
+
+
 					
 					// adjacent
 					new_x = old_width; //*ScalingToReal;
-					QTransform mt = selectedItem->sceneTransform();
-					QRectF big_rec = msceneBoundingRect(  selectedItem );
-					qDebug() << "x:" << big_rec.width() << " | y: " << big_rec.height();
-					qDebug() << "new_x: " << new_x;
-					printQTransform( mt  );
+
+
 					// opposite
 					if (mt.m12() != 0 )
 						new_y = metodoDosQuadrados( big_rec, new_x*ScalingToReal );
@@ -452,19 +526,32 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 								selectedItem->shear( -mt.m21() , 0  );
 								qDebug() << "\t\tafter clearing:";
 								printQTransform( selectedItem->sceneTransform()  );
+
 								
+								QRectF middle_rec = msceneBoundingRect(  selectedItem );
+								qreal mrec_w = middle_rec.width();
+								qreal mrec_h = middle_rec.height();
+								qDebug() << "++middle rec w:" << mrec_w << " h: " << mrec_h;
+								
+
+
 								qreal angle = acos( new_x / 1.2 );
 								qreal new_sh = 1.2 * sin(angle) ;
+								qDebug() << "angulo novo: " << angle << "new_sh" << new_sh; 
 								qDebug() << "sh: " << sh << "  \tnew sh: " << new_sh;
 								if( sh > 0 )
 									selectedItem->shear( -new_sh , 0  );
-// 								else // TODO: figure out what happens..
-// 									selectedItem->shear( new_sh , 0  );
+ 								else
+ 									selectedItem->shear( new_sh , 0  );
 
 								qDebug() << "\t\tafter maximizing:";
 								printQTransform( selectedItem->sceneTransform()  );
 								
 								new_y = 1.2;
+								QRectF ending_rec = msceneBoundingRect(  selectedItem );
+								qreal erec_w = ending_rec.width();
+								qreal erec_h = ending_rec.height();
+								qDebug() << "++ending rec w:" << erec_w << " h: " << erec_h;
 								/*
 								 // TODO: parece-me q o minimo q o connector pode ter é o tamanho
 								// que tinha inicial, q é smp válido.
@@ -479,6 +566,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 								selectedItem->shear( -mt.m21() , 0  );
 								qreal angle = acos( new_x / 1.5 );
 								qreal new_sh = 1.5 * sin(angle) ;
+								
 								if( sh > 0 )
 									selectedItem->shear( -new_sh , 0  );
 								new_y = 1.5;
@@ -490,7 +578,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 							}
 						}
 					}
-				qDebug() << "new x: " << new_x*ScalingToReal;
+					qDebug()<<"new x: " << new_x*ScalingToReal << "new y:" <<  new_y*ScalingToReal;
 			} else if( distance_moved_y != 0  ){  // moving on the y axis ..
 					if(svg_list->isConnector(name)) {
 						// do nothing, expect keep gcc quiet :)
@@ -606,28 +694,44 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			case Qt::Key_Meta:
 				emit modifierKeySignal(true, Qt::Key_Meta);
 				break;
-			case Qt::Key_Right:
+			case Qt::Key_Right: {
+				QString i_size;
+				qreal old_width =  selectedItem->data(ObjectX).toDouble();
+				qreal old_height = selectedItem->data(ObjectY).toDouble();
+				qreal new_y;
+				
 				switch(mod){
 					case Qt::ControlModifier:
 						selectedItem->rotate(1);
 					break;
 					case Qt::ShiftModifier:
 						selectedItem->scale(1.01,1);
+						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
+						selectedItem->setToolTip( i_size );
+						selectedItem->setData(ObjectX,old_width);
+						selectedItem->setData(ObjectY,old_height);
 					break;
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
-						selectedItem->shear(0.1,0);
-					break;
 #else
 					case Qt::AltModifier:
+#endif						
 						selectedItem->shear(0.1,0);
+						// ai :S TODO: bug!! wont shear after some point to the right!
+						new_y = newShearedY(selectedItem, old_width );
+						reShear( selectedItem , 0.1, old_width, new_y );
 						break;
-#endif
+
 					default:
 						selectedItem->translate(1,0);
 				}
 			break;
-			case Qt::Key_Left:
+			}
+			case Qt::Key_Left:{
+				QString i_size;
+				qreal old_width =  selectedItem->data(ObjectX).toDouble();
+				qreal old_height = selectedItem->data(ObjectY).toDouble();
+				qreal new_y;
 				switch(mod){
 					case Qt::ControlModifier:
 						selectedItem->rotate(-1);
@@ -635,11 +739,17 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ShiftModifier:{
 
 						selectedItem->scale(0.99,1);
+						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
+						selectedItem->setToolTip( i_size );
+						selectedItem->setData(ObjectX,old_width);
+						selectedItem->setData(ObjectY,old_height);
 						break;
 					}
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 						selectedItem->shear(-0.1,0);
+						new_y = newShearedY(selectedItem, old_width );
+						reShear( selectedItem , -0.1, old_width, new_y );
 						break;
 #else
 					case Qt::AltModifier:
@@ -650,6 +760,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->translate(-1,0);
 				}
 			break;
+			}
 			case Qt::Key_Up:
 				switch(mod){
 					case Qt::ControlModifier:
