@@ -800,105 +800,120 @@ void  DragWidgetGrid::resetView(){
 void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 {
   // write station data to xml stream
-  foreach( QGraphicsItem*  item, items() )
-  {
-    QGraphicsLineItem *  item_line = dynamic_cast<QGraphicsLineItem*>( item );
-    if ( item_line )
-    {
-      stream->writeEmptyElement( "line" );
-	  QLineF line = item_line->line();
-      stream->writeAttribute( "x1", QString("%1").arg(line.x1()));
-      stream->writeAttribute( "y1", QString("%1").arg(line.y1()));
-	  stream->writeAttribute( "x2", QString("%1").arg(line.x2()));
-      stream->writeAttribute( "y2", QString("%1").arg(line.y2()));
-    }
+	foreach( QGraphicsItem*  item, items() )
+	{
+		QGraphicsLineItem *  item_line = dynamic_cast<QGraphicsLineItem*>( item );
+		if ( item_line )
+		{
+			stream->writeEmptyElement( "line" );
+			QLineF line = item_line->line();
+			stream->writeAttribute( "x1", QString("%1").arg(line.x1()));
+			stream->writeAttribute( "y1", QString("%1").arg(line.y1()));
+			stream->writeAttribute( "x2", QString("%1").arg(line.x2()));
+			stream->writeAttribute( "y2", QString("%1").arg(line.y2()));
+		}
 	
-	 ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( item );
-	 if ( pixmap )
-    {
-	  QMatrix m = pixmap->sceneMatrix ();
-      stream->writeEmptyElement( "pixmap" );
-      stream->writeAttribute( "id", QString("%1").arg(pixmap->data(ObjectID).toString()));
-	  stream->writeAttribute( "m11", QString("%1").arg(m.m11 ()  ));
-	  stream->writeAttribute( "m12", QString("%1").arg(m.m12 () ));
-	  stream->writeAttribute( "m21", QString("%1").arg(m.m21 () ));
-	  stream->writeAttribute( "m22", QString("%1").arg(m.m22 () ));  
-	  stream->writeAttribute( "dx", QString("%1").arg(m.dx ()  ));
-	  stream->writeAttribute( "dy", QString("%1").arg(m.dy ()));
-	  stream->writeAttribute( "zValue", QString("%1").arg(item->zValue()));
-	  if(item->parentItem ())
-	  	stream->writeAttribute( "child", QString("%1").arg(1));
-	  else stream->writeAttribute( "child", QString("%1").arg(0));
-    }
+		ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( item );
+		if ( pixmap )
+		{
+			QMatrix m = pixmap->sceneMatrix ();
+			stream->writeEmptyElement( "pixmap" );
+			stream->writeAttribute( "id", QString("%1").arg(pixmap->data(ObjectID).toString()));
+			stream->writeAttribute( "new_x", QString("%1").arg(pixmap->data(ObjectX).toString()));
+			stream->writeAttribute( "new_y", QString("%1").arg(pixmap->data(ObjectY).toString()));
+			stream->writeAttribute( "m11", QString("%1").arg(m.m11 ()  ));
+			stream->writeAttribute( "m12", QString("%1").arg(m.m12 () ));
+			stream->writeAttribute( "m21", QString("%1").arg(m.m21 () ));
+			stream->writeAttribute( "m22", QString("%1").arg(m.m22 () ));
+			stream->writeAttribute( "dx", QString("%1").arg(m.dx ()  ));
+			stream->writeAttribute( "dy", QString("%1").arg(m.dy ()));
+			stream->writeAttribute( "zValue", QString("%1").arg(item->zValue()));
+			if(item->parentItem ())
+				stream->writeAttribute( "child", QString("%1").arg(1));
+			else stream->writeAttribute( "child", QString("%1").arg(0));
+		}
 	
-  }
+	}
 }
 
 void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 {
   // read station data from xml stream
-
-  while ( !stream->atEnd() )
-  {
-    stream->readNext();
-    if ( stream->isStartElement() && stream->name() == "line" )
-    {
-      qreal x1 = 0.0, y1 = 0.0,x2 = 0.0,y2=0.0;
-      foreach( QXmlStreamAttribute attribute, stream->attributes() )
-      {
-        if ( attribute.name() == "x1" ) x1 = attribute.value().toString().toDouble();
-        if ( attribute.name() == "y1" ) y1 = attribute.value().toString().toDouble();
-		if ( attribute.name() == "x1" ) x2 = attribute.value().toString().toDouble();
-        if ( attribute.name() == "y1" ) y2 = attribute.value().toString().toDouble();
-      }
-      scene.addLine(QLineF(x1,y1,x2,y2),QPen(Qt::SolidLine));
-    }
+  
+	while ( !stream->atEnd() )
+	{
+		stream->readNext();
+		if (stream->name() == "line" )
+		{
+			qreal x1 = 0.0, y1 = 0.0,x2 = 0.0,y2=0.0;
+			foreach( QXmlStreamAttribute attribute, stream->attributes() )
+			{
+				if ( attribute.name() == "x1" ) x1 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "y1" ) y1 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "x1" ) x2 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "y1" ) y2 = attribute.value().toString().toDouble();
+			}
+			scene.addLine(QLineF(x1,y1,x2,y2),QPen(Qt::SolidLine));
+		}
 	
-	if ( stream->isStartElement() && stream->name() == "pixmap" )
-    {
-      qreal m11 = 0.0;
-	  qreal m12 = 0.0;
-	  qreal m21 = 0.0;
-	  qreal m22 = 0.0;
-	  qreal dx = 0.0;
-	  qreal dy = 0.0;
-	  qreal z = 0.0;
-	  int child = 0;
-	  QString id;
-      foreach( QXmlStreamAttribute attribute, stream->attributes() )
-      {
-		if ( attribute.name() == "id" ) id = attribute.value().toString();
-        if ( attribute.name() == "m11" ) m11 = attribute.value().toString().toDouble();
-        if ( attribute.name() == "m12" ) m12 = attribute.value().toString().toDouble();
-		if ( attribute.name() == "m21" ) m21 = attribute.value().toString().toDouble();
-        if ( attribute.name() == "m22" ) m22 = attribute.value().toString().toDouble();
-		if ( attribute.name() == "dx" ) dx = attribute.value().toString().toDouble();
-        if ( attribute.name() == "dy" ) dy = attribute.value().toString().toDouble();
-		if ( attribute.name() == "zValue" ) z = attribute.value().toString().toDouble();
-		if ( attribute.name() == "child" ) child = attribute.value().toString().toInt();
-      }
-	  qDebug() << id;
-	  QMatrix m = QMatrix(m11,m12,m21,m22,dx,dy);
-	  // we need to add the pixmap here
-	  QPixmap p = svg_list->getPixmapByName(id);
-
-	 ScenePixmapItem * pixmap = new ScenePixmapItem(NULL,&scene);
+		if (stream->name() == "pixmap" )
+		{
+			qreal m11 = 0.0;
+			qreal m12 = 0.0;
+			qreal m21 = 0.0;
+			qreal m22 = 0.0;
+			qreal dx = 0.0;
+			qreal dy = 0.0;
+			qreal z = 0.0;
+			qreal new_x = 0.0;
+			qreal new_y = 0.0;
+			int child = 0;
+			QString id;
+			foreach( QXmlStreamAttribute attribute, stream->attributes() )
+			{
+				if ( attribute.name() == "id" ) id = attribute.value().toString();
+				if ( attribute.name() == "m11" ) m11 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "m12" ) m12 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "m21" ) m21 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "m22" ) m22 = attribute.value().toString().toDouble();
+				if ( attribute.name() == "dx" ) dx = attribute.value().toString().toDouble();
+				if ( attribute.name() == "dy" ) dy = attribute.value().toString().toDouble();
+				if ( attribute.name() == "zValue" ) z = attribute.value().toString().toDouble();
+				if ( attribute.name() == "child" ) child = attribute.value().toString().toInt();
+				if ( attribute.name() == "new_x" ) new_x = attribute.value().toString().toDouble();
+				if ( attribute.name() == "new_y" ) new_y = attribute.value().toString().toDouble();
+			}
+			qDebug() << id;
 		
-	 pixmap->setPixmap(p);
-	 
-	 pixmap->setZValue(z);
+			QMatrix * m = new QMatrix(m11,m12,m21,m22,dx,dy);
+		// we need to add the pixmap here
+		
+			ScenePixmapItem * pixmap = new ScenePixmapItem(NULL,&scene);
+		
+			pixmap->setPixmap(svg_list->getPixmapByName(id));
+		
+			pixmap->setData(ObjectID,id);
+		
+			pixmap->setData(ObjectX,new_x);
+		
+			pixmap->setData(ObjectY,new_y);
+		
+			pixmap->setToolTip( QString("x: %1 | y: %2").arg(new_x).arg(new_y));
+ 
+			pixmap->setZValue(z);
 	  
-	 pixmap->setMatrix(m,false);
+			pixmap->setMatrix(*m,false);
 	  
-	  if(child)
-	  {
-		  pixmap->setParentItem(itemAt(pixmap->pos().toPoint()));
-	  }
-	}	
+			if(child)
+			{
+				pixmap->setParentItem(itemAt(pixmap->pos().toPoint()));
+			}
+		}
 	
-  }
+	}
 	
 }
+
 void DragWidgetGrid::increaseZoom(){
 	qreal factor = 1.2;
 	scale(factor, factor);
