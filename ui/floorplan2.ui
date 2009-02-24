@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>1014</width>
-    <height>650</height>
+    <height>655</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -25,7 +25,7 @@
      <x>0</x>
      <y>0</y>
      <width>1014</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFicheiro" >
@@ -126,8 +126,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>194</width>
-        <height>994</height>
+        <width>196</width>
+        <height>996</height>
        </rect>
       </property>
      </widget>
@@ -181,7 +181,7 @@
   </action>
   <action name="actionMemoria_Descritiva" >
    <property name="text" >
-    <string>Memoria Descritiva</string>
+    <string>Memória Descritiva</string>
    </property>
   </action>
   <action name="actionAumentar_Zoom" >

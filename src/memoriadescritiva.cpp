@@ -361,8 +361,8 @@ void MemoriaDescritiva::setupTextActions()
 }
 void MemoriaDescritiva::sobreMemoria()
 {
-	QMessageBox::about(this, tr("Sobre Floor Plan"),
-					   trUtf8("A <b>Memória Descritiva</b> deverá ser escrita descrevendo os varios materiais"));
+	QMessageBox::about(this, tr("Sobre Planta - Modelo de Aprendizagem"),
+					   trUtf8("A <b>Memória Descritiva</b> deverá ser escrita descrevendo os vários materiais"));
 }
 
 bool MemoriaDescritiva::load(const QString &f)
@@ -395,7 +395,7 @@ bool MemoriaDescritiva::maybeSave()
         return true;
     QMessageBox::StandardButton ret;
 	ret = QMessageBox::warning(this, trUtf8("Applicação"),
-                               tr("O documento foi alterado.\n"
+                               trUtf8("O documento foi alterado.\n"
                                   "Deseja guardar as alterações?"),
                                QMessageBox::Save | QMessageBox::Discard
                                | QMessageBox::Cancel);

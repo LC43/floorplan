@@ -119,6 +119,7 @@ private:
 	QString itemName(QGraphicsItem*);
 	QString beautifyName(QString);
 	QRectF msceneBoundingRect(QGraphicsItem*);
+	qreal metodoDosQuadrados(qreal, QRectF);
 };
 
 

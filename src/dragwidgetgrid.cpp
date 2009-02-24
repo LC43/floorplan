@@ -282,7 +282,7 @@ qreal DragWidgetGrid::metodoDosQuadrados( qreal side, QRectF big_rec ){
 	qDebug() << "º º º º º º º º º º º º º º º º º º º º º º º º º º º º";
 	qDebug() << "º º º º º º º º º º º º metodo dos quadrados  º º º º º";
 	qDebug() << "º º º º º º º º º º º º º º º º º º º º º º º º º º º º";
-	qDebug() << "new x: " << new_x*ScalingToReal;
+	qDebug() << "new x: " << side*ScalingToReal;
 	qDebug() << "b_rec w:" << big_rec.width() << " h: " << big_rec.height();
 	// we build a new square rect with the known side
 	qreal k_x = side*ScalingToReal;
@@ -422,7 +422,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 					// um shear noutra direccao de um vector  perpendicular,
 					 // + entao: metodo dos quadrados
 					//  + caso contrario, metodo do triangulo :>
-
+/*
 					if (m.12() != 0 )
 						quadrado;
 					else
@@ -430,7 +430,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 
 					//quadrado:
 					QRectF big_rec = msceneBoundingRect(  selectedItem );
-					new_y = metodoDosQuadrados( big_rec );
+					new_y = metodoDosQuadrados( big_rec );*/
 
 					// new_y = calculateOpposite( rec ,new_x );
 					// se o x n se altera, n fazemos nada para verificar o tamanho do

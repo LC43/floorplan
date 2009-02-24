@@ -148,7 +148,7 @@ void MainWindow::createMenus() {
 	status_modifiers_ctrl->setText(trUtf8("Control (Rotação): "));
 	status_modifiers_ctrl->setFont(font_bold);
 	status_modifiers_ctrl_stt->setText(tr("Nada"));
-#if !defined(Q_OS_WINDOWS)
+#if !defined(Q_OS_WIN)
 	status_modifiers_meta->setText(trUtf8("Meta (Inclinação): "));
 #else
 	status_modifiers_meta->setText(trUtf8("Alt (Inclinação): "));
@@ -314,7 +314,8 @@ void MainWindow::open()
 
 void MainWindow::loadFile(const QString &filename)
 {
-	
+	// reset the view otherwise the projects keep piling in.. nice testing as usual..
+	drag->resetView();
 	if ( filename.isEmpty() ) return ;
 
   // open the file and check we can read from it
