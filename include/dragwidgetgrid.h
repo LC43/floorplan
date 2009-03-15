@@ -124,7 +124,7 @@ private:
 	qreal newShearedY( QGraphicsItem * , qreal );
 	void reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal new_y );
 	void printQTransform(  QTransform mt );
-	
+	void saveXYData( QGraphicsItem *item );
 
 	
 };

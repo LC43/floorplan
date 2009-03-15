@@ -246,7 +246,9 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		int ret = diag.exec();
 		switch(ret){
 			case QMessageBox::Ok:
+				// TODO: reset x and y too :S ~Pedro
 				item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
+				saveXYData( item );
 			break;
 			default:
 			break;
@@ -268,6 +270,8 @@ QRectF DragWidgetGrid::msceneBoundingRect(QGraphicsItem *item){
 	return scene_pixmap_item->sceneBoundingRect();
 	return item->sceneBoundingRect();
 }
+
+// only works if it has been sheared on both axis
 qreal DragWidgetGrid::metodoDosQuadrados( QRectF big_rec, qreal side ){
 	// we build a new square rect with the known side
 	qreal k_x = side*ScalingToReal;
@@ -308,7 +312,7 @@ qreal DragWidgetGrid::newShearedY( QGraphicsItem * item, qreal x ) {
 		new_y = calculateOpposite( big_rec, x*ScalingToReal );
 	return new_y;
 }
-
+// if its a connector resize it and saveXY. Otherwise, just saveXY
 void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal new_y ) {
 	QString name = itemName( selectedItem );
     new_y /= ScalingToReal;
@@ -347,7 +351,15 @@ void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal
 }
 
 
+void DragWidgetGrid::saveXYData( QGraphicsItem *item ){
+	QRectF rec = item->sceneBoundingRect();
+	QString i_size;
+	i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
+	item->setToolTip( i_size );
 
+	item->setData(ObjectX,rec.width()/ScalingToReal);
+	item->setData(ObjectY,rec.height()/ScalingToReal);
+}
 
 void DragWidgetGrid::printQTransform(  QTransform mt ){
 	qDebug() << "mt1x: " << mt.m11() << "\t" << mt.m12() << "\t" << mt.m13();
@@ -514,7 +526,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 					}
 			} else if( distance_moved_y != 0  ){  // moving on the y axis ..
 					if(svg_list->isConnector(name)) {
-						// do nothing, expect keep gcc quiet :)
+						// do nothing, except keep gcc quiet :)
 						new_x = old_width;
 						new_y = old_height;
 					} else {
@@ -574,7 +586,7 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 #if !defined(Q_OS_WIN)
 			case Qt::Key_Meta:
 #else
-		case Qt::Key_Alt:
+			case Qt::Key_Alt:
 #endif		
 			emit modifierKeySignal(false, Qt::Key_Meta);
 			break;
@@ -627,7 +639,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			case Qt::Key_Right: {
 				QString i_size;
 				qreal old_width =  selectedItem->data(ObjectX).toDouble();
-				qreal old_height = selectedItem->data(ObjectY).toDouble();
+// 				qreal old_height = selectedItem->data(ObjectY).toDouble();
 				qreal new_y;
 				
 				switch(mod){
@@ -636,10 +648,14 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					break;
 					case Qt::ShiftModifier:
 						selectedItem->scale(1.01,1);
+
+						saveXYData( selectedItem );
+
+      /*
 						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
 						selectedItem->setToolTip( i_size );
 						selectedItem->setData(ObjectX,old_width);
-						selectedItem->setData(ObjectY,old_height);
+						selectedItem->setData(ObjectY,old_height);*/
 					break;
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
@@ -660,21 +676,23 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			case Qt::Key_Left:{
 				QString i_size;
 				qreal old_width =  selectedItem->data(ObjectX).toDouble();
-				qreal old_height = selectedItem->data(ObjectY).toDouble();
+// 				qreal old_height = selectedItem->data(ObjectY).toDouble();
 				qreal new_y;
 				switch(mod){
 					case Qt::ControlModifier:
 						selectedItem->rotate(-1);
 					break;
-					case Qt::ShiftModifier:{
+					case Qt::ShiftModifier:
 
 						selectedItem->scale(0.99,1);
-						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
-						selectedItem->setToolTip( i_size );
-						selectedItem->setData(ObjectX,old_width);
-						selectedItem->setData(ObjectY,old_height);
+
+						saveXYData( selectedItem );
+// 						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
+// 						selectedItem->setToolTip( i_size );
+// 						selectedItem->setData(ObjectX,old_width);
+// 						selectedItem->setData(ObjectY,old_height);
 						break;
-					}
+					
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 						selectedItem->shear(-0.1,0);
@@ -697,6 +715,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						break;
 					case Qt::ShiftModifier:{
 						selectedItem->scale(1,0.99);
+						saveXYData( selectedItem );
 						break;
 					}
 #if !defined(Q_OS_WIN)
@@ -719,6 +738,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						break;
 					case Qt::ShiftModifier:
 						selectedItem->scale(1,1.01);
+						saveXYData( selectedItem );
 						break;
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
@@ -737,6 +757,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 				scene.removeItem(selectedItem);
 			break;
 			case Qt::Key_PageUp:
+				// TODO: some visual clues would be nice here. i'm thinking the status bar :D
 				switch(mod){
 					case Qt::ControlModifier:
 						selectedItem->setZValue(selectedItem->zValue()+1.0);
@@ -803,6 +824,8 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 	foreach( QGraphicsItem*  item, items() )
 	{
 		stream->setAutoFormatting(true);
+
+		
 		QGraphicsLineItem *  item_line = dynamic_cast<QGraphicsLineItem*>( item );
 		if ( item_line )
 		{
