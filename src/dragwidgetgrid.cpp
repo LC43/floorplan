@@ -239,6 +239,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		}
 	}
 	else if(selected){
+		ScenePixmapItem *  scene_pixmap_item = dynamic_cast<ScenePixmapItem*>( item );
 		QMessageBox diag;
 		diag.setText(trUtf8("Deseja reverter alterações efectuadas ao objecto?"));
  		diag.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
@@ -247,8 +248,8 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		switch(ret){
 			case QMessageBox::Ok:
 				// TODO: reset x and y too :S ~Pedro
-				item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
-				saveXYData( item );
+				scene_pixmap_item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
+				saveXYData( scene_pixmap_item );
 			break;
 			default:
 			break;
@@ -351,14 +352,15 @@ void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal
 }
 
 
-void DragWidgetGrid::saveXYData( QGraphicsItem *item ){
+void DragWidgetGrid::saveXYData( ScenePixmapItem *item ){
 	QRectF rec = item->sceneBoundingRect();
 	QString i_size;
-	i_size = QString("x: %1 | y: %2").arg((int)rec.width()/ScalingToReal).arg((int)rec.height()/ScalingToReal);
+	qDebug() << "Width " << rec.width() << " height " << rec.height();
+	i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
 	item->setToolTip( i_size );
 
-	item->setData(ObjectX,(int)rec.width()/ScalingToReal);
-	item->setData(ObjectY,(int)rec.height()/ScalingToReal);
+	item->setData(ObjectX,rec.width()/ScalingToReal);
+	item->setData(ObjectY,rec.height()/ScalingToReal);
 }
 
 void DragWidgetGrid::printQTransform(  QTransform mt ){
@@ -598,6 +600,7 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
 	
+		ScenePixmapItem *  pixmap_item = dynamic_cast<ScenePixmapItem*>( selectedItem );
 /*
 
 		accoes:
@@ -651,7 +654,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ShiftModifier:
 						selectedItem->scale(1.01,1);
 
-						saveXYData( selectedItem );
+						saveXYData(pixmap_item );
 
       /*
 						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
@@ -688,7 +691,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 
 						selectedItem->scale(0.99,1);
 
-						saveXYData( selectedItem );
+						saveXYData( pixmap_item );
 // 						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
 // 						selectedItem->setToolTip( i_size );
 // 						selectedItem->setData(ObjectX,old_width);
@@ -717,7 +720,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						break;
 					case Qt::ShiftModifier:{
 						selectedItem->scale(1,0.99);
-						saveXYData( selectedItem );
+						saveXYData(pixmap_item  );
 						break;
 					}
 #if !defined(Q_OS_WIN)
@@ -740,7 +743,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						break;
 					case Qt::ShiftModifier:
 						selectedItem->scale(1,1.01);
-						saveXYData( selectedItem );
+						saveXYData(pixmap_item  );
 						break;
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:

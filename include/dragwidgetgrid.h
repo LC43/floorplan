@@ -57,7 +57,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <svglistwidget.h>
-
+#include <scenepixmapitem.h>
 
 #define ObjectName 0
 #define ObjectID 1
@@ -124,7 +124,7 @@ private:
 	qreal newShearedY( QGraphicsItem * , qreal );
 	void reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal new_y );
 	void printQTransform(  QTransform mt );
-	void saveXYData( QGraphicsItem *item );
+	void saveXYData( ScenePixmapItem *item );
 
 	
 };

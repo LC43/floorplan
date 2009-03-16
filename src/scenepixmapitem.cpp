@@ -6,7 +6,7 @@ ScenePixmapItem::ScenePixmapItem(QGraphicsItem * parent, QGraphicsScene * scene)
 
 QRectF ScenePixmapItem::boundingRect (){
 	QPixmap p = pixmap();
-// 	qDebug() << "mto util..."; // obrigado por testares :)
+ 	qDebug() << "mto util..." << (qreal)p.width(); // obrigado por testares :)
 	return QRectF(0.0,0.0,(qreal)p.width(),(qreal)p.height());
 }
 
