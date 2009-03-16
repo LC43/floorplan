@@ -524,7 +524,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 							}
 						}
 					}
-			} else if( distance_moved_y != 0  ){  // moving on the y axis ..
+				} else if( distance_moved_y != 0  ){  // moving on the y axis ..
 					if(svg_list->isConnector(name)) {
 						// do nothing, except keep gcc quiet :)
 						new_x = old_width;
@@ -537,11 +537,13 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 						QRectF big_rec = msceneBoundingRect(  selectedItem );
 						// opposite
 						if (mt.m12() != 0 )
-							new_x = metodoDosQuadrados( big_rec, new_y );
+							new_x = metodoDosQuadrados( big_rec, new_y*ScalingToReal );
 						else
-							new_x = calculateOpposite( big_rec, new_y );
+							new_x = calculateOpposite( big_rec, new_y*ScalingToReal );
+						new_x /= ScalingToReal;
 					}
 				}else {
+					
 					// nothing happened, both distances were zero
 					// wont happen but keeps gcc quiet :)
 					new_y = old_height;
