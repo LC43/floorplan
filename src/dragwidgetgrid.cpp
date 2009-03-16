@@ -354,11 +354,11 @@ void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal
 void DragWidgetGrid::saveXYData( QGraphicsItem *item ){
 	QRectF rec = item->sceneBoundingRect();
 	QString i_size;
-	i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
+	i_size = QString("x: %1 | y: %2").arg((int)rec.width()/ScalingToReal).arg((int)rec.height()/ScalingToReal);
 	item->setToolTip( i_size );
 
-	item->setData(ObjectX,rec.width()/ScalingToReal);
-	item->setData(ObjectY,rec.height()/ScalingToReal);
+	item->setData(ObjectX,(int)rec.width()/ScalingToReal);
+	item->setData(ObjectY,(int)rec.height()/ScalingToReal);
 }
 
 void DragWidgetGrid::printQTransform(  QTransform mt ){
