@@ -237,11 +237,11 @@ void MainWindow::closeEvent(QCloseEvent *){
 
 /****************  about  ******************************/
 void MainWindow::sobreFloorplan(){
-	QMessageBox::about(this, tr("Sobre Floor Plan"),
-					   trUtf8("O <b>Floorplan</b> é um programa de desenho de plantas arquitectónicas para habitações, "
+	QMessageBox::about(this, tr("Sobre Planta - Modelo de Aprendizagem"),
+					   trUtf8("O <b>Planta - Modelo de Aprendizagem</b> é um programa de desenho de plantas arquitectónicas para habitações, "
 							   "dando relevância à aprendizagem, ao uso intuitivo das ferramentas disponibilizadas."
 							   "Serve também como plataforma de introdução a modelos de desenho assistido por computador "
-							   "mais complexos."));
+							   "mais complexos. (versão 154)"));
 }
 
 /* *******************************************************************/

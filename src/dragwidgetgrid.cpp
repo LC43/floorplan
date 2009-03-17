@@ -191,15 +191,15 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 
 
 bool DragWidgetGrid::detectBorderCollisions(QGraphicsItem * item){
-	qDebug() << "a detectar.." ;
+// 	qDebug() << "a detectar.." ;
 	bool intersect_or_in = underItem->collidesWithItem(item,Qt::IntersectsItemBoundingRect);
 	ScenePixmapItem *  pixmap = dynamic_cast<ScenePixmapItem*>( underItem );
 	QString name = pixmap->data(ObjectID).toString();
-	if( intersect_or_in)
-		qDebug() << "inter com: " << name;
-	bool in = underItem->collidesWithItem(item,Qt::ContainsItemShape);
-	if( in )
-		qDebug() << "colide com: " << name;
+// 		if( intersect_or_in)
+// 		qDebug() << "inter com: " << name;
+		bool in = underItem->collidesWithItem(item,Qt::ContainsItemShape);
+// 	if( in )
+// 		qDebug() << "colide com: " << name;
 	return (intersect_or_in && !in);
 }
 
@@ -209,11 +209,11 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 	bool selected = false;
 	qDebug() << "-------------";
 	if ((item = itemAt(event->pos())) == NULL) {
-		qDebug() << "You didn't click on an item: " << event->pos();
+// 		qDebug() << "You didn't click on an item: " << event->pos();
 		selectedItem = NULL;
 		emit selectedItemOff();
      } else {
-		qDebug() << "You clicked on an item: " << event->pos();
+// 		qDebug() << "You clicked on an item: " << event->pos();
 		m_drawline = false;
 		selected=true;
      }
@@ -247,7 +247,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		int ret = diag.exec();
 		switch(ret){
 			case QMessageBox::Ok:
-				// TODO: reset x and y too :S ~Pedro
+				// FIXED: reset x and y too :S ~Pedro
 				scene_pixmap_item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
 				saveXYData( scene_pixmap_item );
 			break;
@@ -296,11 +296,15 @@ qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
 	// get diagonal, hypotenuse, h
 	// diagonal: (0,0) -> ( b_w = b_rec.width, b_h = b_rec.height )
 	// hypotenuse:
+// 	qDebug() << "rec: w: " << rec_w << " h: " << rec_h;
 	qreal h = sqrt( rec_w*rec_w + rec_h*rec_h );
+// 	qDebug() << "hipotenusa: " << h;
 	// get the angle with arcsin:
 	qreal a = acos ( adjacent / h );
+// 	qDebug() << "angulo: " << a;
 	//calculate opposite
 	qreal o = h * sin( a );
+// 	qDebug() << "oposto: " << o;
 	return o;
 }
 qreal DragWidgetGrid::newShearedY( QGraphicsItem * item, qreal x ) {
@@ -353,9 +357,9 @@ void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal
 
 
 void DragWidgetGrid::saveXYData( ScenePixmapItem *item ){
-	QRectF rec = item->sceneBoundingRect();
+	QRectF rec = msceneBoundingRect(  item );
 	QString i_size;
-	qDebug() << "Width " << rec.width() << " height " << rec.height();
+// 	qDebug() << "saving data: Width " << rec.width() << " height " << rec.height();
 	i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
 	item->setToolTip( i_size );
 
@@ -399,7 +403,9 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 					// limite porta: 0.90 - 1.2
                     // nao podem ser escalados no eixo_y (in)felizmente, o x roda com o objecto
                     selectedItem->scale(1 , factor_y );
-                    QRectF rec = selectedItem->sceneBoundingRect();
+					ScenePixmapItem *  pixmap_item = dynamic_cast<ScenePixmapItem*>( selectedItem );
+					QRectF rec = pixmap_item->sceneBoundingRect();
+//                     QRectF rec = selectedItem->sceneBoundingRect();
                     QString name = beautifyName(itemName( selectedItem ));
                     if ( name.contains("porta", Qt::CaseInsensitive) ){
                     // se a nova dimensao da porta for maior que M ou menor q m
@@ -410,12 +416,12 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 							qreal factor_h = 0.9*ScalingToReal / rec.height() ;
 							selectedItem->scale(1, factor_h );
 						}
-						rec = selectedItem->sceneBoundingRect();
+						rec = msceneBoundingRect(  selectedItem );
 						selectedItem->setData(ObjectY,rec.height()/ScalingToReal);
 
 					} else if ( name.contains("janela", Qt::CaseInsensitive) ){
-						qDebug() << ":S: rec_h: " << rec.height() << "<=?" << 1.5*ScalingToReal;
-						qDebug() << ":S: rec_h: " << rec.height() << ">=?" << 1.2*ScalingToReal;
+// 						qDebug() << ":S: rec_h: " << rec.height() << "<=?" << 1.5*ScalingToReal;
+// 						qDebug() << ":S: rec_h: " << rec.height() << ">=?" << 1.2*ScalingToReal;
 						if( rec.height() > 1.5*ScalingToReal ){
 							// need to find max factor & rescale 
 							qreal factor_h = 1.5*ScalingToReal / rec.height();
@@ -424,19 +430,21 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 							qreal factor_h = 1.2*ScalingToReal / rec.height() ;
 							selectedItem->scale(1, factor_h );
 						} // always something changes if the dragging occurs..
-						rec = selectedItem->sceneBoundingRect();
+						rec = msceneBoundingRect(  selectedItem );
 						selectedItem->setData(ObjectY,rec.height()/ScalingToReal);
 					}
 				} else {
-					qDebug() << "x_b:" << selectedItem->sceneBoundingRect().width();
+// 					qDebug() << "x_b:" << msceneBoundingRect(  selectedItem ).width();
 
 					selectedItem->scale(factor_x, factor_y);
+					ScenePixmapItem *  pixmap_item = dynamic_cast<ScenePixmapItem*>( selectedItem );
+					QRectF rec = pixmap_item->sceneBoundingRect();
 					//TODO: FIXME: boundingRect returns a wrong size, and i dont know if scale() works well
-					QRectF rec = selectedItem->sceneBoundingRect();
+// 					QRectF rec = selectedItem->sceneBoundingRect();
 					QString i_size;
 					i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
 					selectedItem->setToolTip( i_size );
-					qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
+// 					qDebug() << "mouse released: x_scene:" << msceneBoundingRect(  selectedItem ).width() << " y_scene: " << msceneBoundingRect(  selectedItem ).height();
 					selectedItem->setData(ObjectX,rec.width()/ScalingToReal);
 					selectedItem->setData(ObjectY,rec.height()/ScalingToReal);
 				}
@@ -455,28 +463,30 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				qreal new_x, new_y;
 
 				qreal sh = distance_moved_x/100;
+				qreal sv = distance_moved_y/100;
 				
 				QString name = itemName( selectedItem );
 				
 				// moving on the x axis.. parallel..lely */
 				if ( distance_moved_x != 0 && fabs(distance_moved_x) > fabs(distance_moved_y) ){
-				
-					QRectF f_rec = msceneBoundingRect(  selectedItem );
-
-
+// 					qDebug() << "shear: x axis:" <<  distance_moved_x;
+// 					QRectF f_rec = msceneBoundingRect(  selectedItem );
 					selectedItem->shear( -sh ,0 ); //right!! turn right! the other right! .. :p
 					/*
 					se for um shear uni-direccional aplicado a uma matriz onde ja haja
 					um shear noutra direccao de um vector  perpendicular,
 					 + entao: metodo dos quadrados
 					 + caso contrario, metodo do triangulo :>
+
+
+
+
 							 */
 					QTransform mt = selectedItem->sceneTransform();
+					printQTransform( mt );
 					QRectF big_rec = msceneBoundingRect(  selectedItem );
-
 					// adjacent
 					new_x = old_width; //*ScalingToReal;
-
 					// opposite
 					if (mt.m12() != 0 )
 						new_y = metodoDosQuadrados( big_rec, new_x*ScalingToReal );
@@ -532,13 +542,19 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 						new_x = old_width;
 						new_y = old_height;
 					} else {
-						selectedItem->shear( 0, distance_moved_y/100); // up/ down;
+// 						qDebug() << "shear: y axis:" <<  distance_moved_y;
+						
+						selectedItem->shear( 0, sv ); // up/ down;
 						// adjacent
 						new_y = old_height;
-						QTransform mt = selectedItem->sceneTransform();
+// 						QTransform mt = selectedItem->sceneTransform();
+						
+// 						printQTransform( mt );
+
+						
 						QRectF big_rec = msceneBoundingRect(  selectedItem );
 						// opposite
-						if (mt.m12() != 0 )
+						if (mt.m21() != 0 )
 							new_x = metodoDosQuadrados( big_rec, new_y*ScalingToReal );
 						else
 							new_x = calculateOpposite( big_rec, new_y*ScalingToReal );
@@ -599,7 +615,7 @@ void DragWidgetGrid::keyReleaseEvent( QKeyEvent * event ){
 
 void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
-	
+
 		ScenePixmapItem *  pixmap_item = dynamic_cast<ScenePixmapItem*>( selectedItem );
 /*
 
@@ -628,7 +644,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 			se esta com o zoom out em 2x -> 1
 		*/
 		
-		QRectF rec = selectedItem->sceneBoundingRect();
+		QRectF rec = pixmap_item->sceneBoundingRect();
 		QPointF rec_center = rec.center();
 		int mod = QApplication::keyboardModifiers();
 		switch(event->key()){
@@ -651,10 +667,20 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 					case Qt::ControlModifier:
 						selectedItem->rotate(1);
 					break;
-					case Qt::ShiftModifier:
-						selectedItem->scale(1.01,1);
+					case Qt::ShiftModifier:{
 
-						saveXYData(pixmap_item );
+						QRectF rec1 = msceneBoundingRect(  selectedItem );
+// 						qDebug() << "before scaling:selected: width:" << rec1.width() << " height " << rec1.height();
+						QRectF rec2 = pixmap_item->sceneBoundingRect();
+// 						qDebug() << "before scaling:pixmap: width:" << rec2.width() << " height " << rec2.height();
+						
+
+						selectedItem->scale(1.01,1);
+						QRectF rec3 = msceneBoundingRect(  selectedItem );
+// 						qDebug() << "after scaling:selected: width:" << rec3.width() << " height " << rec3.height();
+						QRectF rec4 = pixmap_item->sceneBoundingRect();
+// 						qDebug() << "after scaling:pixmap: width:" << rec4.width() << " height " << rec4.height();
+						saveXYData( pixmap_item );
 
       /*
 						i_size = QString("x: %1 | y: %2").arg( old_width ).arg( old_height );
@@ -662,6 +688,7 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 						selectedItem->setData(ObjectX,old_width);
 						selectedItem->setData(ObjectY,old_height);*/
 					break;
+					}
 #if !defined(Q_OS_WIN)
 					case Qt::MetaModifier:
 #else
@@ -777,8 +804,8 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 				}
 			break;
 		 }
-		 qDebug() << "x_a:" << selectedItem->sceneBoundingRect().width();
-		 qDebug() << "y_a:" << selectedItem->sceneBoundingRect().height();
+// 		 qDebug() << "x_a:" << msceneBoundingRect(  selectedItem ).width();
+// 		 qDebug() << "y_a:" << msceneBoundingRect(  selectedItem ).height();
   	}
 
 }
