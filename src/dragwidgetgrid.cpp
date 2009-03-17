@@ -547,7 +547,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 						selectedItem->shear( 0, sv ); // up/ down;
 						// adjacent
 						new_y = old_height;
-// 						QTransform mt = selectedItem->sceneTransform();
+						QTransform mt = selectedItem->sceneTransform();
 						
 // 						printQTransform( mt );
 
