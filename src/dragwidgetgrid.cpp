@@ -302,17 +302,25 @@ qreal DragWidgetGrid::calculateOppositeByReverting( QGraphicsItem *item, bool ve
 // 	item->setTransform( *identidade );
 	qDebug() << "inicial:";	
 	printQTransform( item->sceneTransform() );
+
+// 	qreal reset = mt.m12() < 0 ? mt.m12() : -mt.m12();
 	
 	if ( vertical ) {
-		item->shear( mt.m21(), -mt.m12() );
+		item->shear( -mt.m21(), -mt.m12() );
 		newBR = msceneBoundingRect( item );
 		adjacent = newBR.height();
+		item->shear( mt.m21(), 0 );
+		newBR = msceneBoundingRect( item );
 	}
 	else {
-		item->shear( -mt.m21(), mt.m12() );
+		qDebug() << "m21: " << mt.m21();
+		item->shear( -mt.m21(), -mt.m12() );
 		newBR = msceneBoundingRect( item );
 		adjacent = newBR.width();
+		item->shear( 0 , mt.m12() );
+		newBR = msceneBoundingRect( item );
 	}
+
 	qDebug() << "sheared:";
 	printQTransform( item->sceneTransform() );
 	qreal opposite = calculateOpposite( newBR , adjacent );
