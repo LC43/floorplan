@@ -65,7 +65,7 @@
 #define ObjectY 3
 #define Sheared 4
 #define ScalingToReal 25
-#define MaskSheared 0
+#define MaskSheared 1
 
 
 class DragWidgetGrid : public QGraphicsView

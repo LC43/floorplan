@@ -241,7 +241,7 @@ void MainWindow::sobreFloorplan(){
 					   trUtf8("O <b>Planta - Modelo de Aprendizagem</b> é um programa de desenho de plantas arquitectónicas para habitações, "
 							   "dando relevância à aprendizagem, ao uso intuitivo das ferramentas disponibilizadas."
 							   "Serve também como plataforma de introdução a modelos de desenho assistido por computador "
-							   "mais complexos. (versão 154)"));
+							   "mais complexos. (versão 162)"));
 }
 
 /* *******************************************************************/
