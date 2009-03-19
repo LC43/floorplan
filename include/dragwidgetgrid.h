@@ -64,6 +64,7 @@
 #define ObjectX 2
 #define ObjectY 3
 #define ScalingToReal 25
+#define MaskSheared 1
 
 
 class DragWidgetGrid : public QGraphicsView
@@ -128,7 +129,7 @@ private:
 	void printQTransform(  QTransform mt );
 	void saveXYData( ScenePixmapItem *item );
 
-	
+	int sheared;	
 };
 
 

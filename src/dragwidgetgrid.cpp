@@ -45,9 +45,6 @@
 		*****TODO: not critical: a scene so mostra as scroll bars se houver objectos fora do "view port"
 		*****TODO: impressao à escala
 		*****TODO: boundingRegion <-- calcular a fronteira d todos os objectos ?
-
-
-
 	*/
 #include <QtGui>
 #include <QMessageBox>
@@ -72,6 +69,7 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 	selectedItem  = NULL;
 	m_drawline=false;
 	inicial_zoom = height();
+	sheared = 0;
 }
 
 
@@ -180,7 +178,10 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 		qreal pixmap_height = pixmap.height();
 		pixmap_height /= ScalingToReal;
 		QString i_size = QString("x: %1 | y: %2").arg(pixmap_width).arg(pixmap_height);
-		item->setToolTip( i_size );
+		if( MaskSheared && sheared  )
+			item->setToolTip( trUtf8("Não disponível") );
+		else
+			item->setToolTip( i_size );
 
 		item->setData(ObjectX,pixmap_width);
 		item->setData(ObjectY,pixmap_height);
@@ -218,7 +219,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 		selected=true;
      }
 	 
-	 if(event->button() == Qt::LeftButton) {
+	if(event->button() == Qt::LeftButton) {
 		if(!selected){
 			m_drawline = true;
 			drag_start_pos = event->pos();
@@ -249,6 +250,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 			case QMessageBox::Ok:
 				// FIXED: reset x and y too :S ~Pedro
 				scene_pixmap_item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
+				sheared = 0;
 				saveXYData( scene_pixmap_item );
 			break;
 			default:
@@ -298,7 +300,7 @@ qreal DragWidgetGrid::calculateOppositeByReverting( QGraphicsItem *item, bool ve
 	QTransform mt = item->transform();
 	qDebug() << "1st:";
 	printQTransform( mt );
-	QTransform *identidade = new QTransform();
+// 	QTransform *identidade = new QTransform();
 	
 // 	item->setTransform( *identidade );
 	qDebug() << "inicial:";	
@@ -325,6 +327,7 @@ qreal DragWidgetGrid::calculateOppositeByReverting( QGraphicsItem *item, bool ve
 	return opposite;
 
 }
+
 /* 	only works if its sheared on only one side */
 qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
 
@@ -345,6 +348,7 @@ qreal DragWidgetGrid::calculateOpposite(QRectF rec, qreal adjacent ){
 	qDebug() << "oposto: " << o;
 	return o;
 }
+
 // both following 2 functions are a copy paste from the mouse movements
 // its just to prevent futher repeated code
 qreal DragWidgetGrid::newShearedY( QGraphicsItem * item, qreal x ) {
@@ -408,7 +412,10 @@ void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal
 	}
 	QString i_size;
 	i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
-	selectedItem->setToolTip( i_size );
+	if( MaskSheared && sheared  )
+		selectedItem->setToolTip(trUtf8("Não disponível") );
+	else
+		selectedItem->setToolTip( i_size );
 	selectedItem->setData(ObjectX,new_x);
 	selectedItem->setData(ObjectY,new_y);
 	
@@ -421,7 +428,10 @@ void DragWidgetGrid::saveXYData( ScenePixmapItem *item ){
 // 	qDebug() << "saving data: Width " << rec.width() << " height " << rec.height();
 	i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
 	
-	item->setToolTip( i_size );
+	if( MaskSheared && sheared  )
+		item->setToolTip( trUtf8("Não disponível") );
+	else
+		item->setToolTip( i_size );
 	item->setData(ObjectX,rec.width()/ScalingToReal);
 	item->setData(ObjectY,rec.height()/ScalingToReal);
 }
@@ -432,6 +442,7 @@ void DragWidgetGrid::printQTransform(  QTransform mt ){
 	qDebug() << "mt3x: " << mt.m31() << "\t" << mt.m32() << "\t" << mt.m33();
 	qDebug() << "___________________";
 }
+
 void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 
 	if(m_drawline && (event->pos() - drag_start_pos).manhattanLength() != 0 ){
@@ -442,7 +453,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-
+		qDebug() << "a iz selected!";
 		qreal distance_moved_x = drag_start_pos.x() - event->posF().x();
 		qreal distance_moved_y = drag_start_pos.y() - event->posF().y();
 		int mod = QApplication::keyboardModifiers();
@@ -502,7 +513,10 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 // 					QRectF rec = selectedItem->sceneBoundingRect();
 					QString i_size;
 					i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
-					selectedItem->setToolTip( i_size );
+					if( MaskSheared && sheared  )
+						selectedItem->setToolTip( trUtf8("Não disponível") );
+					else
+						selectedItem->setToolTip( i_size );
 // 					qDebug() << "mouse released: x_scene:" << msceneBoundingRect(  selectedItem ).width() << " y_scene: " << msceneBoundingRect(  selectedItem ).height();
 					selectedItem->setData(ObjectX,rec.width()/ScalingToReal);
 					selectedItem->setData(ObjectY,rec.height()/ScalingToReal);
@@ -510,12 +524,12 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				break;
 			}
 
-#if !defined(Q_OS_WIN)
+// #if !defined(Q_OS_WIN)
 			case Qt::MetaModifier:{
-#else
-			case Qt::AltModifier:{
-#endif
-
+// #else
+// 			case Qt::AltModifier:{
+// #endif
+				sheared = 1;
 				qreal old_width =  selectedItem->data(ObjectX).toDouble();
 				qreal old_height = selectedItem->data(ObjectY).toDouble();
 				
@@ -628,7 +642,10 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				}
 				QString i_size;
 				i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
-				selectedItem->setToolTip( i_size );
+				if( MaskSheared && sheared  )
+					selectedItem->setToolTip( trUtf8("Não disponível") );
+				else
+					selectedItem->setToolTip( i_size );
 				selectedItem->setData(ObjectX,new_x);
 				selectedItem->setData(ObjectY,new_y);
 				break;
@@ -646,10 +663,9 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				else selectedItem->setPos(mapToScene( new_pos_x, new_pos_y ));
 			}
 		}
-		
+
 	}
-	qDebug() << "x_after:" << msceneBoundingRect(  selectedItem ).width();
-	qDebug() << "y_after:" << msceneBoundingRect(  selectedItem ).height();
+
 	drag_distance_to_mouse  = QPointF(0,0);
 	drag_start_pos = QPoint(0,0);
 }
@@ -741,7 +757,8 @@ git commit -a -m " * fixed key pressed shear"
 					case Qt::MetaModifier:
 #else
 					case Qt::AltModifier:
-#endif						
+#endif
+						sheared = 1;
 						selectedItem->shear(0.1,0);
 						// ai :S TODO: bug!! wont shear after some point to the right!
 						new_y = newShearedY(selectedItem, old_width );
@@ -769,6 +786,7 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:
 #endif
+						sheared = 1;
 						selectedItem->shear(-0.1,0);
 						new_y = newShearedY(selectedItem, old_width );
 						reShear( selectedItem , -0.1, old_width, new_y );
@@ -792,12 +810,16 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:{
 #endif
+						sheared = 1;
 						selectedItem->shear(0,-0.1);
 						new_x = newShearedX(selectedItem, old_width );
 						new_x /= ScalingToReal;
 						QString i_size;
 						i_size = QString("x: %1 | y: %2").arg( new_x ).arg( old_height );
-						selectedItem->setToolTip( i_size );
+						if( MaskSheared && sheared  )
+							selectedItem->setToolTip( trUtf8("Não disponível") );
+						else
+							selectedItem->setToolTip( i_size );
 						selectedItem->setData(ObjectX,new_x);
 						selectedItem->setData(ObjectY,old_height);
 						break;
@@ -820,12 +842,16 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:{
 #endif
+						sheared = 1;
 						selectedItem->shear(0,0.1);
 						new_x = newShearedX(selectedItem, old_width );
 						new_x /= ScalingToReal;
 						QString i_size;
 						i_size = QString("x: %1 | y: %2").arg( new_x ).arg( old_height );
-						selectedItem->setToolTip( i_size );
+						if( MaskSheared && sheared  )
+							selectedItem->setToolTip( trUtf8("Não disponível") );
+						else
+							selectedItem->setToolTip( i_size );
 						selectedItem->setData(ObjectX,new_x);
 						selectedItem->setData(ObjectY,old_height);
 						break;
@@ -1002,7 +1028,10 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 			pixmap->setData(ObjectID,id);
 			pixmap->setData(ObjectX,new_x);
 			pixmap->setData(ObjectY,new_y);
-			pixmap->setToolTip( QString("x: %1 | y: %2").arg(new_x).arg(new_y));
+			if( MaskSheared && sheared  )
+				pixmap->setToolTip( trUtf8("Não disponível") );
+			else
+				pixmap->setToolTip( QString("x: %1 | y: %2").arg(new_x).arg(new_y));
 			pixmap->setZValue(z);
 			pixmap->setMatrix(*m,false);
 	  
