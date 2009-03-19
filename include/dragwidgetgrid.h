@@ -121,7 +121,9 @@ private:
 
 	qreal metodoDosQuadrados( QRectF , qreal );
 	qreal calculateOpposite( QRectF , qreal );
+	qreal calculateOppositeByReverting( QGraphicsItem *, bool vertical=true );
 	qreal newShearedY( QGraphicsItem * , qreal );
+	qreal newShearedX( QGraphicsItem * , qreal );
 	void reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal new_y );
 	void printQTransform(  QTransform mt );
 	void saveXYData( ScenePixmapItem *item );
