@@ -63,6 +63,7 @@
 #define ObjectID 1
 #define ObjectX 2
 #define ObjectY 3
+#define Sheared 4
 #define ScalingToReal 25
 #define MaskSheared 1
 

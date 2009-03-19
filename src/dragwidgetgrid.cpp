@@ -69,7 +69,6 @@ DragWidgetGrid::DragWidgetGrid(QWidget *parent)
 	selectedItem  = NULL;
 	m_drawline=false;
 	inicial_zoom = height();
-	sheared = 0;
 }
 
 
@@ -153,7 +152,6 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 					item->setCursor(Qt::ClosedHandCursor);
 		
 					item->setData(ObjectID,event->mimeData()->text());
-		
 				}
 				else scene.removeItem(item);			
 			}
@@ -169,22 +167,21 @@ void DragWidgetGrid::dropEvent(QDropEvent *event)
 			item->setCursor(Qt::ClosedHandCursor);
 		
 			item->setData(ObjectID,event->mimeData()->text());
-		
 
 		}
-		
+		item->setData(Sheared,0);
 		qreal pixmap_width = pixmap.width();
 		pixmap_width /= ScalingToReal;
 		qreal pixmap_height = pixmap.height();
 		pixmap_height /= ScalingToReal;
 		QString i_size = QString("x: %1 | y: %2").arg(pixmap_width).arg(pixmap_height);
-		if( MaskSheared && sheared  )
+		if( MaskSheared && item->data(Sheared).toInt()  )
 			item->setToolTip( trUtf8("Não disponível") );
 		else
 			item->setToolTip( i_size );
-
 		item->setData(ObjectX,pixmap_width);
 		item->setData(ObjectY,pixmap_height);
+		
     } else {
         event->ignore();
     }
@@ -250,7 +247,7 @@ void DragWidgetGrid::mousePressEvent(QMouseEvent *event)
 			case QMessageBox::Ok:
 				// FIXED: reset x and y too :S ~Pedro
 				scene_pixmap_item->resetTransform(); // n é bem reset, pq assim tb vao os dx dy :S
-				sheared = 0;
+				scene_pixmap_item->setData(Sheared,0);
 				saveXYData( scene_pixmap_item );
 			break;
 			default:
@@ -412,7 +409,7 @@ void DragWidgetGrid::reShear( QGraphicsItem * item, qreal sh, qreal new_x, qreal
 	}
 	QString i_size;
 	i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
-	if( MaskSheared && sheared  )
+	if( MaskSheared && selectedItem->data(Sheared).toInt()  )
 		selectedItem->setToolTip(trUtf8("Não disponível") );
 	else
 		selectedItem->setToolTip( i_size );
@@ -428,7 +425,7 @@ void DragWidgetGrid::saveXYData( ScenePixmapItem *item ){
 // 	qDebug() << "saving data: Width " << rec.width() << " height " << rec.height();
 	i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
 	
-	if( MaskSheared && sheared  )
+	if( MaskSheared && item->data(Sheared).toInt()  )
 		item->setToolTip( trUtf8("Não disponível") );
 	else
 		item->setToolTip( i_size );
@@ -453,7 +450,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 		m_drawline = false;	
 	}
 	else if(selectedItem){
-		qDebug() << "a iz selected!";
+
 		qreal distance_moved_x = drag_start_pos.x() - event->posF().x();
 		qreal distance_moved_y = drag_start_pos.y() - event->posF().y();
 		int mod = QApplication::keyboardModifiers();
@@ -513,7 +510,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 // 					QRectF rec = selectedItem->sceneBoundingRect();
 					QString i_size;
 					i_size = QString("x: %1 | y: %2").arg(rec.width()/ScalingToReal).arg(rec.height()/ScalingToReal);
-					if( MaskSheared && sheared  )
+					if( MaskSheared && selectedItem->data(Sheared).toInt() )
 						selectedItem->setToolTip( trUtf8("Não disponível") );
 					else
 						selectedItem->setToolTip( i_size );
@@ -524,12 +521,11 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				break;
 			}
 
-// #if !defined(Q_OS_WIN)
+#if !defined(Q_OS_WIN)
 			case Qt::MetaModifier:{
-// #else
-// 			case Qt::AltModifier:{
-// #endif
-				sheared = 1;
+#else
+			case Qt::AltModifier:{
+#endif
 				qreal old_width =  selectedItem->data(ObjectX).toDouble();
 				qreal old_height = selectedItem->data(ObjectY).toDouble();
 				
@@ -545,6 +541,8 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 // 					qDebug() << "shear: x axis:" <<  distance_moved_x;
 // 					QRectF f_rec = msceneBoundingRect(  selectedItem );
 					selectedItem->shear( -sh ,0 ); //right!! turn right! the other right! .. :p
+
+					selectedItem->setData(Sheared, 1);
 					/*
 					se for um shear uni-direccional aplicado a uma matriz onde ja haja
 					um shear noutra direccao de um vector  perpendicular,
@@ -616,6 +614,9 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 // 						qDebug() << "shear: y axis:" <<  distance_moved_y;
 						
 						selectedItem->shear( 0, sv ); // up/ down;
+
+						selectedItem->setData(Sheared, 1);
+						
 						// adjacent
 						new_y = old_height;
 						QTransform mt = selectedItem->sceneTransform();
@@ -642,7 +643,7 @@ void DragWidgetGrid::mouseReleaseEvent(QMouseEvent *event){
 				}
 				QString i_size;
 				i_size = QString("x: %1 | y: %2").arg( new_x ).arg( new_y );
-				if( MaskSheared && sheared  )
+				if( MaskSheared && selectedItem->data(Sheared).toInt() )
 					selectedItem->setToolTip( trUtf8("Não disponível") );
 				else
 					selectedItem->setToolTip( i_size );
@@ -693,7 +694,8 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 	if(selectedItem) {
 
 		ScenePixmapItem *  pixmap_item = dynamic_cast<ScenePixmapItem*>( selectedItem );
-/*
+
+		/*
 
 		accoes:
 		* rodar    :  ctrl             + setas/LMB
@@ -718,10 +720,6 @@ void DragWidgetGrid::keyPressEvent( QKeyEvent * event ){
 		detalhes
 		* deslocar :  + 1 pixel*(1/zoom)
 			se esta com o zoom out em 2x -> 1
-
-
-
-git commit -a -m " * fixed key pressed shear"
 		
 		*/
 		
@@ -758,8 +756,10 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:
 #endif
-						sheared = 1;
+						
 						selectedItem->shear(0.1,0);
+						selectedItem->setData(Sheared, 1);
+						sheared = 1;
 						// ai :S TODO: bug!! wont shear after some point to the right!
 						new_y = newShearedY(selectedItem, old_width );
 						reShear( selectedItem , 0.1, old_width, new_y );
@@ -786,8 +786,9 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:
 #endif
-						sheared = 1;
 						selectedItem->shear(-0.1,0);
+						selectedItem->setData(Sheared, 1);
+						sheared = 1;
 						new_y = newShearedY(selectedItem, old_width );
 						reShear( selectedItem , -0.1, old_width, new_y );
 						break;
@@ -810,13 +811,14 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:{
 #endif
-						sheared = 1;
 						selectedItem->shear(0,-0.1);
+						selectedItem->setData(Sheared, 1);
+						sheared = 1;
 						new_x = newShearedX(selectedItem, old_width );
 						new_x /= ScalingToReal;
 						QString i_size;
 						i_size = QString("x: %1 | y: %2").arg( new_x ).arg( old_height );
-						if( MaskSheared && sheared  )
+						if( MaskSheared && selectedItem->data(Sheared).toInt()  )
 							selectedItem->setToolTip( trUtf8("Não disponível") );
 						else
 							selectedItem->setToolTip( i_size );
@@ -842,13 +844,14 @@ git commit -a -m " * fixed key pressed shear"
 #else
 					case Qt::AltModifier:{
 #endif
-						sheared = 1;
 						selectedItem->shear(0,0.1);
+						selectedItem->setData(Sheared, 1);
+						sheared = 1;
 						new_x = newShearedX(selectedItem, old_width );
 						new_x /= ScalingToReal;
 						QString i_size;
 						i_size = QString("x: %1 | y: %2").arg( new_x ).arg( old_height );
-						if( MaskSheared && sheared  )
+						if( MaskSheared && selectedItem->data(Sheared).toInt()  )
 							selectedItem->setToolTip( trUtf8("Não disponível") );
 						else
 							selectedItem->setToolTip( i_size );
@@ -952,6 +955,7 @@ void  DragWidgetGrid::SaveProject( QXmlStreamWriter* stream )
 			stream->writeAttribute( "id", QString("%1").arg(pixmap->data(ObjectID).toString()));
 			stream->writeAttribute( "new_x", QString("%1").arg(pixmap->data(ObjectX).toString()));
 			stream->writeAttribute( "new_y", QString("%1").arg(pixmap->data(ObjectY).toString()));
+			stream->writeAttribute( "sheared", QString("%1").arg(pixmap->data(Sheared).toString()));
 			stream->writeAttribute( "m11", QString("%1").arg(m.m11 ()  ));
 			stream->writeAttribute( "m12", QString("%1").arg(m.m12 () ));
 			stream->writeAttribute( "m21", QString("%1").arg(m.m21 () ));
@@ -1000,6 +1004,7 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 			qreal z = 0.0;
 			qreal new_x = 0.0;
 			qreal new_y = 0.0;
+			int sheared = 0;
 			int child = 0;
 			QString id;
 			foreach( QXmlStreamAttribute attribute, stream->attributes() )
@@ -1016,6 +1021,7 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 				if ( attribute.name() == "child" ) child = attribute.value().toString().toInt();
 				if ( attribute.name() == "new_x" ) new_x = attribute.value().toString().toDouble();
 				if ( attribute.name() == "new_y" ) new_y = attribute.value().toString().toDouble();
+				if ( attribute.name() == "sheared" ) sheared = attribute.value().toString().toInt();
 			}
 			qDebug() << id;
 		
@@ -1028,7 +1034,8 @@ void  DragWidgetGrid::LoadProject( QXmlStreamReader* stream )
 			pixmap->setData(ObjectID,id);
 			pixmap->setData(ObjectX,new_x);
 			pixmap->setData(ObjectY,new_y);
-			if( MaskSheared && sheared  )
+			pixmap->setData(Sheared,sheared);
+			if( MaskSheared && pixmap->data(Sheared).toInt()  )
 				pixmap->setToolTip( trUtf8("Não disponível") );
 			else
 				pixmap->setToolTip( QString("x: %1 | y: %2").arg(new_x).arg(new_y));
