@@ -1,7 +1,7 @@
 QT += svg xml
 CONFIG += help
 # binary
-TARGET  = floorplan
+TARGET  = Planta
 
 INCLUDEPATH = include
 LIB     = lib
